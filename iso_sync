@@ -1,0 +1,121 @@
+#!/bin/sh
+
+##
+MOO_HOME="/home/pdq/"
+REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS/"
+REPO_BASE_URL="https://repo.mooos.pdq/"
+ABS_BASE_DIR="${MOO_HOME}abs/"
+REPO_LOG_TEMP="/tmp/repo_renew"
+REPO_LOG="${ABS_BASE_DIR}update.log"
+ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
+WORK_DIR="/media/truecrypt3/mooOS/work" # work
+
+# Text color variables
+txtbld=$(tput bold)                # Bold
+bldred=${txtbld}$(tput setaf 1)    # red
+bldyellow=${txtbld}$(tput setaf 3) # yellow
+txtrst=$(tput sgr0)                # reset
+
+ask_something() {
+	echo -ne $question
+	while read -r -n 1 -s yn; do
+		if [[ $yn = [YyNn] ]]; then
+			[[ $yn = [Yy] ]] && return=0
+			[[ $yn = [Nn] ]] && return=1
+			break
+		fi
+	done
+	return $return
+}
+
+##
+## root script
+if [ $(id -u) -eq 0 ]; then
+	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
+	if ask_something; then
+		question="${bldyellow}You wish to skip to create iso (Y/N)? (default: no)\n${txtrst}"
+		if ! ask_something; then
+			cp -vr ${MOO_HOME}bin/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
+			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/colors
+			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+			
+			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
+			cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+			
+			cp -v ${MOO_HOME}.Xdefaults ${MOO_HOME}archlive/releng/root-image/etc/skel/.Xdefaults
+			cp -v ${MOO_HOME}.xinitrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.xinitrc
+			cp -v ${MOO_HOME}.zshrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.zshrc
+			cp -v ${MOO_HOME}.gtkrc-2.0 ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0
+			cp -v ${MOO_HOME}.nanorc ${MOO_HOME}archlive/releng/root-image/etc/skel/.nanorc
+			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
+
+			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
+			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
+			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
+			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
+			cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
+
+			## deprecated method
+			if [ -d "${MOO_HOME}archlive/releng/work" ]; then
+				rm -r ${MOO_HOME}archlive/releng/work
+			fi
+			if [ -d "${MOO_HOME}archlive/releng/out" ]; then
+				rm -r ${MOO_HOME}archlive/releng/out
+			fi
+
+			## new method
+			if [ -d "$ISO_DIR" ]; then
+				rm -r "$ISO_DIR"
+			fi
+			if [ -d "$WORK_DIR" ]; then
+				rm -r "$WORK_DIR"
+			fi
+			mkdir "$WORK_DIR" && cp ${MOO_HOME}info/pacman.conf ${WORK_DIR}/pacman.conf
+			mkdir "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}info/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
+		fi
+		echo "${bldyellow}Building iso now...${txtrst}"
+		sleep 3s
+		cd ${MOO_HOME}archlive/releng
+		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR"
+	fi
+else
+	## push latest to github
+	gh -b
+	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
+
+	## remove existing repos
+	rm ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
+	rm ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
+	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
+
+	## create repo databases
+	repo-add ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz > $REPO_LOG_TEMP
+	repo-add ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP
+	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP
+
+	## format log a little
+	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG
+	sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
+
+
+	## clean up stable repos
+	if [ -d "${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date" ]; then
+		rm -r ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+	fi
+	if [ -d "${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date" ]; then
+		rm -r ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+	fi
+	mv ${REPO_BASE_DIR}mooOS-pkgs-32 ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+	mv ${REPO_BASE_DIR}mooOS-pkgs-64 ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+	#mv ${REPO_BASE_DIR}mooOS-utils ${ABS_BASE_DIR}mooOS-utils-out-of-date
+	cp -r ${ABS_BASE_DIR}mooOS-pkgs-32 ${REPO_BASE_DIR}mooOS-pkgs-32
+	cp -r ${ABS_BASE_DIR}mooOS-pkgs-64 ${REPO_BASE_DIR}mooOS-pkgs-64
+	#cp -r ${ABS_BASE_DIR}mooOS-utils ${REPO_BASE_DIR}mooOS-utils
+
+	notify-send "Repo update complete"
+
+	echo "${bldyellow}Now re-run this script as root!${txtrst}"
+	sleep 3s
+fi
+
+exit 0
