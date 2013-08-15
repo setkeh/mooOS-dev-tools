@@ -61,15 +61,15 @@ if [ $(id -u) -eq 0 ]; then
 			# copy over ~/.themes
 			cp -vr ${MOO_HOME}.themes/Black/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
 			# copy over kde files
-			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
-			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin
 			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
 			# copy over transmission file
-			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
 			cp -v ${MOO_HOME}.config/transmission-daemon/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
 			# copy over mocp file
-			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
 			cp -v ${MOO_HOME}.moc/config ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
 			# copy over window manager files
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
@@ -81,36 +81,36 @@ if [ $(id -u) -eq 0 ]; then
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			# cleanup file permissions
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
-			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
-			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
+			chmod -v g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
+			chmod -v g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
 			## deprecated method
 			if [ -d "${MOO_HOME}archlive/releng/work" ]; then
-				rm -r ${MOO_HOME}archlive/releng/work
+				rm -vr ${MOO_HOME}archlive/releng/work
 			fi
 			if [ -d "${MOO_HOME}archlive/releng/out" ]; then
-				rm -r ${MOO_HOME}archlive/releng/out
+				rm -vr ${MOO_HOME}archlive/releng/out
 			fi
 
 			## new method
 			if [ -d "$ISO_DIR" ]; then
-				rm -r "$ISO_DIR"
+				rm -vr "$ISO_DIR"
 			fi
 			if [ -d "$WORK_DIR" ]; then
-				rm -r "$WORK_DIR"
+				rm -vr "$WORK_DIR"
 			fi
 
 			# create pacman.conf for build
-			mkdir "$WORK_DIR" && cp ${MOO_HOME}info/pacman.conf ${WORK_DIR}/pacman.conf
-			mkdir "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}info/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
+			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}info/pacman.conf ${WORK_DIR}/pacman.conf
+			mkdir -v "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}info/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
 		fi
 
 		echo "${bldred}Building iso now...${txtrst}"
@@ -124,8 +124,8 @@ else
 	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
 
 	## remove existing repos
-	rm ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
-	rm ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
@@ -139,17 +139,17 @@ else
 
 	## clean up stable repos
 	if [ -d "${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date" ]; then
-		rm -r ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+		rm -vr ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
 	fi
 	if [ -d "${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date" ]; then
-		rm -r ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+		rm -vr ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	fi
-	mv ${REPO_BASE_DIR}mooOS-pkgs-32 ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
-	mv ${REPO_BASE_DIR}mooOS-pkgs-64 ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+	mv -v ${REPO_BASE_DIR}mooOS-pkgs-32 ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+	mv -v ${REPO_BASE_DIR}mooOS-pkgs-64 ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	#mv ${REPO_BASE_DIR}mooOS-utils ${ABS_BASE_DIR}mooOS-utils-out-of-date
-	cp -r ${ABS_BASE_DIR}mooOS-pkgs-32 ${REPO_BASE_DIR}mooOS-pkgs-32
-	cp -r ${ABS_BASE_DIR}mooOS-pkgs-64 ${REPO_BASE_DIR}mooOS-pkgs-64
-	#cp -r ${ABS_BASE_DIR}mooOS-utils ${REPO_BASE_DIR}mooOS-utils
+	cp -vr ${ABS_BASE_DIR}mooOS-pkgs-32 ${REPO_BASE_DIR}mooOS-pkgs-32
+	cp -vr ${ABS_BASE_DIR}mooOS-pkgs-64 ${REPO_BASE_DIR}mooOS-pkgs-64
+	#cp -vr ${ABS_BASE_DIR}mooOS-utils ${REPO_BASE_DIR}mooOS-utils
 
 	notify-send "Repo update complete"
 
