@@ -43,6 +43,10 @@ if [ $(id -u) -eq 0 ]; then
 	if ask_something; then
 		question="${bldyellow}You wish to skip to create iso (Y/N)? (default: no)\n${txtrst}"
 		if ! ask_something; then
+			# copy root files
+			cp -v /etc/psd.conf ${MOO_HOME}archlive/releng/root-image/etc/psd.conf
+			cp -vr ${MOO_HOME}info/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
+			cp -v ${MOO_HOME}info/images/nude.jpg ${MOO_HOME}archlive/releng/syslinux/splash.png
 			# copy over ~/bin
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
 			cp -vr ${MOO_HOME}bin/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
@@ -138,6 +142,7 @@ if [ $(id -u) -eq 0 ]; then
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/psd.conf 
 			
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
