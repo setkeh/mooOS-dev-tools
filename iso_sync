@@ -166,9 +166,9 @@ if [ $(id -u) -eq 0 ]; then
 			git clone git://github.com/idk/systemd.git
 			git clone git://github.com/idk/eggdrop-scripts.git
 			git clone git://github.com/idk/gh.git
-	        cd "$PWD"
+			cd "$PWD"
 
-	        # cleanup file permissions / why not
+			# cleanup file permissions / why not
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
 
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
@@ -244,4 +244,3 @@ else
 fi
 
 exit 0
-## EndFile
