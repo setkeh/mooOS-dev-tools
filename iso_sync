@@ -48,6 +48,8 @@ if [ $(id -u) -eq 0 ]; then
 			# copy over pentadactyl files
 			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+			# copy over rss reader files
+			cp -v ${MOO_HOME}.canto-ng/config ${MOO_HOME}archlive/releng/root-image/etc/skel/.canto-ng/config
 			# copy over firefox files
 			cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 			# copy over ~/.* (dotfiles)
@@ -60,7 +62,17 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc
 			# copy over ~/.themes
 			cp -vr ${MOO_HOME}.themes/Black/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
+			cp -vr ${MOO_HOME}.kde4/share/apps/color-schemes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
+			# copy over ~/.fonts
+			cp -vr ${MOO_HOME}.fonts/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.fonts
 			# copy over kde files
+			cp -v ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
+			cp -v ${MOO_HOME}info/..directory ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
+			cp -v ${MOO_HOME}.kde4/share/config/startupconfig ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
+			cp -v ${MOO_HOME}.kde4/share/config/konsolerc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
+ 			cp -v ${MOO_HOME}.kde4/share/config/kservicemenurc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc 
+			cp -vr ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
+			cp -vr ${MOO_HOME}.kde4/share/apps/konsole/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin
 			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
@@ -68,9 +80,22 @@ if [ $(id -u) -eq 0 ]; then
 			# copy over transmission file
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
 			cp -v ${MOO_HOME}.config/transmission-daemon/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+			# copy lxtask config
+			cp -v ${MOO_HOME}.config/lxtask.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/lxtask.conf
+			# copy pavucontrol config
+			cp -v ${MOO_HOME}.config/pavucontrol.ini ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
 			# copy over mocp file
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
 			cp -v ${MOO_HOME}.moc/config ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
+			# copy htop file
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/htop
+			cp -v ${MOO_HOME}.config/htop/htoprc ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/htop/htoprc
+			#copy sublime text 3 files
+			cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
+			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+			# copy vlc files
+			cp -v ${MOO_HOME}info/vlc-qt-interface.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
+		    cp -v ${MOO_HOME}.config/vlc/vlcrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
 			# copy over window manager files
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
 			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
@@ -81,14 +106,7 @@ if [ $(id -u) -eq 0 ]; then
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			# cleanup file permissions
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
-			chmod -v g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
-			chmod -v g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
