@@ -121,7 +121,7 @@ if [ $(id -u) -eq 0 ]; then
 			# copy vlc files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc
 			cp -v ${MOO_HOME}info/vlc-qt-interface.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
-		    cp -v ${MOO_HOME}.config/vlc/vlcrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
+			cp -v ${MOO_HOME}.config/vlc/vlcrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
 
 			# copy over window manager files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
@@ -156,16 +156,16 @@ if [ $(id -u) -eq 0 ]; then
 			# create ~/Github and all repos
 			PWD=$(pwd)
 	 		cd ${MOO_HOME}archlive/releng/root-image/etc/skel/github
-	 		git clone git://github.com/idk/pdq.git
-	        git clone git://github.com/idk/bin.git
-	        git clone git://github.com/idk/awesomewm-X.git
-	        git clone git://github.com/idk/conky-X.git
-	        git clone git://github.com/idk/zsh.git
-	        git clone git://github.com/idk/bin.git
-	        git clone git://github.com/idk/php.git
-	        git clone git://github.com/idk/systemd.git
-	        git clone git://github.com/idk/eggdrop-scripts.git
-	        git clone git://github.com/idk/gh.git
+			git clone git://github.com/idk/pdq.git
+			git clone git://github.com/idk/bin.git
+			git clone git://github.com/idk/awesomewm-X.git
+			git clone git://github.com/idk/conky-X.git
+			git clone git://github.com/idk/zsh.git
+			git clone git://github.com/idk/bin.git
+			git clone git://github.com/idk/php.git
+			git clone git://github.com/idk/systemd.git
+			git clone git://github.com/idk/eggdrop-scripts.git
+			git clone git://github.com/idk/gh.git
 	        cd "$PWD"
 
 	        # cleanup file permissions / why not
@@ -244,3 +244,4 @@ else
 fi
 
 exit 0
+## EndFile
