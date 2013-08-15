@@ -203,6 +203,7 @@ if [ $(id -u) -eq 0 ]; then
 
 			# cleanup file permissions / why not
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
+			chgrp -R ${MOO_HOME}archlive/releng/root-image/etc/skel
 
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 			
