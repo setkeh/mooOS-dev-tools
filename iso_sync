@@ -46,25 +46,31 @@ if [ $(id -u) -eq 0 ]; then
 			# copy root files
 			cp -v /etc/psd.conf ${MOO_HOME}archlive/releng/root-image/etc/psd.conf
 			cp -v ${MOO_HOME}info/images/nude.jpg ${MOO_HOME}archlive/releng/syslinux/splash.png
+
 			# copy over ~/bin
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
 			cp -vr ${MOO_HOME}bin/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
+
 			# copy over pentadactyl files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
 			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+
 			# copy over rss reader files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.canto-ng
 			cp -v ${MOO_HOME}.canto-ng/config ${MOO_HOME}archlive/releng/root-image/etc/skel/.canto-ng/config
+
 			# copy over firefox files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 			cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+
 			# copy over ~/.local files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications
 			cp -v ${MOO_HOME}.local/applications/defaults.list ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
 			cp -v ${MOO_HOME}.local/applications/tabbed.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
 			cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
+
 			# copy over ~/.* (dotfiles)
 			cp -v ${MOO_HOME}.Xdefaults ${MOO_HOME}archlive/releng/root-image/etc/skel/.Xdefaults
 			cp -v ${MOO_HOME}.xinitrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.xinitrc
@@ -73,12 +79,15 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.nanorc ${MOO_HOME}archlive/releng/root-image/etc/skel/.nanorc
 			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
 			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc
+
 			# copy over ~/.themes
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
 			cp -vr ${MOO_HOME}.themes/Black/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
+
 			# copy over ~/.fonts
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.fonts
 			cp -vr ${MOO_HOME}.fonts/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.fonts
+
 			# copy over kde files
 			mkdir -vp  ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive
@@ -196,13 +205,15 @@ if [ $(id -u) -eq 0 ]; then
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
 
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
+			
 			## deprecated method
 			if [ -d "${MOO_HOME}archlive/releng/work" ]; then
 				rm -r ${MOO_HOME}archlive/releng/work
 			fi
-			# if [ -d "${MOO_HOME}archlive/releng/out" ]; then
+			
+			#if [ -d "${MOO_HOME}archlive/releng/out" ]; then
 			# 	rm -r ${MOO_HOME}archlive/releng/out
-			# fi
+			#fi
 
 			## new method
 			if [ -d "$ISO_DIR" ]; then
