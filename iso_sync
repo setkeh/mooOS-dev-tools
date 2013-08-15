@@ -129,9 +129,9 @@ else
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
-	repo-add ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz > $REPO_LOG_TEMP
-	repo-add ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP
-	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP
+	repo-add ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz > $REPO_LOG_TEMP 2>&1
+	repo-add ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
+	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
 
 	## format log a little
 	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG
