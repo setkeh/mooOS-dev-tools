@@ -85,6 +85,7 @@ if [ $(id -u) -eq 0 ]; then
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 			cp -vr ${MOO_HOME}.kde4/share/apps/color-schemes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
 			cp -v ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
+			cp -v ${MOO_HOME}info/kdenliveuirc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliveuirc
 			cp -v ${MOO_HOME}info/..directory ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
 			cp -v ${MOO_HOME}.kde4/share/config/startupconfig ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
 			cp -v ${MOO_HOME}.kde4/share/config/konsolerc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
@@ -168,7 +169,7 @@ if [ $(id -u) -eq 0 ]; then
 
 			# create ~/Github and all repos
 			PWD=$(pwd)
-	 		cd ${MOO_HOME}archlive/releng/root-image/etc/skel/github
+	 		cd ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
 			git clone git://github.com/idk/pdq.git
 			git clone git://github.com/idk/bin.git
 			git clone git://github.com/idk/awesomewm-X.git
@@ -184,8 +185,8 @@ if [ $(id -u) -eq 0 ]; then
 			cd "$PWD"
 
 			# preserve wallpapers
-			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/github/sources/backgrounds
-			cp -vr usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/github/sources/backgrounds
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
+			cp -vr usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
 
 			# cleanup file permissions / why not
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
