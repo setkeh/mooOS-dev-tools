@@ -1,6 +1,9 @@
-#!/bin/sh
+#!/usr/bin/sh
+## Part of mooOS-dev-tools - https://github.com/idk/mooOS-dev-tools
+## pdq 08-13-2013
+## License: GPL3
 
-##
+## Script variables (you should change these)
 MOO_HOME="/home/pdq/"
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS/"
 REPO_BASE_URL="https://repo.mooos.pdq/"
@@ -10,12 +13,18 @@ REPO_LOG="${ABS_BASE_DIR}update.log"
 ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
 WORK_DIR="/media/truecrypt3/mooOS/work" # work
 
-# Text color variables
-txtbld=$(tput bold)                # Bold
+# Text color variables (there is no need change these)
+txtbld=$(tput bold)                # bold
 bldred=${txtbld}$(tput setaf 1)    # red
 bldyellow=${txtbld}$(tput setaf 3) # yellow
 txtrst=$(tput sgr0)                # reset
 
+# Build settings (you chould change these)
+ISO_NAME=mooOS
+ISO_LABEL="mooOS_$(date +%Y%m)"
+ISO_VERSION="$(date +%Y.%m.%d)-alpha-0.7" ## 0.7
+
+# Functions
 ask_something() {
 	echo -ne $question
 	while read -r -n 1 -s yn; do
@@ -28,20 +37,20 @@ ask_something() {
 	return $return
 }
 
-##
 ## root script
 if [ $(id -u) -eq 0 ]; then
 	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
 	if ask_something; then
 		question="${bldyellow}You wish to skip to create iso (Y/N)? (default: no)\n${txtrst}"
 		if ! ask_something; then
+			# copy over ~/bin
 			cp -vr ${MOO_HOME}bin/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
+			# copy over pentadactyl files
 			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
-			
+			# copy over firefox files
 			cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
-
+			# copy over ~/.* (dotfiles)
 			cp -v ${MOO_HOME}.Xdefaults ${MOO_HOME}archlive/releng/root-image/etc/skel/.Xdefaults
 			cp -v ${MOO_HOME}.xinitrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.xinitrc
 			cp -v ${MOO_HOME}.zshrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.zshrc
@@ -49,37 +58,38 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.nanorc ${MOO_HOME}archlive/releng/root-image/etc/skel/.nanorc
 			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
 			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc
-
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes
+			# copy over ~/.themes
 			cp -vr ${MOO_HOME}.themes/Black/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
-		
+			# copy over kde files
 			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
 			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin
 			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
-			
+			# copy over transmission file
 			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
 			cp -v ${MOO_HOME}.config/transmission-daemon/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
-			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
-
+			# copy over mocp file
 			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
 			cp -v ${MOO_HOME}.moc/config ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
-			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
-
-			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
-			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
-			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
-
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
-
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
-			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e
+			# copy over window manager files
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
 			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
 			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
 			cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
-
+			# clean up files content
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+			# cleanup file permissions
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
+			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
+			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e
+			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
 			## deprecated method
@@ -97,18 +107,20 @@ if [ $(id -u) -eq 0 ]; then
 			if [ -d "$WORK_DIR" ]; then
 				rm -r "$WORK_DIR"
 			fi
+
+			# create pacman.conf for build
 			mkdir "$WORK_DIR" && cp ${MOO_HOME}info/pacman.conf ${WORK_DIR}/pacman.conf
 			mkdir "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}info/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
 		fi
 
-		echo "${bldyellow}Building iso now...${txtrst}"
-		sleep 3s
+		echo "${bldred}Building iso now...${txtrst}"
+		# change to build directory
 		cd ${MOO_HOME}archlive/releng
-		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR"
+		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
 	fi
 else
-	## push latest to github
-	gh -b
+	## push latest code to github
+	gh -b ## https://github.com/idk/gh
 	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
 
 	## remove existing repos
@@ -124,7 +136,6 @@ else
 	## format log a little
 	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG
 	sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
-
 
 	## clean up stable repos
 	if [ -d "${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date" ]; then
