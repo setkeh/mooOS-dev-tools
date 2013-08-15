@@ -146,9 +146,22 @@ if [ $(id -u) -eq 0 ]; then
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Dev
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Downloads
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Videos
-		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Videos
+		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Dropbox
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Music
+		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Pictures
+
+		 	# cleanup file permissions
+			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
+
+		 	cp -v ${MOO_HOME}Desktop/Desktop.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Desktop/
+		 	cp -v ${MOO_HOME}info/Dev.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Dev/
+		 	cp -v ${MOO_HOME}Downloads/Downloads.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Downloads/
+		 	cp -v ${MOO_HOME}Videos/Videos.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Videos/
+		 	cp -v ${MOO_HOME}Dropbox/Dropbox.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Dropbox/
+		 	cp -v ${MOO_HOME}github/Github.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/
+		 	cp -v ${MOO_HOME}Music/Music.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Music/
+		 	cp -v ${MOO_HOME}Pictures/Pictures.* ${MOO_HOME}archlive/releng/root-image/etc/skel/Pictures/
 
 		 	# cleanup file permissions
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
@@ -166,7 +179,13 @@ if [ $(id -u) -eq 0 ]; then
 			git clone git://github.com/idk/systemd.git
 			git clone git://github.com/idk/eggdrop-scripts.git
 			git clone git://github.com/idk/gh.git
+			git clone git://github.com/idk/mooOS-dev-tools.git
+			git clone git://github.com/idk/mooOS-wallpapers.git
 			cd "$PWD"
+
+			# preserve wallpapers
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/github/sources/backgrounds
+			cp -vr usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/github/sources/backgrounds
 
 			# cleanup file permissions / why not
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
