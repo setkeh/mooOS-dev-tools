@@ -92,20 +92,21 @@ if [ $(id -u) -eq 0 ]; then
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
+			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 			## deprecated method
 			if [ -d "${MOO_HOME}archlive/releng/work" ]; then
-				rm -vr ${MOO_HOME}archlive/releng/work
+				rm -r ${MOO_HOME}archlive/releng/work
 			fi
 			if [ -d "${MOO_HOME}archlive/releng/out" ]; then
-				rm -vr ${MOO_HOME}archlive/releng/out
+				rm -r ${MOO_HOME}archlive/releng/out
 			fi
 
 			## new method
 			if [ -d "$ISO_DIR" ]; then
-				rm -vr "$ISO_DIR"
+				rm -r "$ISO_DIR"
 			fi
 			if [ -d "$WORK_DIR" ]; then
-				rm -vr "$WORK_DIR"
+				rm -r "$WORK_DIR"
 			fi
 
 			# create pacman.conf for build
@@ -129,8 +130,11 @@ else
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
-	repo-add ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz > $REPO_LOG_TEMP 2>&1
-	repo-add ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
+	echo "${bldyellow}Re-creating i686 repository${txtrst}"
+	repo-add ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
+	echo "${bldyellow}Re-creating x86_64 repository${txtrst}"
+	repo-add ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
+	#echo "${bldyellow}Re-creating utils repository${txtrst}"
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
 
 	## format log a little
