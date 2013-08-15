@@ -39,21 +39,48 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
 			
-			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
 			cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
-			
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User 
+
 			cp -v ${MOO_HOME}.Xdefaults ${MOO_HOME}archlive/releng/root-image/etc/skel/.Xdefaults
 			cp -v ${MOO_HOME}.xinitrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.xinitrc
 			cp -v ${MOO_HOME}.zshrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.zshrc
 			cp -v ${MOO_HOME}.gtkrc-2.0 ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 			cp -v ${MOO_HOME}.nanorc ${MOO_HOME}archlive/releng/root-image/etc/skel/.nanorc
 			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
+			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc
 
-			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes
+			cp -vr ${MOO_HOME}.themes/Black/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
+		
+			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
+			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin
+			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+			cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
+			
+			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+			cp -v ${MOO_HOME}.config/transmission-daemon/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+
+			mkdir -p ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
+			cp -v ${MOO_HOME}.moc/config ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
+			chmod g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc
+
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config
+
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e
+			chmod -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
 			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
 			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
 			cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
+
+			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
 			## deprecated method
 			if [ -d "${MOO_HOME}archlive/releng/work" ]; then
@@ -73,6 +100,7 @@ if [ $(id -u) -eq 0 ]; then
 			mkdir "$WORK_DIR" && cp ${MOO_HOME}info/pacman.conf ${WORK_DIR}/pacman.conf
 			mkdir "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}info/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
 		fi
+
 		echo "${bldyellow}Building iso now...${txtrst}"
 		sleep 3s
 		cd ${MOO_HOME}archlive/releng
