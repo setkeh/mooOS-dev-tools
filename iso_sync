@@ -45,7 +45,6 @@ if [ $(id -u) -eq 0 ]; then
 		if ! ask_something; then
 			# copy root files
 			cp -v /etc/psd.conf ${MOO_HOME}archlive/releng/root-image/etc/psd.conf
-			cp -vr ${MOO_HOME}info/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
 			cp -v ${MOO_HOME}info/images/nude.jpg ${MOO_HOME}archlive/releng/syslinux/splash.png
 			# copy over ~/bin
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
@@ -101,7 +100,7 @@ if [ $(id -u) -eq 0 ]; then
 
 			# copy over transmission file
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
-			cp -v ${MOO_HOME}.config/transmission-daemon/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+			cp -v ${MOO_HOME}info/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
 
 			# copy lxtask config
 			cp -v ${MOO_HOME}.config/lxtask.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/lxtask.conf
@@ -198,9 +197,9 @@ if [ $(id -u) -eq 0 ]; then
 
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 			## deprecated method
-			# if [ -d "${MOO_HOME}archlive/releng/work" ]; then
-			# 	rm -r ${MOO_HOME}archlive/releng/work
-			# fi
+			if [ -d "${MOO_HOME}archlive/releng/work" ]; then
+				rm -r ${MOO_HOME}archlive/releng/work
+			fi
 			# if [ -d "${MOO_HOME}archlive/releng/out" ]; then
 			# 	rm -r ${MOO_HOME}archlive/releng/out
 			# fi
