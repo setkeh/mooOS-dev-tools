@@ -23,7 +23,7 @@ ask_something() {
 	return $return
 }
 
-question="${bldyellow}You wish to create e17 backgrounds (.edj) from wallpapers (.jpg) (Y/N)?\n${txtrst}"
+question="${bldyellow}You wish to create e17 backgrounds (.edj) from wallpapers (.jpg) (Y/N)?\nThis will ${txtrst}"
 if ask_something; then
 	
 	## VARIABLES
@@ -70,77 +70,80 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 	let "COUNT_IMAGES=$(ls | wc -l) - 1" 
 	i=1;
 
-	shopt -s nullglob;
+	if [ "$COUNT_IMAGES" -ge "1" ]p; then
+		shopt -s nullglob;
 
-	for f in *.jpg *.gif *.png *.jpeg *.JPG *.JPEG *.GIF; do
-	    EXT="${f##*.}"
-	    EXT=${EXT,,}
-	    EXT=${EXT/jpeg/jpg}
-	    mkdir -vp "0$i"
-	    cp -- "$f" "$WALLPAPER_DIR/0$i/wallpaper0$i.${EXT}";
-	    ((i++));
-	done
+		for f in *.jpg *.gif *.png *.jpeg *.JPG *.JPEG *.GIF; do
+		    EXT="${f##*.}"
+		    EXT=${EXT,,}
+		    EXT=${EXT/jpeg/jpg}
+		    mkdir -vp "0$i"
+		    cp -- "$f" "$WALLPAPER_DIR/0$i/wallpaper0$i.${EXT}";
+		    ((i++));
+		done
 
-	for I in $(eval echo {1..$COUNT_IMAGES})
-	do
-		for NEW_FILE in wallpaper0$I.edc-tmp
+		for I in $(eval echo {1..$COUNT_IMAGES})
 		do
-			let "MINUS= $I - 1"
-			OLD_FILE="wallpaper0$MINUS.edc-tmp"
-			if [ "0$I" = "01" ]; then
-		    	cp -v "$TEMPLATE_EDC" "$WALLPAPER_DIR/0$I/$NEW_FILE"
-		    else
-		    	cp -v "$WALLPAPER_DIR/0$MINUS/$OLD_FILE" "$WALLPAPER_DIR/0$I/${NEW_FILE/#0$MINUS/0$I}"
-		    fi
+			for NEW_FILE in wallpaper0$I.edc-tmp
+			do
+				let "MINUS= $I - 1"
+				OLD_FILE="wallpaper0$MINUS.edc-tmp"
+				if [ "0$I" = "01" ]; then
+			    	cp -v "$TEMPLATE_EDC" "$WALLPAPER_DIR/0$I/$NEW_FILE"
+			    else
+			    	cp -v "$WALLPAPER_DIR/0$MINUS/$OLD_FILE" "$WALLPAPER_DIR/0$I/${NEW_FILE/#0$MINUS/0$I}"
+			    fi
 
-		    sed -i "s/wallpaper0$MINUS/wallpaper0$I/g" "$WALLPAPER_DIR/0$I/$NEW_FILE"
+			    sed -i "s/wallpaper0$MINUS/wallpaper0$I/g" "$WALLPAPER_DIR/0$I/$NEW_FILE"
 
-		    cd "$WALLPAPER_DIR/0$I"
-		    edje_cc $@ -id . -fd . "wallpaper0$I.edc-tmp" -o "$E17_FINISHED_DIR/mooOS_0$I.edj"
-		    cd "$WALLPAPER_DIR"
-		    let "I++"
-	    done
-	done
+			    cd "$WALLPAPER_DIR/0$I"
+			    edje_cc $@ -id . -fd . "wallpaper0$I.edc-tmp" -o "$E17_FINISHED_DIR/mooOS_0$I.edj"
+			    cd "$WALLPAPER_DIR"
+			    let "I++"
+		    done
+		done
 
-	tar -czvf $WALLPAPER_TAR.tar.gz *.* --exclude=README.txt --exclude=$BACKGROUNDS_TAR.tar.gz
-	find $WALLPAPER_DIR/ -maxdepth 1 -type f -name "*.jpg" -delete
-	tar -czvf $BACKGROUNDS_TAR.tar.gz * --exclude=README.txt
+		tar -czvf $WALLPAPER_TAR.tar.gz *.* --exclude=README.txt --exclude=$BACKGROUNDS_TAR.tar.gz
+		find $WALLPAPER_DIR/ -maxdepth 1 -type f -name "*.jpg" -delete
+		tar -czvf $BACKGROUNDS_TAR.tar.gz * --exclude=README.txt
 
-	mv -v "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz"
-	mv -v "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz"
+		mv -v "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz"
+		mv -v "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz"
 
-	rm -rfv "$WALLPAPER_DIR"
-	mkdir -vp "$WALLPAPER_DIR"
-	cp -v "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
-	cp -v "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
-	cp -v "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
+		rm -rfv "$WALLPAPER_DIR"
+		mkdir -vp "$WALLPAPER_DIR"
+		#cp -v "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
+		#cp -v "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
+		cp -v "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
 
-	echo "
-	============ Success ===============
-	====================================
+		echo "
+		============ Success ===============
+		====================================
 
-	${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
+		${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
 
-	${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
+		${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
 
-	============= Exiting ==============
-	===================================="
+		============= Exiting ==============
+		===================================="
 
-	echo "$LABEL" >> $BACKUP_DIR/README.txt
+		echo "$LABEL" >> $BACKUP_DIR/README.txt
 
-	echo "
-	===========
-	Created $COUNT_IMAGES e17 backgrounds.
-	Installed the .edj files into $E17_FINISHED_DIR.
-	Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR/
-	You may remove these files manually now or leave them and they will be removed automatically on t he next run.
+		echo "
+		===========
+		Created $COUNT_IMAGES e17 backgrounds.
+		Installed the .edj files into $E17_FINISHED_DIR.
+		Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR/
+		You may remove these files manually now or leave them and they will be removed automatically on t he next run.
 
-	-----------
-	" >> $BACKUP_DIR/README.txt
+		-----------
+		" >> $BACKUP_DIR/README.txt
 
-	notify-send "Moo"
-
-	sleep 3s
+		notify-send "Moo"
+	fi
+else
+	echo "No images found in $WALLPAPER_DIR"
+	notify-send "No images found
 fi
 
 exit 0
