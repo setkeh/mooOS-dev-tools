@@ -5,16 +5,16 @@
 ## mkdir -p "$HOME/Pictures/wallpapers_go_here"
 WALLPAPER_DIR="$HOME/Pictures/wallpapers_go_here"
 ## mkdir -p "$HOME/Pictures/e17_backgrounds"
-BACKGROUND_DIR="$HOME/Pictures/e17_backgrounds"
+BACKUP_DIR="$HOME/Dev/mooOS_backups/"
 
 #E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
 E17_FINISHED_DIR="/home/pdq/info/e17backgrounds/mooOS-backgrounds/"
 
 ## https://gist.github.com/idk/6248763
-TEMPLATE_EDC=$BACKGROUND_DIR/wallpaper01.edc-tmp ## DO NOT DELETE THIS FILE
+TEMPLATE_EDC=$BACKUP_DIR/wallpaper01.edc-tmp ## DO NOT DELETE THIS FILE
 
 ## filenames
-LABEL=$(date +"%m_%d_%Y")
+LABEL=$(date +"%F_%T")
 BACKGROUNDS_TAR="$LABEL-original_wallpapers"
 WALLPAPER_TAR="$LABEL-original_backgrounds"
 
@@ -67,13 +67,14 @@ tar -czvf $WALLPAPER_TAR.tar.gz *.* --exclude=README.txt --exclude=$BACKGROUNDS_
 find $WALLPAPER_DIR/ -maxdepth 1 -type f -name "*.jpg" -delete
 tar -czvf $BACKGROUNDS_TAR.tar.gz * --exclude=README.txt
 
-mv -v "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKGROUND_DIR/$WALLPAPER_TAR.tar.gz"
-mv -v "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKGROUND_DIR/$BACKGROUNDS_TAR.tar.gz"
+mv -v "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz"
+mv -v "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz"
 
 rm -rfv "$WALLPAPER_DIR"
 mkdir -vp "$WALLPAPER_DIR"
-mv -v "$BACKGROUND_DIR/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
-mv -v "$BACKGROUND_DIR/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
+cp -v "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
+cp -v "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
+cp -v "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
 
 echo "
 ============ Success ===============
@@ -81,22 +82,22 @@ echo "
 
 ${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
 
-${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $WALLPAPER_DIR${txtrst}
+${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
 
 ============= Exiting ==============
 ===================================="
 
-echo "$(date +"%F_%T")" >> $WALLPAPER_DIR/README.txt
+echo "$LABEL" >> $BACKUP_DIR/README.txt
 
 echo "
 ===========
 Created $COUNT_IMAGES e17 backgrounds.
 Installed the .edj files into $E17_FINISHED_DIR.
-Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz
-You can copy these files somewhere for safe keeping as these will be removed next run.
+Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR/
+You may remove these files manually now or leave them and they will be removed automatically on t he next run.
 
 -----------
-" >> $WALLPAPER_DIR/README.txt
+" >> $BACKUP_DIR/README.txt
 
 notify-send "Moo"
 
