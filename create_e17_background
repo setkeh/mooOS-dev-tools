@@ -48,12 +48,8 @@ if ask_something; then
 	## VARIABLES
 	WALLPAPER_DIR="$HOME/Pictures/wallpapers_go_here"
 	BACKUP_DIR="$HOME/Dev/mooOS_backups"
-
-	if [ "$CBG_ROOT" = "YES" ]; then
-		E17_ROOT_FINISHED_DIR="/usr/share/enlightenment/data/backgrounds"
-	else
-		E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
-	fi
+	E17_ROOT_FINISHED_DIR="/usr/share/enlightenment/data/backgrounds"
+	E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
 
 	TEMPLATE_EDC=$BACKUP_DIR/_do_not_remove/wallpaper01.edc-tmp ## DO NOT DELETE THIS FILE
 
@@ -122,6 +118,12 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 
 			    cd "$WALLPAPER_DIR/0$I"
 			    edje_cc $@ -id . -fd . "wallpaper0$I.edc-tmp" -o "$E17_FINISHED_DIR/mooOS_0$I.edj"
+
+				if [ "$CBG_ROOT" = "YES" ]; then
+					sudo cp "$E17_FINISHED_DIR/mooOS_0$I.edj" "$E17_ROOT_FINISHED_DIR/mooOS_0$I.edj"
+					sudo chmod 0644 "$E17_ROOT_FINISHED_DIR/mooOS_0$I.edj"
+				fi
+
 			    cd "$WALLPAPER_DIR"
 			    let "I++"
 		    done
