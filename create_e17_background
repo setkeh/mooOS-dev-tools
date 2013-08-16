@@ -23,26 +23,50 @@ ask_something() {
 	return $return
 }
 
+cbg_help() {
+	echo  "Usage: $(basename $0) [-{V|R|n|q|h}]" 1>&2
+	exit 0
+}
+
+
+CBG_ROOT=; CBG_BACKUP=YES; CBG_VERBOSE=" "
+while getopts "qhVnR" opt
+do
+	case $opt in
+		V) echo "$(basename $0): Version: 0.0.3 Date: 2013 Author: pdq URL: https://github.com/idk"
+		   exit 0;;
+		R) CBG_ROOT=YES;;
+		n) CBG_BACKUP=;;
+		q) CBG_VERBOSE=" -v ";;
+		h) cbg_help;;
+	esac
+done
+
 question="${bldyellow}You wish to create e17 backgrounds (.edj) from wallpapers (.jpg) (Y/N)?\nThis will ${txtrst}"
 if ask_something; then
 	
 	## VARIABLES
 	WALLPAPER_DIR="$HOME/Pictures/wallpapers_go_here"
 	BACKUP_DIR="$HOME/Dev/mooOS_backups"
-	E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
-	E17_ROOT_FINISHED_DIR="/usr/share/enlightenment/data/backgrounds"
+
+	if [ "$CBG_ROOT" = "YES" ]; then
+		E17_ROOT_FINISHED_DIR="/usr/share/enlightenment/data/backgrounds"
+	else
+		E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
+	fi
 
 	TEMPLATE_EDC=$BACKUP_DIR/_do_not_remove/wallpaper01.edc-tmp ## DO NOT DELETE THIS FILE
 
 	## filenames
 	LABEL=$(date +"%F_%T")
-	BACKGROUNDS_TAR="$LABEL-original_wallpapers"
-	WALLPAPER_TAR="$LABEL-original_backgrounds"
+	LABEL2=$(date +"%F")
+	BACKGROUNDS_TAR="$LABEL2-original_wallpapers"
+	WALLPAPER_TAR="$LABEL2-original_backgrounds"
 
-	if [ -d "$BACKUP_DIR" ]; then
-		mkdir -p "$BACKUP_DIR/_do_not_remove"
-		mkdir -p "$BACKUP_DIR/backgrounds"
-		mkdir -p "$BACKUP_DIR/wallpapers"
+	if [ ! -d "$BACKUP_DIR" ]; then
+		mkdir$CBG_VERBOSE-p "$BACKUP_DIR/_do_not_remove"
+		mkdir$CBG_VERBOSE-p "$BACKUP_DIR/backgrounds"
+		mkdir$CBG_VERBOSE-p "$BACKUP_DIR/wallpapers"
 		echo "images { image: \"wallpaper01.jpg\" LOSSY 90; }
 collections {
 group { name: \"e/desktop/background\";
@@ -57,12 +81,12 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 } } } } }" > $BACKUP_DIR/_do_not_remove/wallpaper01.edc-tmp
 	fi
 
-	if [ -d "$WALLPAPER_DIR" ]; then
-		mkdir -p "$WALLPAPER_DIR"
+	if [ ! -d "$WALLPAPER_DIR" ]; then
+		mkdir$CBG_VERBOSE-p "$WALLPAPER_DIR"
 	fi
 
-	if [ -d "$E17_FINISHED_DIR" ]; then
-		mkdir -p "$E17_FINISHED_DIR"
+	if [ ! -d "$E17_FINISHED_DIR" ]; then
+		mkdir$CBG_VERBOSE-p "$E17_FINISHED_DIR"
 	fi
 
 
@@ -77,7 +101,7 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 		    EXT="${f##*.}"
 		    EXT=${EXT,,}
 		    EXT=${EXT/jpeg/jpg}
-		    mkdir -vp "0$i"
+		    mkdir$CBG_VERBOSE-p "0$i"
 		    cp -- "$f" "$WALLPAPER_DIR/0$i/wallpaper0$i.${EXT}";
 		    ((i++));
 		done
@@ -89,9 +113,9 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 				let "MINUS= $I - 1"
 				OLD_FILE="wallpaper0$MINUS.edc-tmp"
 				if [ "0$I" = "01" ]; then
-			    	cp -v "$TEMPLATE_EDC" "$WALLPAPER_DIR/0$I/$NEW_FILE"
+			    	cp$CBG_VERBOSE "$TEMPLATE_EDC" "$WALLPAPER_DIR/0$I/$NEW_FILE"
 			    else
-			    	cp -v "$WALLPAPER_DIR/0$MINUS/$OLD_FILE" "$WALLPAPER_DIR/0$I/${NEW_FILE/#0$MINUS/0$I}"
+			    	cp$CBG_VERBOSE "$WALLPAPER_DIR/0$MINUS/$OLD_FILE" "$WALLPAPER_DIR/0$I/${NEW_FILE/#0$MINUS/0$I}"
 			    fi
 
 			    sed -i "s/wallpaper0$MINUS/wallpaper0$I/g" "$WALLPAPER_DIR/0$I/$NEW_FILE"
@@ -103,26 +127,36 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 		    done
 		done
 
-		tar -czvf $WALLPAPER_TAR.tar.gz *.* --exclude=README.txt --exclude=$BACKGROUNDS_TAR.tar.gz
+		if [ "$CBG_BACKUP" = "YES" ]; then
+			tar -czvf $WALLPAPER_TAR.tar.gz *.* --exclude=README.txt --exclude=$BACKGROUNDS_TAR.tar.gz
+		fi
+		
 		find $WALLPAPER_DIR/ -maxdepth 1 -type f -name "*.jpg" -delete
-		tar -czvf $BACKGROUNDS_TAR.tar.gz * --exclude=README.txt
+		
+		if [ "$CBG_BACKUP" = "YES" ]; then
+			tar -czvf $BACKGROUNDS_TAR.tar.gz * --exclude=README.txt
+			mv$CBG_VERBOSE "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz"
+			mv$CBG_VERBOSE "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz"
+		fi
 
-		mv -v "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz"
-		mv -v "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz"
-
-		rm -rfv "$WALLPAPER_DIR"
-		mkdir -vp "$WALLPAPER_DIR"
-		#cp -v "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
-		#cp -v "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
+		rm -rfv "$WALLPAPER_DIR"/*
+		#mkdir$CBG_VERBOSEp "$WALLPAPER_DIR"
+		if [ "$CBG_BACKUP" = "YES" ]; then
+			cp$CBG_VERBOSE "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
+			cp$CBG_VERBOSE "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
+			_LOG_ADDITION="Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR
+"
+			_STDOUT_ADDITION="${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
+"
+		fi
 
 		echo "
 ============ Success ===============
 ====================================
 
-${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
+${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR${txtrst}
 
-${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
-
+${_STDOUT_ADDITION}
 ============= Exiting ==============
 ===================================="
 
@@ -132,13 +166,13 @@ ${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyello
 ===========
 Created $COUNT_IMAGES e17 backgrounds.
 Installed the .edj files into $E17_FINISHED_DIR.
-Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR/
+${_LOG_ADDITION}
 You may remove these files manually now or leave them and they will be removed automatically on t he next run.
 
 -----------
 " >> $BACKUP_DIR/README.txt
 
-		cp -v "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
+		cp$CBG_VERBOSE "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
 
 		notify-send "Moo"
 	fi
