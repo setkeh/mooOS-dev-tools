@@ -141,10 +141,12 @@ if [ $(id -u) -eq 0 ]; then
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
 			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
 			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
 			cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
+			cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
 
 			# clean up files content
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
