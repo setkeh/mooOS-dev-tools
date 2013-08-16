@@ -11,9 +11,9 @@ cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
 if [ ! -d /home/moo ]; then
 	rsync -av /etc/skel/ /home/moo --exclude=.zshrc.root
-	chown moo:moo -R /home/moo
-	chmod -v -R g+r,o+r /home/moo
-	chgrp -R /home/moo
+	chown moo -R /home/moo
+	chmod -R g+r,o+r /home/moo
+	chgrp -R users /home/moo
 fi
 
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
