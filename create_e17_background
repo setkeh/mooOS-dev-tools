@@ -28,7 +28,7 @@ if ask_something; then
 	
 	## VARIABLES
 	WALLPAPER_DIR="$HOME/Pictures/wallpapers_go_here"
-	BACKUP_DIR="$HOME/Dev/mooOS_backups/"
+	BACKUP_DIR="$HOME/Dev/mooOS_backups"
 	E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
 	E17_ROOT_FINISHED_DIR="/usr/share/enlightenment/data/backgrounds"
 
@@ -70,7 +70,7 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 	let "COUNT_IMAGES=$(ls | wc -l) - 1" 
 	i=1;
 
-	if [ "$COUNT_IMAGES" -ge "1" ]p; then
+	if [ "$COUNT_IMAGES" -ge "1" ]; then
 		shopt -s nullglob;
 
 		for f in *.jpg *.gif *.png *.jpeg *.JPG *.JPEG *.GIF; do
@@ -114,36 +114,37 @@ image { normal: \"wallpaper01.jpg\";  scale_hint: STATIC; }
 		mkdir -vp "$WALLPAPER_DIR"
 		#cp -v "$BACKUP_DIR/backgrounds/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
 		#cp -v "$BACKUP_DIR/wallpapers/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
-		cp -v "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
 
 		echo "
-		============ Success ===============
-		====================================
+============ Success ===============
+====================================
 
-		${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
+${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
 
-		${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
+${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $BACKUP_DIR${txtrst}
 
-		============= Exiting ==============
-		===================================="
+============= Exiting ==============
+===================================="
 
 		echo "$LABEL" >> $BACKUP_DIR/README.txt
 
 		echo "
-		===========
-		Created $COUNT_IMAGES e17 backgrounds.
-		Installed the .edj files into $E17_FINISHED_DIR.
-		Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR/
-		You may remove these files manually now or leave them and they will be removed automatically on t he next run.
+===========
+Created $COUNT_IMAGES e17 backgrounds.
+Installed the .edj files into $E17_FINISHED_DIR.
+Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz and copied these to $BACKUP_DIR/
+You may remove these files manually now or leave them and they will be removed automatically on t he next run.
 
-		-----------
-		" >> $BACKUP_DIR/README.txt
+-----------
+" >> $BACKUP_DIR/README.txt
+
+		cp -v "$BACKUP_DIR/README.txt" "$WALLPAPER_DIR/README.txt"
 
 		notify-send "Moo"
 	fi
 else
 	echo "No images found in $WALLPAPER_DIR"
-	notify-send "No images found
+	notify-send "No images found"
 fi
 
 exit 0
