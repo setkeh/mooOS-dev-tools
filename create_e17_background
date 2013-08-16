@@ -1,0 +1,105 @@
+#!/usr/bin/sh
+## this file is part of mooOS
+## create edj backgrounds by pdq 2013
+
+## mkdir -p "$HOME/Pictures/wallpapers_go_here"
+WALLPAPER_DIR="$HOME/Pictures/wallpapers_go_here"
+## mkdir -p "$HOME/Pictures/e17_backgrounds"
+BACKGROUND_DIR="$HOME/Pictures/e17_backgrounds"
+
+#E17_FINISHED_DIR="$HOME/.e/e/backgrounds"
+E17_FINISHED_DIR="/home/pdq/info/e17backgrounds/mooOS-backgrounds/"
+
+## https://gist.github.com/idk/6248763
+TEMPLATE_EDC=$BACKGROUND_DIR/wallpaper01.edc-tmp ## DO NOT DELETE THIS FILE
+
+## filenames
+LABEL=$(date +"%m_%d_%Y")
+BACKGROUNDS_TAR="$LABEL-original_wallpapers"
+WALLPAPER_TAR="$LABEL-original_backgrounds"
+
+# Text color variables (there is no need change these)
+txtbld=$(tput bold)                # bold
+bldred=${txtbld}$(tput setaf 1)    # red
+#bldgreen=${txtbld}$(tput setaf 2)  # green
+bldyellow=${txtbld}$(tput setaf 3) # yellow
+bldblue=${txtbld}$(tput setaf 4)    # blue
+txtrst=$(tput sgr0)                # reset
+
+cd "$WALLPAPER_DIR"
+let "COUNT_IMAGES=$(ls | wc -l) - 1" 
+i=1;
+
+shopt -s nullglob;
+
+for f in *.jpg *.gif *.png *.jpeg *.JPG *.JPEG *.GIF; do
+    EXT="${f##*.}"
+    EXT=${EXT,,}
+    EXT=${EXT/jpeg/jpg}
+    mkdir -vp "0$i"
+    cp -- "$f" "$WALLPAPER_DIR/0$i/wallpaper0$i.${EXT}";
+    ((i++));
+done
+
+
+for I in $(eval echo {1..$COUNT_IMAGES})
+do
+	for NEW_FILE in wallpaper0$I.edc-tmp
+	do
+		let "MINUS= $I - 1"
+		OLD_FILE="wallpaper0$MINUS.edc-tmp"
+		if [ "0$I" = "01" ]; then
+	    	cp -v "$TEMPLATE_EDC" "$WALLPAPER_DIR/0$I/$NEW_FILE"
+	    else
+	    	cp -v "$WALLPAPER_DIR/0$MINUS/$OLD_FILE" "$WALLPAPER_DIR/0$I/${NEW_FILE/#0$MINUS/0$I}"
+	    fi
+
+	    sed -i "s/wallpaper0$MINUS/wallpaper0$I/g" "$WALLPAPER_DIR/0$I/$NEW_FILE"
+
+	    cd "$WALLPAPER_DIR/0$I"
+	    edje_cc $@ -id . -fd . "wallpaper0$I.edc-tmp" -o "$E17_FINISHED_DIR/mooOS_0$I.edj"
+	    cd "$WALLPAPER_DIR"
+	    let "I++"
+    done
+done
+
+tar -czvf $WALLPAPER_TAR.tar.gz *.* --exclude=README.txt --exclude=$BACKGROUNDS_TAR.tar.gz
+find $WALLPAPER_DIR/ -maxdepth 1 -type f -name "*.jpg" -delete
+tar -czvf $BACKGROUNDS_TAR.tar.gz * --exclude=README.txt
+
+mv -v "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz" "$BACKGROUND_DIR/$WALLPAPER_TAR.tar.gz"
+mv -v "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz" "$BACKGROUND_DIR/$BACKGROUNDS_TAR.tar.gz"
+
+rm -rfv "$WALLPAPER_DIR"
+mkdir -vp "$WALLPAPER_DIR"
+mv -v "$BACKGROUND_DIR/$BACKGROUNDS_TAR.tar.gz" "$WALLPAPER_DIR/$BACKGROUNDS_TAR.tar.gz"
+mv -v "$BACKGROUND_DIR/$WALLPAPER_TAR.tar.gz" "$WALLPAPER_DIR/$WALLPAPER_TAR.tar.gz"
+
+echo "
+============ Success ===============
+====================================
+
+${bldyellow}Installed${txtrst} ${bldblue}$COUNT_IMAGES e17 backgrounds${txtrst} ${bldyellow}into $E17_FINISHED_DIR.${txtrst}
+
+${bldyellow}Created${txtrst} ${bldblue}$WALLPAPER_TAR.tar.gz${txtrst} ${bldyellow}and${txtrst} ${bldblue}$BACKGROUNDS_TAR.tar.gz${txtrst} ${bldyellow}in $WALLPAPER_DIR${txtrst}
+
+============= Exiting ==============
+===================================="
+
+echo "$(date +"%F_%T")" >> $WALLPAPER_DIR/README.txt
+
+echo "
+===========
+Created $COUNT_IMAGES e17 backgrounds.
+Installed the .edj files into $E17_FINISHED_DIR.
+Created $WALLPAPER_TAR.tar.gz and $BACKGROUNDS_TAR.tar.gz
+You can copy these files somewhere for safe keeping as these will be removed next run.
+
+-----------
+" >> $WALLPAPER_DIR/README.txt
+
+notify-send "Moo"
+
+sleep 3s
+
+exit 0
