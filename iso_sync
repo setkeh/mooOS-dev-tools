@@ -183,13 +183,14 @@ if [ $(id -u) -eq 0 ]; then
 
 			# mooOS stuffs
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Desktop
-		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Dev
+		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Downloads
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Videos
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Dropbox
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Music
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Pictures
+		 	cp -vr ${MOO_HOME}Dev/mooOS_backups/* ${MOO_HOME}archlive/releng/root-image/etc/skel/mooOS_backups
 
 		 	# cleanup file permissions
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
