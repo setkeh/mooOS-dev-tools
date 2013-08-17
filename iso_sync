@@ -156,6 +156,7 @@ if [ $(id -u) -eq 0 ]; then
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/psd.conf 
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0 
 			
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
@@ -191,7 +192,6 @@ if [ $(id -u) -eq 0 ]; then
 			git clone git://github.com/idk/pdq.git
 			git clone git://github.com/idk/bin.git
 			git clone git://github.com/idk/awesomewm-X.git
-			git clone git://github.com/idk/conky-X.git
 			git clone git://github.com/idk/zsh.git
 			git clone git://github.com/idk/bin.git
 			git clone git://github.com/idk/php.git
