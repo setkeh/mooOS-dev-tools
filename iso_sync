@@ -47,6 +47,8 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v /etc/psd.conf ${MOO_HOME}archlive/releng/root-image/etc/psd.conf
 			cp -v ${MOO_HOME}info/images/nude.jpg ${MOO_HOME}archlive/releng/syslinux/splash.png
 
+			cp -v /usr/share/enlightenment/data/backgrounds/* ${MOO_HOME}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
+
 			# copy over ~/bin
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
 			cp -vr ${MOO_HOME}bin/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
@@ -70,6 +72,7 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.local/applications/defaults.list ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
 			cp -v ${MOO_HOME}.local/applications/tabbed.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
 			cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
+			cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
 
 			# copy over ~/.* (dotfiles)
 			cp -v ${MOO_HOME}.Xdefaults ${MOO_HOME}archlive/releng/root-image/etc/skel/.Xdefaults
