@@ -11,7 +11,8 @@ cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
 if [ ! -d /home/moo ]; then
 	rsync -av /etc/skel/ /home/moo --exclude=.zshrc.root
-	ln -s /home/moo/.local/applications/install_mooOS.desktop /home/moo/Desktop/install_mooOS.desktop
+	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
+	chmod +x /home/moo/install_mooOS.desktop
 	chown moo -R /home/moo
 	chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
