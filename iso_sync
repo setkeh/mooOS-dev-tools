@@ -158,15 +158,15 @@ if [ $(id -u) -eq 0 ]; then
 
  			## patch config files for username
  			cd ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard
- 			for NEW_FILE in e.*
+			for NEW_FILE in e.*
 			do
 				EWW_FILE=${NEW_FILE/.cfg/.src}
-				sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/e*.src
-				echo "eet -l $NEW_FILE"
-				#eet -l $NEW_FILE
-				echo "eet -d $NEW_FILE config $EWW_FILE"
-				rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/e.*.cfg
+
 				eet -d $NEW_FILE config $EWW_FILE
+				sed -i "s/pdq/moo/g" $EWW_FILE
+				rm $NEW_FILE
+				eet -e $NEW_FILE config $EWW_FILE 1
+				rm $EWW_FILE
 			done
 			cd $PWD
 
