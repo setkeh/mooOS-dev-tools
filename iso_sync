@@ -134,6 +134,71 @@ if [ $(id -u) -eq 0 ]; then
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
 			cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
 			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+			
+			# Check if imagemagick is installed. If not, install.
+			problem=$(pacman -Qs imagemagick|grep local)
+		    echo "Checking for imagemagick: $problem"
+		    if [ "" == "$problem" ]; then
+		        echo "Imagemagick not installed. Installing imagemagick"
+		        pacman -S imagemagick
+			fi
+
+			# The directory this script is running in
+			SUBL_ICON_DIR="/home/pdq/Dev/mooOS_backups/_do_not_remove/sublicon"
+
+			echo "Creating Sublime Text 3 icon set for Arch Linux"
+			# Convert icons and move into folders
+			TEMP_ICONS="$SUBL_ICON_DIR/TEMP/Icon"
+			mkdir -p -m755 $TEMP_ICONS
+
+			# Convert icons
+			for SIZE in 256 128 48 32 16
+			do
+			    mkdir "$TEMP_ICONS/${SIZE}x${SIZE}"
+			    convert -resize "${SIZE}X${SIZE}" "${SUBL_ICON_DIR}/st2_icon_512.png" "${TEMP_ICONS}/${SIZE}x${SIZE}/sublime_text.png"
+			done
+
+			echo "Updating Sublime Text 3 icons"
+
+			# Update theme icons
+			ICON_THEME_NAME="hicolor"
+			ICON_THEME_PATH="/usr/share/icons/"
+
+			# Replace theme icons in all default locations
+			for dir in /usr/share/icons/*/ ~/.icons/*/
+			do
+			    ICON_DIRECTORY=${dir%*/}
+			    # Replace all icon sizes
+			    for SIZE in 256 128 48 32 16
+			    do
+			        ICON_SIZE_DIRECTORY="${ICON_DIRECTORY}/${SIZE}x${SIZE}/apps/"
+			        if [ -d "$ICON_SIZE_DIRECTORY" ]; then
+			            cp -f "${TEMP_ICONS}/${SIZE}x${SIZE}/sublime_text.png" "${ICON_SIZE_DIRECTORY}/sublime-text.png"
+			        fi
+			    done
+			done
+
+			# Replace default Sublime Text 3 icons
+			SUBLIME_ICONS="/opt/sublime_text_3/Icon/"
+			# Remove existing icons
+			rm -rf $SUBLIME_ICONS
+
+			# Move new icons into place
+			cp -rp $TEMP_ICONS $SUBLIME_ICONS
+
+			# Remove temporary icon directory
+			rm -rf $TEMP_ICONS
+
+			echo "Rebuilding icon cache"
+
+			# Rebuild icon cache for all icons
+			sudo find /usr/share/icons -mindepth 1 -maxdepth 1 -type d | while read -r THEME; do
+			if [ -f "$THEME/index.theme" ]; then
+			    sudo gtk-update-icon-cache -f -q "$THEME"
+			fi
+			done
+
+			echo "Icon cache rebuilt successfully"
 
 			# copy vlc files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc
@@ -176,8 +241,8 @@ if [ $(id -u) -eq 0 ]; then
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.moc/config
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/psd.conf 
-			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0 
-			
+			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0		
+
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 

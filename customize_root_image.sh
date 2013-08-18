@@ -9,10 +9,18 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
+# fix missing icons in .desktop files
+sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
+sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/nepomukbackup.desktop
+sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/nepomukcleaner.desktop
+sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/nepomukcontroller.desktop
+
 if [ ! -d /home/moo ]; then
 	rsync -av /etc/skel/ /home/moo --exclude=.zshrc.root
 	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
 	chmod +x /home/moo/install_mooOS.desktop
+	rm /home/moo/.config/Trolltech.conf
+	su -l moo -c 'kbuildsycoca4 --noincremental'
 	chown moo -R /home/moo
 	chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
