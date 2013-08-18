@@ -135,6 +135,9 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
 			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
 			
+			## Sublime Text 2 replacement icon preview
+			## https://github.com/dmatarazzo/Sublime-Text-2-Icon
+			## Adapted by Daniel Matarazzo from http://dribbble.com/shots/317512-Sublime-Text-2-Icon by Lindsay Mindler http://lindsayburtner.com
 			# Check if imagemagick is installed. If not, install.
 			problem=$(pacman -Qs imagemagick|grep local)
 			echo "Checking for imagemagick: $problem"
