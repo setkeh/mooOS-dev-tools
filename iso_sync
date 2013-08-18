@@ -137,10 +137,10 @@ if [ $(id -u) -eq 0 ]; then
 			
 			# Check if imagemagick is installed. If not, install.
 			problem=$(pacman -Qs imagemagick|grep local)
-		    echo "Checking for imagemagick: $problem"
-		    if [ "" == "$problem" ]; then
-		        echo "Imagemagick not installed. Installing imagemagick"
-		        pacman -S imagemagick
+			echo "Checking for imagemagick: $problem"
+			if [ "" == "$problem" ]; then
+				echo "Imagemagick not installed. Installing imagemagick"
+				pacman -S imagemagick
 			fi
 
 			# The directory this script is running in
