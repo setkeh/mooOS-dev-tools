@@ -135,73 +135,26 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
 			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
 			
-			## Sublime Text 2 replacement icon preview
 			## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-			## Adapted by Daniel Matarazzo from http://dribbble.com/shots/317512-Sublime-Text-2-Icon by Lindsay Mindler http://lindsayburtner.com
-			# Check if imagemagick is installed. If not, install.
-			problem=$(pacman -Qs imagemagick|grep local)
-			echo "Checking for imagemagick: $problem"
-			if [ "" == "$problem" ]; then
-				echo "Imagemagick not installed. Installing imagemagick"
-				pacman -S imagemagick
-			fi
-
-			# The directory this script is running in
-			SUBL_ICON_DIR="/home/pdq/Dev/mooOS_backups/_do_not_remove/sublicon"
-
-			echo "Creating Sublime Text 3 icon set for mooOS"
-			# Convert icons and move into folders
-			TEMP_ICONS="$SUBL_ICON_DIR/TEMP/Icon"
-			mkdir -p -m755 $TEMP_ICONS
-
-			# Convert icons
-			for SIZE in 256 128 48 32 16
-			do
-			    mkdir "$TEMP_ICONS/${SIZE}x${SIZE}"
-			    convert -resize "${SIZE}X${SIZE}" "${SUBL_ICON_DIR}/st2_icon_512.png" "${TEMP_ICONS}/${SIZE}x${SIZE}/sublime_text.png"
-			done
-
 			echo "Updating Sublime Text 3 icons"
-
-			# Update theme icons
-			ICON_THEME_NAME="hicolor"
-			ICON_THEME_PATH="/usr/share/icons/"
-
-			# Replace theme icons in all default locations
-			for dir in /usr/share/icons/*/ ~/.icons/*/
-			do
-			    ICON_DIRECTORY=${dir%*/}
-			    # Replace all icon sizes
-			    for SIZE in 256 128 48 32 16
-			    do
-			        ICON_SIZE_DIRECTORY="${ICON_DIRECTORY}/${SIZE}x${SIZE}/apps/"
-			        if [ -d "$ICON_SIZE_DIRECTORY" ]; then
-			            cp -f "${TEMP_ICONS}/${SIZE}x${SIZE}/sublime_text.png" "${ICON_SIZE_DIRECTORY}/sublime-text.png"
-			        fi
-			    done
-			done
-
-			# Replace default Sublime Text 3 icons
-			SUBLIME_ICONS="/opt/sublime_text_3/Icon/"
-			# Remove existing icons
-			rm -rf $SUBLIME_ICONS
-
-			# Move new icons into place
-			cp -rp $TEMP_ICONS $SUBLIME_ICONS
-
-			# Remove temporary icon directory
-			rm -rf $TEMP_ICONS
-
-			echo "Rebuilding icon cache"
-
-			# Rebuild icon cache for all icons
-			sudo find /usr/share/icons -mindepth 1 -maxdepth 1 -type d | while read -r THEME; do
-			if [ -f "$THEME/index.theme" ]; then
-			    sudo gtk-update-icon-cache -f -q "$THEME"
-			fi
-			done
-
-			echo "Icon cache rebuilt successfully"
+			cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+			cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+			cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+			cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+			cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/sublime-text.png
+			cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/sublime-text.png
+			cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/sublime-text.png
+			cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/sublime-text.png
+			cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+			cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+			cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+			cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+			cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+			cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+			cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+			cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+			cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+			cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
 			# copy vlc files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc

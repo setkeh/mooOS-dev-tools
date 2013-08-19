@@ -23,8 +23,8 @@ if [ ! -d /home/moo ]; then
 	#chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
 	chown moo -R /home/moo
-	chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
-	chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
+	#chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
+	#chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
 fi
 
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
