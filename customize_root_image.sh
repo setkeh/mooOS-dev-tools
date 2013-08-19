@@ -20,9 +20,11 @@ if [ ! -d /home/moo ]; then
 	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
 	chmod +x /home/moo/install_mooOS.desktop
 	#su -l moo -c 'kbuildsycoca4 --noincremental'
-	chown moo -R /home/moo
-	chmod -R g+r,o+r /home/moo
+	#chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
+	chown moo -R /home/moo
+	chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
+	chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
 fi
 
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
