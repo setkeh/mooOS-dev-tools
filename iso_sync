@@ -202,6 +202,8 @@ if [ $(id -u) -eq 0 ]; then
 			# copy over hosts file (needed for LAN repos) TODO
 			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
+			rm -rf ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
+
 			# mooOS stuffs
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Desktop
 		 	mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
@@ -230,6 +232,7 @@ if [ $(id -u) -eq 0 ]; then
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/usr/share
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/tmp/moo-firefox-qrtww0pl.Default-User
 			chmod 777 -R ${MOO_HOME}archlive/releng/root-image/tmp/moo-firefox-qrtww0pl.Default-User
+			
 			# create ~/Github and all repos
 	 		cd ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
 			git clone git://github.com/idk/pdq.git
