@@ -22,7 +22,7 @@ txtrst=$(tput sgr0)                # reset
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="mooOS_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-alpha-0.9" ## 0.7
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.91" ## 0.91
 
 # Functions
 ask_something() {
@@ -82,7 +82,8 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.gtkrc-2.0 ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 			cp -v ${MOO_HOME}.nanorc ${MOO_HOME}archlive/releng/root-image/etc/skel/.nanorc
 			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
-			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc
+			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
+			cp -v ${MOO_HOME}.wgetrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.wgetrc
 
 			# copy over ~/.themes
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
@@ -230,8 +231,8 @@ if [ $(id -u) -eq 0 ]; then
 		 	# cleanup file permissions
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/usr/share
-			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/tmp/moo-firefox-qrtww0pl.Default-User
-			chmod 777 -R ${MOO_HOME}archlive/releng/root-image/tmp/moo-firefox-qrtww0pl.Default-User
+			#chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/tmp/moo-firefox-qrtww0pl.Default-User
+			#chmod 777 -R ${MOO_HOME}archlive/releng/root-image/tmp/moo-firefox-qrtww0pl.Default-User
 			
 			# create ~/Github and all repos
 	 		cd ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
@@ -259,7 +260,7 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
 
 			install -Dm644 "${MOO_HOME}archlive/releng/root-image/etc/skel/Github/mooOS-dev-tools/man.1" "${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1"
-			gzip ${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/$pkgname.1
+			gzip ${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1
 
 			# cleanup file permissions / why not
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
