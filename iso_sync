@@ -260,7 +260,7 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
 
 			install -Dm644 "${MOO_HOME}archlive/releng/root-image/etc/skel/Github/mooOS-dev-tools/man.1" "${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1"
-			gzip ${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1
+			gzip -f ${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1
 
 			# cleanup file permissions / why not
 			chmod -v -R g+r,o+r ${MOO_HOME}archlive/releng/root-image/etc/skel
