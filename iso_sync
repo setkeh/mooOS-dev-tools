@@ -22,7 +22,7 @@ txtrst=$(tput sgr0)                # reset
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="mooOS_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-0.91" ## 0.91
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.92" ## 0.92
 
 # Functions
 ask_something() {
