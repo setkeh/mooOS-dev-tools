@@ -257,7 +257,7 @@ if [ $(id -u) -eq 0 ]; then
 
 			# preserve wallpapers
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
-			cp -vr usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
+			cp -vr /usr/share/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
 
 			install -Dm644 "${MOO_HOME}archlive/releng/root-image/etc/skel/Github/mooOS-dev-tools/man.1" "${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1"
 			gzip -f ${MOO_HOME}archlive/releng/root-image/usr/local/man/man1/mooOS.1
