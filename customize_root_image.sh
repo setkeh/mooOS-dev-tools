@@ -16,17 +16,20 @@ sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
 
 if [ ! -d /home/moo ]; then
-	rsync -av /etc/skel/ /home/moo --exclude=.zshrc.root
+	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
 	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
 	chmod +x /home/moo/install_mooOS.desktop
 	#su -l moo -c 'kbuildsycoca4 --noincremental'
 	#chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
-	chown moo -R /home/moo
+	chown moo:users -R /home/moo
 	#chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
 	#chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
 fi
 
+rm -f /usr/share/enlightenment/data/themes/Post_It_White.edj
+rm -f /usr/share/enlightenment/data/themes/Simply_White_etk.edj
+rm -f /usr/share/enlightenment/data/themes/New_Millenium.edj
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
 
 su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
