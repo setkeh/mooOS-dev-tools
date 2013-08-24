@@ -50,6 +50,24 @@ if [ $(id -u) -eq 0 ]; then
 
 			cp -v /usr/share/enlightenment/data/backgrounds/* ${MOO_HOME}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
 
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/tor
+            cp -v /etc/torrc ${MOO_HOME}archlive/releng/root-image/etc/tor/torrc
+
+            mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/privoxy
+            sh -c "echo 'forward-socks5 / localhost:9050 .' >> ${MOO_HOME}archlive/releng/root-image/etc/privoxy/config"
+
+            mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/dansguardian
+            cp -v /etc/dansguardian/dansguardian.conf ${MOO_HOME}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
+
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/squid
+            cp -v /etc/squid/squid.conf ${MOO_HOME}archlive/releng/root-image/etc/squid/squid.conf
+
+            #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+            #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+            #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+            #mv -v /etc/php/php.ini /etc/php/php.ini.bak
+            #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+
 			# copy over ~/bin
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
 			cp -vr ${MOO_HOME}bin/* ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
@@ -157,6 +175,26 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
 			cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
+			## mooOS icon
+			cp -v ${MOO_HOME}info/images/mooOS-16.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-256.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-32.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-48.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-16.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-256.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-32.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-48.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-128.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-16.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-256.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-32.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-48.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-128.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-16.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-256.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-32.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
+			cp -v ${MOO_HOME}info/images/mooOS-48.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
+
 			# copy vlc files
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc
 			cp -v ${MOO_HOME}info/vlc-qt-interface.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
@@ -173,10 +211,10 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
 			cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
 			#cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
- 			rm ${MOO_HOME}/home/pdq/archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
- 			rm ${MOO_HOME}/home/pdq/archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
- 			rm ${MOO_HOME}/home/pdq/archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
- 			rm ${MOO_HOME}/home/pdq/archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
+ 			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
+ 			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
+ 			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
+ 			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
 
  			## patch config files for username
  			cd ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard
