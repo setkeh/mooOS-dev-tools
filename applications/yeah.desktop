@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Yeahconsole Drop Down
+Comment=Deskop file for F12 - yeahconsole - mooOS
+Exec=yeahconsole
+Icon=terminal
+Terminal=false
+Type=Application
+Categories=Other;Terminals
