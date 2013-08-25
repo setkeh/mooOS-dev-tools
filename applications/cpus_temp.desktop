@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=CPUS Temp
+Comment=Deskop file for CPUS Temp - mooOS
+Exec=urxvtc -name "CPUS" -e ~/bin/cpus_temp
+Icon=indicator-applet
+Terminal=false
+Type=Application
+Categories=Other;Terminals

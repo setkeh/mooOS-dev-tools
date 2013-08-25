@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Weechat
+Comment=Deskop file for weechat-curses - mooOS
+Exec=urxvtc -name "IRC1" -e weechat-curses
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=Other;Terminals

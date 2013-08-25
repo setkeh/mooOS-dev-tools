@@ -4,7 +4,7 @@ sleep 5s
 set -e -u
 
 sed -i 's/#\(en_US\.UTF-8\)/\1/' /etc/locale.gen
-
+locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 usermod -s /usr/bin/zsh root
@@ -12,9 +12,13 @@ cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
 # fix missing icons in .desktop files
 sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
-sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
-sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
+#sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
+#sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
+
+rm /usr/share/applications/kde4/nepomukcleaner.desktop
+rm /usr/share/applications/kde4/nepomukcontroller.desktop
+rm /usr/share/applications/enlightenment_filemanager.desktop
 
 if [ ! -d /home/moo ]; then
 	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Youtube Viewer
+Comment=Deskop file for youtube-viewer - mooOS
+Exec=urxvtc -name "youtube" -e youtube-viewer --prefer-https --prefer-webm --use-colors --quiet -7 -S -C --mplayer="/usr/bin/vlc" --mplayer-args="-q"
+Icon=vlc
+Terminal=false
+Type=Application
+Categories=Other;Terminals

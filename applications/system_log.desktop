@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=System Log
+Comment=Deskop file for journalctl log - mooOS
+Exec=urxvtc -name "Logs" -e sudo journalctl -f
+Icon=logviewer
+Terminal=false
+Type=Application
+Categories=Other;Terminals

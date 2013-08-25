@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=TTY Clock
+Comment=Deskop file for TTY Clock - mooOS
+Exec=urxvtc -name "Clock" -e tty-clock -tc
+Icon=config-date
+Terminal=false
+Type=Application
+Categories=Other;Terminals
