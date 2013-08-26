@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=vimb web browser proxy
+Comment=Deskop file for vimb web browser with proxy - mooOS
+Exec=vbp %u
+Icon=ufw-frontends
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;

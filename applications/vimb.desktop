@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=vimb web browser
+Comment=Deskop file for vimb web browser - mooOS
+Exec=vb %u
+Icon=web-browser
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
