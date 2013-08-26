@@ -1,10 +1,6 @@
 enlightenment17 window manager
 ==============================
 
-KP_Delete                  Previous Window
-KP_Insert                  Next Window
-KP_Substract               Command: /usr/bin/subl3
--------------------------------------------------
 Alt + F1                   Switch to Desktop 0
 Alt + F2                   Switch to Desktop 1
 Alt + F3                   Switch to Desktop 2
@@ -34,15 +30,15 @@ Win + P                    Show Everything Launcher
 Win + S                    Sticky Mode Toggle
 Win + X                    Kill
 -------------------------------------------------
-Win + K                    Maximize
-Win + J                    Lower
-Win + H                    Maximize Left
-Win + L                    Maximize Right
--------------------------------------------------
 Win + Up                   Maximize
 Win + Down                 Lower
 Win + Left                 Maximize Left
 Win + Right                Maximize Right
+-------------------------------------------------
+Win + K                    Maximize
+Win + J                    Lower
+Win + H                    Maximize Left
+Win + L                    Maximize Right
 -------------------------------------------------
 Win + Grave                Close
 Win + Backspace            Close
@@ -53,19 +49,34 @@ Win + KP_Down              Command: /usr/bin/firefox
 Ctrl + Shift + Left        Send Mouse Back 1 Screen
 Ctrl + Shift + Right       Send Mouse Forward 1 Screen
 -------------------------------------------------
+Ctrl + Shift + H           Send Mouse Back 1 Screen
+Ctrl + Shift + L           Send Mouse Forward 1 Screen
+-------------------------------------------------
 Alt + Shift + Left         Flip Desktop Left
 Alt + Shift + Right        Flip Desktop Right
 -------------------------------------------------
 Alt + Shift + H            Flip Desktop Left
 Alt + Shift + L            Flip Desktop Right
 -------------------------------------------------
-Ctrl + Alt + D             Show The Desktop
-Ctrl + Alt + End           Restart Enlightenment
 Ctrl + Alt + Up            Window Up
 Ctrl + Alt + Down          Window Down
 Ctrl + Alt + Left          Window on the Left
 Ctrl + Alt + Right         Window on the Right
 Ctrl + Alt + Shift + Left  To Previous Desktop
 Ctrl + Alt + Shift + Right To Next Desktop
+-------------------------------------------------
+Ctrl + Alt + K             Window Up
+Ctrl + Alt + J             Window Down
+Ctrl + Alt + H             Window on the Left
+Ctrl + Alt + L             Window on the Right
+Ctrl + Alt + Shift + H     To Previous Desktop
+Ctrl + Alt + Shift + L     To Next Desktop
+-------------------------------------------------
+Ctrl + Alt + D             Show The Desktop
+Ctrl + Alt + End           Restart Enlightenment
+-------------------------------------------------
+KP_Delete                  Previous Window
+KP_Insert                  Next Window
+KP_Substract               Command: /usr/bin/subl3
 -------------------------------------------------
 Shift + Win + L            Lock
