@@ -15,10 +15,19 @@ sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadown
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
+sed -i "s/Exec=/Exec=kdesudo /g" /usr/share/applications/gparted.desktop
 
-rm /usr/share/applications/kde4/nepomukcleaner.desktop
-rm /usr/share/applications/kde4/nepomukcontroller.desktop
-rm /usr/share/applications/enlightenment_filemanager.desktop
+if [ -f /usr/share/applications/kde4/nepomukcleaner.desktop ]; then
+	rm /usr/share/applications/kde4/nepomukcleaner.desktop
+fi
+
+if [ -f /usr/share/applications/kde4/nepomukcontroller.desktop ]; then
+	rm /usr/share/applications/kde4/nepomukcontroller.desktop
+fi
+
+if [ -f /usr/share/applications/enlightenment_filemanager.desktop ]; then
+	rm /usr/share/applications/enlightenment_filemanager.desktop
+fi
 
 if [ ! -d /home/moo ]; then
 	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
@@ -32,9 +41,18 @@ if [ ! -d /home/moo ]; then
 	#chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
 fi
 
-rm -f /usr/share/enlightenment/data/themes/Post_It_White.edj
-rm -f /usr/share/enlightenment/data/themes/Simply_White_etk.edj
-rm -f /usr/share/enlightenment/data/themes/New_Millenium.edj
+if [ -f /usr/share/enlightenment/data/themes/Post_It_White.edj ]; then
+	rm -f /usr/share/enlightenment/data/themes/Post_It_White.edj
+fi
+
+if [ -f /usr/share/enlightenment/data/themes/Simply_White_etk.edj ]; then
+	rm -f /usr/share/enlightenment/data/themes/Simply_White_etk.edj
+fi
+
+if [ -f /usr/share/enlightenment/data/themes/New_Millenium.edj ]; then
+	rm -f /usr/share/enlightenment/data/themes/New_Millenium.edj
+fi
+
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
 
 su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
