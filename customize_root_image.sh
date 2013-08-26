@@ -21,6 +21,14 @@ if [ -f /usr/share/applications/kde4/nepomukcleaner.desktop ]; then
 	rm /usr/share/applications/kde4/nepomukcleaner.desktop
 fi
 
+if [ -f /usr/share/applications/kde4/nepomukbackup.desktop ]; then
+	rm /usr/share/applications/kde4/nepomukbackup.desktop
+fi
+
+if [ -f /usr/share/applications/feh.desktop ]; then
+	rm /usr/share/applications/feh.desktop
+fi
+
 if [ -f /usr/share/applications/kde4/nepomukcontroller.desktop ]; then
 	rm /usr/share/applications/kde4/nepomukcontroller.desktop
 fi
@@ -29,16 +37,16 @@ if [ -f /usr/share/applications/enlightenment_filemanager.desktop ]; then
 	rm /usr/share/applications/enlightenment_filemanager.desktop
 fi
 
-if [ ! -d /home/moo ]; then
-	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
-	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
-	chmod +x /home/moo/install_mooOS.desktop
-	#su -l moo -c 'kbuildsycoca4 --noincremental'
-	#chmod -R g+r,o+r /home/moo
-	chgrp -R users /home/moo
-	chown moo:users -R /home/moo
-	#chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
-	#chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
+if [ -f /usr/share/applications/avahi-discover.desktop ]; then
+	rm /usr/share/applications/avahi-discover.desktop
+fi
+
+if [ -f /usr/share/applications/bssh.desktop ]; then
+	rm /usr/share/applications/bssh.desktop
+fi
+
+if [ -f /usr/share/applications/bvnc.desktop ]; then
+	rm /usr/share/applications/bvnc.desktop
 fi
 
 if [ -f /usr/share/enlightenment/data/themes/Post_It_White.edj ]; then
@@ -51,6 +59,22 @@ fi
 
 if [ -f /usr/share/enlightenment/data/themes/New_Millenium.edj ]; then
 	rm -f /usr/share/enlightenment/data/themes/New_Millenium.edj
+fi
+
+if [ -f /usr/share/enlightenment/data/themes/qv4l2.desktop ]; then
+	rm -f /usr/share/enlightenment/data/themes/qv4l2.desktop
+fi
+
+if [ ! -d /home/moo ]; then
+	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
+	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
+	chmod +x /home/moo/install_mooOS.desktop
+	#su -l moo -c 'kbuildsycoca4 --noincremental'
+	#chmod -R g+r,o+r /home/moo
+	chgrp -R users /home/moo
+	chown moo:users -R /home/moo
+	#chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
+	#chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
 fi
 
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service

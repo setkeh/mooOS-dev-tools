@@ -22,7 +22,7 @@ txtrst=$(tput sgr0)                # reset
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="mooOS_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-0.93" ## 0.92
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.94" ## 0.94
 
 # Functions
 ask_something() {
@@ -99,6 +99,7 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.local/applications/tabbed.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
 			cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
 			cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
+			cp -v ${MOO_HOME}.local/applications/man_mooOS.desktop ${MOO_HOME}archlive/releng/root-image/etc/skel/.local/applications/man_mooOS.desktop
 
 			# copy over ~/.* (dotfiles)
 			cp -v ${MOO_HOME}.Xdefaults ${MOO_HOME}archlive/releng/root-image/etc/skel/.Xdefaults
