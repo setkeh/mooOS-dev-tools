@@ -6,4 +6,4 @@ Exec=urxvtc -name "CPUS" -e ~/bin/cpus_temp
 Icon=indicator-applet
 Terminal=false
 Type=Application
-Categories=Other;Terminals
+Categories=Utility;Application;

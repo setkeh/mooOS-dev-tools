@@ -6,4 +6,4 @@ Exec=urxvtc -name "GPU" -e nvidia-smi -l 5 -q -d "MEMORY,TEMPERATURE"
 Icon=nvidia-settings
 Terminal=false
 Type=Application
-Categories=Other;Terminals
+Categories=Utility;Application;

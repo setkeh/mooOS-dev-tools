@@ -6,4 +6,4 @@ Exec=urxvtc -name "Radio" -e pyradio
 Icon=radio
 Terminal=false
 Type=Application
-Categories=Other;Terminals
+Categories=AudioVideo;Player;Recorder;

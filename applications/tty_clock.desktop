@@ -6,4 +6,4 @@ Exec=urxvtc -name "Clock" -e tty-clock -tc
 Icon=config-date
 Terminal=false
 Type=Application
-Categories=Other;Terminals
+Categories=Utility;Application;

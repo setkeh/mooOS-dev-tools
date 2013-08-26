@@ -6,4 +6,4 @@ Exec=urxvtc -name "RSS" -e canto-curses
 Icon=liferea
 Terminal=false
 Type=Application
-Categories=Other;Terminals
+Categories=Network;

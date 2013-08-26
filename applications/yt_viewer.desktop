@@ -6,4 +6,4 @@ Exec=urxvtc -name "youtube" -e youtube-viewer --prefer-https --prefer-webm --use
 Icon=vlc
 Terminal=false
 Type=Application
-Categories=Other;Terminals
+Categories=AudioVideo;Player;Recorder;
