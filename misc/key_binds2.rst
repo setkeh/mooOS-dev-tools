@@ -9,11 +9,11 @@ Normal Mode
 +===========================================+============+
 | Start Command Mode and print              | :          |
 +-------------------------------------------+------------+
-| Start searching forward                   | /          |
+| Start searching forward                   | `/`        |
 +-------------------------------------------+------------+
 | Start searching backward                  | ?          |
 +-------------------------------------------+------------+
-| Search forward for current selected text  | *          |
+| Search forward for current selected text  | `*`        |
 +-------------------------------------------+------------+
 | Search backward for current selected text | #          |
 +-------------------------------------------+------------+
