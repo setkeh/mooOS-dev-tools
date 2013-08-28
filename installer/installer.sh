@@ -3,7 +3,7 @@
 ## 08-27-2013 pdq
 
 ## Instructions
-## from mooValtamlivecd/liveusb
+## from mooOS livecd/liveusb
 
 ### Code be `ere yarrr! ###
 
