@@ -57,7 +57,7 @@ if [ $(id -u) -eq 0 ]; then
             cp -v /etc/torrc ${MOO_HOME}archlive/releng/root-image/etc/tor/torrc
 
             mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/privoxy
-            sh -c "echo 'forward-socks5 / localhost:9050 .' >> ${MOO_HOME}archlive/releng/root-image/etc/privoxy/config"
+            sh -c "echo 'forward-socks5 / localhost:9050 .' > ${MOO_HOME}archlive/releng/root-image/etc/privoxy/config"
 
             mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/dansguardian
             cp -v /etc/dansguardian/dansguardian.conf ${MOO_HOME}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
