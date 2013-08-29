@@ -519,9 +519,11 @@ initial_install() {
 
 
     if [ "$archtype" = "x86_64" ]; then
+        pacman_conf="pacman-x86_64.conf"
         mainpkgs="packages.x86_64"
     else
         mainpkgs="packages.i686"
+        pacman_conf="pacman-i686.conf"
     fi
 
     basepkgs="packages.both"
@@ -552,8 +554,9 @@ chroot_configuration() {
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
     cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
-    cp -v /etc/pacman.conf /mnt/etc/pacman.conf
+    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
     cp -vr /etc/skel /mnt/etc/
+    cp -v /etc/arch-release /mnt/etc/arch-release
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 }
 

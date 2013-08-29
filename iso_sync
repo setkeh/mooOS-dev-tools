@@ -335,6 +335,12 @@ if [ $(id -u) -eq 0 ]; then
 			# create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
 			mkdir -v "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
+
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-x86_64.conf
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-i686.conf
+			cp -v ${MOO_HOME}archlive/releng/syslinux/splash.png ${MOO_HOME}archlive/releng/root-image/etc/grub.d/splash.png
+
+			cp -v /etc/arch-release ${MOO_HOME}archlive/releng/root-image/etc/arch-release
 		fi
 
 		echo "${bldred}Building iso now...${txtrst}"
