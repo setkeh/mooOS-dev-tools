@@ -530,9 +530,9 @@ initial_install() {
 
    # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
 
-    pacstrap -i --needed /mnt base base-devel sudo git rsync wget zsh$ppkgs
-    pacstrap -i --needed /mnt $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs)
-    pacstrap -i --needed /mnt $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
+    pacstrap -i /mnt base base-devel sudo git rsync wget zsh$ppkgs
+    pacstrap -i /mnt $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs)
+    pacstrap -i /mnt $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
     dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Installed base base-devel sudo git rsync wget zsh$ppkgs to /mnt.\n\n Hit enter to return to menu" 30 50
 }
