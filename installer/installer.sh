@@ -534,12 +534,12 @@ initial_install() {
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
-    cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
+    cp -vr /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
     cp -v /etc/$pacman_conf /etc/pacman.conf
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
 
-    pacstrap -i /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
+    pacstrap  /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
     dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Installed base base-devel sudo git rsync wget dialog zsh$ppkgs to /mnt.\n\n Hit enter to return to menu" 30 50
 }
@@ -560,7 +560,7 @@ chroot_configuration() {
     cp /etc/resolv.conf /mnt/etc/resolv.conf
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/arch-release /mnt/etc/arch-release
-    export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
+    export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 }
 
 generate_fstab() {
