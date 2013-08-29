@@ -36,7 +36,7 @@ setterm -blank 0
 
 ## root script
 if [ $(id -u) -ne 0 ]; then
-    su root
+    echo "run this as root"
 fi
 ## styling
 clr=""
@@ -248,6 +248,7 @@ make_filesystems() {
             typefs=" as $fs_type"
         fi
         mount $pbout /mnt/boot
+        ##mount $pbout /mnt/etc
 
         dialog --clear --backtitle "$upper_title" --title "BOOT PARTITION MOUNTED" --msgbox "Your $pbout partition has been mounted at /mnt/boot$typefs" 10 70
     fi
@@ -384,7 +385,7 @@ cleanup() {
     PWD=$(pwd)
 
     ##  copy root files
-    # cp -v /etc/pacman.conf /mnt/etc/pacman.conf
+    # cp -v /etc/pacman.conf /mnt/etc/pacman.conf#
 
     # sed -i "s/#Server/Server/g" /mnt/etc/pacman.conf
     # sed -i "s/[mooOS-pkgs/#[mooOS-pkgs/g" /mnt/etc/pacman.conf
@@ -516,7 +517,20 @@ initial_install() {
     dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial base system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default:\nbase base-devel sudo git rsync wget zsh\nleave input blank and continue." 40 70 2> $TMP/ppkgs
     ppkgs=" $(cat $TMP/ppkgs)"
 
-    pacstrap -i /mnt base base-devel sudo git rsync wget zsh$ppkgs
+
+    if [ "$archtype" = "x86_64" ]; then
+        mainpkgs="packages.x86_64"
+    else
+        mainpkgs="packages.i686"
+    fi
+
+    basepkgs="packages.both"
+
+    #pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
+
+   # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
+
+    pacstrap -i --needed /mnt base base-devel sudo git rsync wget zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
     dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Installed base base-devel sudo git rsync wget zsh$ppkgs to /mnt.\n\n Hit enter to return to menu" 30 50
 }
@@ -534,7 +548,7 @@ chroot_configuration() {
     chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
 
     cp /etc/resolv.conf /mnt/etc/resolv.conf
-    mv -v /etc/pacman.conf /mnt/etc/pacman.conf.bak
+    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
     cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
     cp -v /etc/pacman.conf /mnt/etc/pacman.conf
