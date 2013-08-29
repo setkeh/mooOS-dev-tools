@@ -1103,8 +1103,8 @@ if [ $(id -u) -eq 0 ]; then
     }
 
     # utility execution
-    #while true
-    #do
+    while true
+    do
         chroot_menu
-    #done
+    done
 fi
