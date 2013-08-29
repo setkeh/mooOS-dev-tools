@@ -11,7 +11,7 @@ out_dir=out
 
 arch=$(uname -m)
 verbose=""
-pacman_conf=${work_dir}/pacman.conf
+pacman_conf=${work_dir}/pacman
 script_path=$(readlink -f ${0%/*})
 
 _usage ()
@@ -53,13 +53,13 @@ make_pacman_conf() {
 
 # Base installation, plus needed packages (root-image)
 make_basefs() {
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}" -D "${install_dir}" init
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}" -D "${install_dir}" -p "memtest86+ mkinitcpio-nfs-utils nbd" install
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" init
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -p "memtest86+ mkinitcpio-nfs-utils nbd" install
 }
 
 # Additional packages (root-image)
 make_packages() {
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}" -D "${install_dir}" -p "$(grep -h -v ^# ${script_path}/packages.{both,${arch}})" install
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -p "$(grep -h -v ^# ${script_path}/packages.{both,${arch}})" install
 }
 
 # Copy mkinitcpio archiso hooks and build initramfs (root-image)
@@ -72,7 +72,7 @@ make_setup_mkinitcpio() {
     cp /usr/lib/initcpio/install/archiso_kms ${work_dir}/${arch}/root-image/usr/lib/initcpio/install
     cp /usr/lib/initcpio/archiso_shutdown ${work_dir}/${arch}/root-image/usr/lib/initcpio
     cp ${script_path}/mkinitcpio.conf ${work_dir}/${arch}/root-image/etc/mkinitcpio-archiso.conf
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}" -D "${install_dir}" -r 'mkinitcpio -c /etc/mkinitcpio-archiso.conf -k /boot/vmlinuz-linux -g /boot/archiso.img' run
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -r 'mkinitcpio -c /etc/mkinitcpio-archiso.conf -k /boot/vmlinuz-linux -g /boot/archiso.img' run
 }
 
 # Customize installation (root-image)
@@ -83,7 +83,7 @@ make_customize_root_image() {
 
     lynx -dump -nolist 'https://wiki.archlinux.org/index.php/Installation_Guide?action=render' >> ${work_dir}/${arch}/root-image/root/install.txt
 
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}" -D "${install_dir}" -r '/root/customize_root_image.sh' run
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -r '/root/customize_root_image.sh' run
     rm ${work_dir}/${arch}/root-image/root/customize_root_image.sh
 }
 
