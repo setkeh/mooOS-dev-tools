@@ -559,21 +559,21 @@ if [ $(id -u) -eq 0 ]; then
 
 
             # copy root files
-            sed -i "s/[mooOS-pkgs/#[mooOS-pkgs/g" /mnt/etc/pacman.conf
-            sed -i "s/SigLevel = Never/#SigLevel = Never/g" /mnt/etc/pacman.conf
-            sed -i "s/Server = http:\/\/repo.mooOS/#Server = http:\/\/repo.mooOS/g" /mnt/etc/pacman.conf
+#            sed -i "s/[mooOS-pkgs/#[mooOS-pkgs/g" /mnt/etc/pacman.conf
+#             sed -i "s/SigLevel = Never/#SigLevel = Never/g" /mnt/etc/pacman.conf
+#             sed -i "s/Server = http:\/\/repo.mooOS/#Server = http:\/\/repo.mooOS/g" /mnt/etc/pacman.conf
 
-            if [ "$archtype" = "x86_64" ]; then
-                echo "
-[mooOS-pkgs-64]
-SigLevel = Never
-Server = http://69.197.166.101/repos/mooOS-pkgs-64" >> /etc/pacman.conf
-            else
-                echo "
-[mooOS-pkgs-32]
-SigLevel = Never
-Server = http://69.197.166.101/repos/mooOS-pkgs-32" >> /etc/pacman.conf
-            fi
+#             if [ "$archtype" = "x86_64" ]; then
+#                 echo "
+# [mooOS-pkgs-64]
+# SigLevel = Never
+# Server = http://69.197.166.101/repos/mooOS-pkgs-64" >> /etc/pacman.conf
+#             else
+#                 echo "
+# [mooOS-pkgs-32]
+# SigLevel = Never
+# Server = http://69.197.166.101/repos/mooOS-pkgs-32" >> /etc/pacman.conf
+#             fi
 
             # if [ ! -f /usr/bin/pacaur ]; then
             #     #dialog --title "$upper_title" --msgbox "Installing pacaur" 20 70
@@ -593,12 +593,12 @@ Server = http://69.197.166.101/repos/mooOS-pkgs-32" >> /etc/pacman.conf
            ## sleep 3s
             #if [ ! -d "${dev_directory}pdq" ]; then
            #     dialog --backtitle "$upper_title" --title "Initial clone" --msgbox "Cloning initial repo to ${dev_directory}mooOS-dev-tools/" 10 30
-                cd ${dev_directory}
-                su $puser -c "git clone git://github.com/idk/mooOS-dev-tools.git"
-                #su $puser -c "git clone idk/etc"
-                cd /home/$puser
+                # cd ${dev_directory}
+                # su $puser -c "git clone git://github.com/idk/mooOS-dev-tools.git"
+                # #su $puser -c "git clone idk/etc"
+                # cd /home/$puser
 
-                pacman -Syy
+                # pacman -Syy
             #fi
 
         #     if [ ! -f /usr/bin/rsync ]; then
@@ -618,23 +618,23 @@ Server = http://69.197.166.101/repos/mooOS-pkgs-32" >> /etc/pacman.conf
         #         dialog --backtitle "$upper_title" --title "$upper_title" --msgbox "Hmmm. An ERROR has occured...\n\nPackage depends not met, this installer failed to install one of the following:\nrsync, git, hub, packer, pacaur, pacman or powerpill.\n\nExiting..." 30 70
         #     fi
 
-            dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Install main packages?" 10 30
-            if [ $? = 0 ] ; then
-                dialog --backtitle "$upper_title" --title "$upper_title" --msgbox "When it askes if install 1) phonon-gstreamer or 2) phonon-vlc\nchose 2\n\nWhen it asks if replace foo with bar chose y for everyone" 20 70
-                su $puser -c "powerpill -Syy"
+            # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Install main packages?" 10 30
+            # if [ $? = 0 ] ; then
+            #     dialog --backtitle "$upper_title" --title "$upper_title" --msgbox "When it askes if install 1) phonon-gstreamer or 2) phonon-vlc\nchose 2\n\nWhen it asks if replace foo with bar chose y for everyone" 20 70
+            #     su $puser -c "powerpill -Syy"
 
-                if [ "$archtype" = "x86_64" ]; then
-                    mainpkgs="packages.x86_64"
-                else
-                    mainpkgs="packages.i686"
-                fi
+            #     if [ "$archtype" = "x86_64" ]; then
+            #         mainpkgs="packages.x86_64"
+            #     else
+            #         mainpkgs="packages.i686"
+            #     fi
 
-                basepkgs="packages.both"
+            #     basepkgs="packages.both"
 
-                pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
+            #     pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
 
-                pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
-            fi
+            #     pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
+            # fi
 
   #          dialog --clear --backtitle "$upper_title" --title "Configuration files" --yesno "Install all repos?" 10 30
   #          if [ $? = 0 ] ; then
@@ -1059,7 +1059,7 @@ Server = http://69.197.166.101/repos/mooOS-pkgs-32" >> /etc/pacman.conf
           'nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'
           'nvidia-utils: for NVIDIA proprietary blob users'" 30 70
                # fi
-            fi
+            #fi
         fi
     }
 
