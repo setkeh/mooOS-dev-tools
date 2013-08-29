@@ -531,6 +531,12 @@ initial_install() {
     #pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
 
    # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
+    
+    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
+    mkdir -vp /mnt/etc/pacman.d
+    cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
+    cp -v /etc/$pacman_conf /etc/pacman.conf
+    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
 
     pacstrap -i /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
@@ -551,10 +557,6 @@ chroot_configuration() {
     chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
 
     cp /etc/resolv.conf /mnt/etc/resolv.conf
-    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
-    mkdir -vp /mnt/etc/pacman.d
-    cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
-    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/arch-release /mnt/etc/arch-release
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
