@@ -5,7 +5,7 @@
 
 ## Script variables (you should change these)
 MOO_HOME="/home/pdq/"
-REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS/"
+REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
 #REPO_BASE_URL="http://repo.mooos.pdq/"
 ABS_BASE_DIR="${MOO_HOME}abs/"
 REPO_LOG_TEMP="/tmp/repo_renew"
