@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ## chroot-install.sh sub-script for chroot fo mooOS =)
 ## 08-27-2013 pdq
 
@@ -30,7 +30,7 @@ if [ $(id -u) -eq 0 ]; then
     TMP=/tmp/tmp 2>/dev/null
     echo "unset" > $TMP/rootpasswd
 
-    setterm -blank 0
+    #setterm -blank 0
     #pacman -Syy
     #pacman -S --noconfirm --needed dialog
 
@@ -1064,7 +1064,7 @@ if [ $(id -u) -eq 0 ]; then
     }
 
     chroot_menu() {
-        echo "make it so"
+        #echo "make it so"
         rootpasswd=$(cat $TMP/rootpasswd)
         dialog \
             --colors --backtitle "$upper_title" --title "mooOS Installer (chroot)" \
@@ -1079,7 +1079,7 @@ if [ $(id -u) -eq 0 ]; then
             8 $clr"View/edit files [optional]" \
             9 $clr"Set up Network [mandatory]" \
             10 $clr"Install mooOS" \
-            11 $clr"Exitr" 2>$_TEMP
+            11 $clr"Exit" 2>$_TEMP
 
         if [ $? = 1 ] || [ $? = 255 ] ; then
             exiting
@@ -1103,8 +1103,8 @@ if [ $(id -u) -eq 0 ]; then
     }
 
     # utility execution
-    while true
-    do
+    #while true
+    #do
         chroot_menu
-    done
+    #done
 fi

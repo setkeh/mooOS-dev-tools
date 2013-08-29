@@ -507,14 +507,14 @@ cleanup() {
 }
 
 initial_install() {
-    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install base base-devel sudo git rsync wget zsh" 10 30
+    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
     if [ $? = 255 ] ; then
         installer_menu
         return 0 
     fi
     
     echo "" > $TMP/ppkgs
-    dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial base system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default:\nbase base-devel sudo git rsync wget zsh\nleave input blank and continue." 40 70 2> $TMP/ppkgs
+    dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
     ppkgs=" $(cat $TMP/ppkgs)"
 
 
@@ -530,9 +530,9 @@ initial_install() {
 
    # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
 
-    pacstrap -i /mnt base base-devel sudo git rsync wget zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
+    pacstrap -i /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
-    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Installed base base-devel sudo git rsync wget zsh$ppkgs to /mnt.\n\n Hit enter to return to menu" 30 50
+    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Installed base base-devel sudo git rsync wget dialog zsh$ppkgs to /mnt.\n\n Hit enter to return to menu" 30 50
 }
 
 chroot_configuration() {
@@ -554,7 +554,7 @@ chroot_configuration() {
     cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
     cp -v /etc/pacman.conf /mnt/etc/pacman.conf
     cp -vr /etc/skel /mnt/etc/
-    arch-chroot /mnt /bin/sh -c "/mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
+    export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 }
 
 generate_fstab() {

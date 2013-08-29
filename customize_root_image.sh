@@ -7,6 +7,11 @@ sed -i 's/#\(en_US\.UTF-8\)/\1/' /etc/locale.gen
 locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
+
+## figure out architecture type
+archtype="$(uname -m)"
+sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/69.197.166.101\/repos/g" /etc/pacman.conf
+
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
