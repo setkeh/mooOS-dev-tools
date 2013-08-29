@@ -11,7 +11,7 @@ out_dir=out
 
 arch=$(uname -m)
 verbose=""
-pacman_conf=${work_dir}/pacman.conf
+pacman_conf=${work_dir}/pacman-${arch}.conf
 script_path=$(readlink -f ${0%/*})
 
 _usage ()
