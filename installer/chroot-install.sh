@@ -314,11 +314,11 @@ if [ $(id -u) -eq 0 ]; then
         usermod -s /usr/bin/zsh root
 
         ## copy this script to user home directory
-        if [ ! -f /home/$puser/install_mooOS_user ]; then
-            wget http://is.gd/mooOS -O /home/$puser/install_mooOS_user
-            chown -R $puser /home/$puser/install_mooOS_user
-            chmod +x /home/$puser/install_mooOS_user
-        fi
+        # if [ ! -f /home/$puser/install_mooOS_user ]; then
+        #     wget http://is.gd/mooOS -O /home/$puser/install_mooOS_user
+        #     chown -R $puser /home/$puser/install_mooOS_user
+        #     chmod +x /home/$puser/install_mooOS_user
+        # fi
 
         dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
     }
@@ -1053,11 +1053,11 @@ if [ $(id -u) -eq 0 ]; then
           # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
               #  else
                 dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "exiting install script...\n\nIf complete, type: sudo reboot (you may also want to search, chose and install a video driver now.\n\npacaur XXXX\n\nReplacing XXXX with:\n'ati-dri: for open source ATI driver users'
-          'catalyst-utils: for AMD Catalyst users'
-          'intel-dri: for open source Intel driver users'
-          'nouveau-dri: for Nouveau users'
-          'nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'
-          'nvidia-utils: for NVIDIA proprietary blob users'" 30 70
+'catalyst-utils: for AMD Catalyst users'\n
+'intel-dri: for open source Intel driver users'\n
+'nouveau-dri: for Nouveau users'\n
+'nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'\n
+'nvidia-utils: for NVIDIA proprietary blob users'" 30 70
                # fi
             #fi
         fi

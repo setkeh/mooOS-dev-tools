@@ -65,7 +65,7 @@ installer_menu() {
         5 $clr"Initial install" \
         6 $clr"Generate fstab" \
         7 $clr"Configure system" \
-        8 $clr"Install mooOS" \
+        8 $clr"Cleanup" \
         9 $clr"Finish and reboot. (Remove livecd after poweroff)" \
         10 $clr"Exit" 2>$_TEMP
 
