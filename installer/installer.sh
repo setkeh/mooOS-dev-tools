@@ -553,7 +553,7 @@ chroot_configuration() {
     cp -vr /etc/pacman.d/* /mnt/etc/pacman.d/
     cp -v /etc/pacman.conf /mnt/etc/pacman.conf
     cp -vr /etc/skel /mnt/etc/
-    arch-chroot /mnt /bin/sh -c "./mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
+    arch-chroot /mnt /bin/sh -c "/mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 }
 
 generate_fstab() {
