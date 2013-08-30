@@ -454,6 +454,8 @@ if [ $(id -u) -eq 0 ]; then
 
             if [ "$my_networks" ] ; then # some better check should be here / placeholder
                 dhcpcd $my_networks
+                systemctl start dhcpcd@$my_networks
+                systemctl enable dhcpcd@$my_networks
 
                 # if [ -f /usr/bin/netctl ]; then
                 #     mkdir create_network && cd create_network
