@@ -642,10 +642,7 @@ if [ $(id -u) -eq 0 ]; then
                 #dialog --clear --title "$upper_title" --msgbox "Backing up and copying root configs" 10 30
                 #cp -v ${dev_directory}etc/custom.conf /etc/X11/xorg.conf.d/custom.conf
 
-                sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
-                sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
-                chmod -R 777 /run/transmission
-                chown -R $puser /run/transmission
+
                 # mkdir -p /usr/share/tor/hidden_service1
                 # mkdir -p /usr/share/tor/hidden_service2
                 # mkdir -p /usr/share/tor/hidden_service3
@@ -1032,13 +1029,17 @@ if [ $(id -u) -eq 0 ]; then
                 #     fi
                fi
                 systemctl daemon-reload
-                
-                dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
-                if [ $? = 0 ] ; then
-                    systemctl disable getty@tty1
-                    systemctl enable autologin@tty1
-                    systemctl start autologin@tty1
-                fi
+                sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
+                sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
+                chmod -R 777 /run/transmission
+                chown -R $puser /run/transmission
+
+                # dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
+                # if [ $? = 0 ] ; then
+                #     systemctl disable getty@tty1
+                #     systemctl enable autologin@tty1
+                #     systemctl start autologin@tty1
+                # fi
                 
                 # not needed anymore since zsh shell is set via chroot script run previously
                 # dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Ok, setup is complete... the next screen will prompt you for your user password..." 10 40
@@ -1078,7 +1079,7 @@ if [ $(id -u) -eq 0 ]; then
             7 $clr"View/confirm generated data" \
             8 $clr"View/edit files [optional]" \
             9 $clr"Set up Network [mandatory]" \
-            10 $clr"Install mooOS" \
+            10 $clr"Install extras" \
             11 $clr"Exit" 2>$_TEMP
 
         if [ $? = 1 ] || [ $? = 255 ] ; then
