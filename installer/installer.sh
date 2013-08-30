@@ -104,7 +104,7 @@ partition_editor() {
         return 0            
     fi
 
-    dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 6GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
+    dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 7GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
     if [ $? = 0 ] ; then
         umount /mnt/* 2>/dev/null
         cfdisk
@@ -540,6 +540,8 @@ chroot_configuration() {
     cp /etc/resolv.conf /mnt/etc/resolv.conf
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/arch-release /mnt/etc/arch-release
+
+    sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.png\nset timeout=7/g" /mnt/boot/grub.cfg
 
     # fix missing icons in .desktop files
     sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
