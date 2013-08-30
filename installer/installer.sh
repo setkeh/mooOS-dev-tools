@@ -550,8 +550,12 @@ chroot_configuration() {
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
     sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
 
-    if [ -f /mnt/usr/share/applications/kde4/nepomukcleaner.desktop ]; then
-        rm /mnt/usr/share/applications/kde4/nepomukcleaner.desktop
+    sed -i "/<Filename>install_mooOS.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+
+    sed -i "s/install_mooOS/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
+
+    if [ -f /mnt/etc/skel/.local/applications/install_mooOS.desktop ]; then
+        rm /mnt/etc/skel/.local/applications/install_mooOS.desktop
     fi
 
     if [ -f /mnt/usr/share/applications/kde4/nepomukbackup.desktop ]; then
