@@ -382,16 +382,58 @@ cleanup() {
     fi
 
     ##
+ 
+    umount /mnt/* 2>/dev/null
+
+    dialog --clear --backtitle "$upper_title" --title "Cleaning up" --msgbox "Unmounted /mnt/*.\n\nHit enter to return to menu" 10 30
+}
+
+initial_install() {
+    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
+    if [ $? = 255 ] ; then
+        installer_menu
+        return 0 
+    fi
+    
+    echo "" > $TMP/ppkgs
+    dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
+    ppkgs=" $(cat $TMP/ppkgs)"
+
+
+    if [ "$archtype" = "x86_64" ]; then
+        pacman_conf="pacman-x86_64.conf"
+        mainpkgs="packages.x86_64"
+    else
+        mainpkgs="packages.i686"
+        pacman_conf="pacman-i686.conf"
+    fi
+
+    basepkgs="packages.both"
+
+    #pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
+
+   # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
+    
+    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
+    mkdir -vp /mnt/etc/pacman.d
+    cp -vr /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
+    cp -v /etc/$pacman_conf /etc/pacman.conf
+    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+    sed -i "s/repo.mooOS.pdq/69.197.166.101\/repos/g" /mnt/etc/pacman.conf
+
+    dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
+    if [ $? = 0 ] ; then
+        sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
+    fi
+    
+
+    pacstrap  /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
+    #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
+
     PWD=$(pwd)
 
-    ##  copy root files
-    # cp -v /etc/pacman.conf /mnt/etc/pacman.conf#
-
-    # sed -i "s/#Server/Server/g" /mnt/etc/pacman.conf
-    # sed -i "s/[mooOS-pkgs/#[mooOS-pkgs/g" /mnt/etc/pacman.conf
-    # sed -i "s/SigLevel = Never/#SigLevel = Never/g" /mnt/etc/pacman.conf
-    # sed -i "s/Server = http:\/\/repo.mooOS/#Server = http:\/\/repo.mooOS/g" /mnt/etc/pacman.conf
-
+    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+    sed -i "s/repo.mooOS.pdq/69.197.166.101\/repos/g" /mnt/etc/pacman.conf
     cp -v /etc/psd.conf /mnt/etc/psd.conf
     cp -v /etc/issue /mnt/etc/issue
     cp -v /etc/lsb-release /mnt/etc/lsb-release
@@ -498,56 +540,6 @@ cleanup() {
 
     install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
     gzip -f /mnt/usr/local/man/man1/mooOS.1
-
-    ##
- 
-    umount /mnt/* 2>/dev/null
-
-    dialog --clear --backtitle "$upper_title" --title "Cleaning up" --msgbox "Unmounted /mnt/*.\n\nHit enter to return to menu" 10 30
-}
-
-initial_install() {
-    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
-    
-    echo "" > $TMP/ppkgs
-    dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
-    ppkgs=" $(cat $TMP/ppkgs)"
-
-
-    if [ "$archtype" = "x86_64" ]; then
-        pacman_conf="pacman-x86_64.conf"
-        mainpkgs="packages.x86_64"
-    else
-        mainpkgs="packages.i686"
-        pacman_conf="pacman-i686.conf"
-    fi
-
-    basepkgs="packages.both"
-
-    #pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
-
-   # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
-    
-    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
-    mkdir -vp /mnt/etc/pacman.d
-    cp -vr /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
-    cp -v /etc/$pacman_conf /etc/pacman.conf
-    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-    sed -i "s/repo.mooOS.pdq/69.197.166.101\/repos/g" /mnt/etc/pacman.conf
-
-    dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
-    if [ $? = 0 ] ; then
-        sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
-    fi
-    
-
-    pacstrap  /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
-    #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
-    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Installed base base-devel sudo git rsync wget dialog zsh$ppkgs to /mnt.\n\n Hit enter to return to menu" 30 50
 }
 
 chroot_configuration() {
