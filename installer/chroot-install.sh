@@ -453,23 +453,24 @@ if [ $(id -u) -eq 0 ]; then
             fi
 
             if [ "$my_networks" ] ; then # some better check should be here / placeholder
-                #dhcpcd $my_networks
-                if [ -f /usr/bin/netctl ]; then
-                    mkdir create_network && cd create_network
-                    wget http://www.opennicproject.org/nearest-servers/
-                    dns_ip1=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -r | head -1)
-                    dns_ip2=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -rg | head -1)
-                    cp /etc/netctl/examples/ethernet-static /etc/netctl/ethernetstatic
-                    sed -i "s/eth0/$my_networks/g" /etc/netctl/ethernetstatic
-                    echo "DNS=('$dns_ip1' '$dns_ip2')" >> /etc/netctl/ethernetstatic
-                    netctl start ethernetstatic
-                    netctl enable ethernetstatic
-                    cd .. && rm -r create_network
-                else
-                    dhcpcd $my_networks
-                fi
+                dhcpcd $my_networks
 
-                dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using netctl (enabled/started)" 10 30
+                # if [ -f /usr/bin/netctl ]; then
+                #     mkdir create_network && cd create_network
+                #     wget http://www.opennicproject.org/nearest-servers/
+                #     dns_ip1=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -r | head -1)
+                #     dns_ip2=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -rg | head -1)
+                #     cp /etc/netctl/examples/ethernet-static /etc/netctl/ethernetstatic
+                #     sed -i "s/eth0/$my_networks/g" /etc/netctl/ethernetstatic
+                #     echo "DNS=('$dns_ip1' '$dns_ip2')" >> /etc/netctl/ethernetstatic
+                #     netctl start ethernetstatic
+                #     netctl enable ethernetstatic
+                #     cd .. && rm -r create_network
+                # else
+                #     dhcpcd $my_networks
+                # fi
+
+                dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using dhcpcd (enabled/started)" 10 30
             else
                 dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
             fi
@@ -1027,6 +1028,8 @@ if [ $(id -u) -eq 0 ]; then
                 #         systemctl enable mysqld.service
                 #         systemctl enable memcached.service
                 #     fi
+                   echo "nothing done, placeholder - ask pdq"
+                   sleep 3s
                fi
                 systemctl daemon-reload
                 sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
