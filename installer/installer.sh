@@ -541,7 +541,7 @@ chroot_configuration() {
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/arch-release /mnt/etc/arch-release
 
-    sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.png\nset timeout=7/g" /mnt/boot/grub.cfg
+    sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.png\nset timeout=7/g" /mnt/boot/grub/grub.cfg
 
     # fix missing icons in .desktop files
     sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
