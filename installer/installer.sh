@@ -603,7 +603,6 @@ chroot_configuration() {
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 
     sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
-    convert /mnt/etc/grub.d/splash.png /mnt/etc/grub.d/splash.jpg
 }
 
 generate_fstab() {
