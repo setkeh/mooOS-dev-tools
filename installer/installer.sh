@@ -1,9 +1,8 @@
 #!/bin/sh
 ## mooOS Installer =)
 ## 08-27-2013 pdq
-
-## Instructions
 ## from mooOS livecd/liveusb
+
 
 ### Code be `ere yarrr! ###
 
@@ -57,7 +56,7 @@ exiting_installer() {
 installer_menu() {
     dialog \
         --colors --backtitle "$upper_title" --title "$upper_title" \
-        --menu "Select action: (Do them in order)" 20 60 10 \
+        --menu "Select action: (Do them in order)" 20 60 9 \
         1 $clr"List linux partitions" \
         2 $clr"Partition editor (cfdisk)" \
         3 $clr"Format and/or mount filesystems" \
@@ -65,9 +64,8 @@ installer_menu() {
         5 $clr"Initial install" \
         6 $clr"Generate fstab" \
         7 $clr"Configure system" \
-        8 $clr"Cleanup" \
-        9 $clr"Finish and reboot. (Remove livecd after poweroff)" \
-        10 $clr"Exit" 2>$_TEMP
+        8 $clr"Finish and reboot. (Remove livecd after poweroff)" \
+        9 $clr"Exit" 2>$_TEMP
 
     if [ $? = 1 ] || [ $? = 255 ] ; then
         exiting
@@ -83,9 +81,8 @@ installer_menu() {
         5) initial_install;;
         6) generate_fstab;;
         7) chroot_configuration;;
-        8) cleanup;;
-        9) finishup;;
-        10) exiting_installer;;
+        8) finishup;;
+        9) exiting_installer;;
     esac
 }
 
@@ -374,20 +371,6 @@ make_internet() {
     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
 }
 
-cleanup() {
-    dialog --clear --backtitle "$upper_title" --msgbox "Installing packges, configuring and cleaning up" --title "Install mooOS" 10 30
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
-
-    ##
- 
-    umount /mnt/* 2>/dev/null
-
-    dialog --clear --backtitle "$upper_title" --title "Cleaning up" --msgbox "Unmounted /mnt/*.\n\nHit enter to return to menu" 10 30
-}
-
 initial_install() {
     dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
     if [ $? = 255 ] ; then
@@ -409,10 +392,6 @@ initial_install() {
     fi
 
     basepkgs="packages.both"
-
-    #pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
-
-   # pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
@@ -468,7 +447,7 @@ initial_install() {
 
     mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
     cp -v /usr/share/enlightenment/data/backgrounds/* /mnt/usr/share/enlightenment/data/backgrounds
-    
+
     mkdir -vp /mnt/usr/share/enlightenment/data/themes
     cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
 
@@ -644,6 +623,9 @@ finishup() {
     fi
     
     dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nSee ya!" 30 60
+
+    umount /mnt/* 2>/dev/null
+    umount /mnt 2>/dev/null
     reboot
 }
 
@@ -654,5 +636,5 @@ do
 done
 
 #DEBUG
-echo "end of script"
-sleep 2s
+#echo "end of script"
+#sleep 2s
