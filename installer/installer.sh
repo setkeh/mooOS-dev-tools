@@ -400,13 +400,12 @@ initial_install() {
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
     sed -i "s/repo.mooOS.pdq/69.197.166.101\/repos/g" /mnt/etc/pacman.conf
 
-    dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
-    if [ $? = 0 ] ; then
-        sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
-    fi
+    # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
+    # if [ $? = 0 ] ; then
+    #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
+    # fi
     
-
-    pacstrap  /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
+    pacstrap -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
 
     PWD=$(pwd)
