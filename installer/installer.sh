@@ -522,10 +522,12 @@ initial_install() {
     cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
     
     # create ~/Github and all repos
+    rm -rf /mnt/etc/skel/Github
+    mkdir -vp /mnt/etc/skel/Github
     cd /mnt/etc/skel/Github
     git clone git://github.com/idk/pdq.git
     git clone git://github.com/idk/bin.git
-    git clone git://github.com/idk/awesomewm-X.git
+    #git clone git://github.com/idk/awesomewm-X.git
     git clone git://github.com/idk/zsh.git
     git clone git://github.com/idk/bin.git
     git clone git://github.com/idk/php.git
@@ -536,7 +538,6 @@ initial_install() {
     git clone git://github.com/idk/mooOS-dev-tools.git
     git clone git://github.com/idk/mooOS-wallpapers.git
     cd "$PWD"
-
 
     install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
     gzip -f /mnt/usr/local/man/man1/mooOS.1
@@ -558,6 +559,62 @@ chroot_configuration() {
     cp /etc/resolv.conf /mnt/etc/resolv.conf
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/arch-release /mnt/etc/arch-release
+
+    # fix missing icons in .desktop files
+    sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
+    #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
+    #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
+    #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
+    sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
+
+    if [ -f /mnt/usr/share/applications/kde4/nepomukcleaner.desktop ]; then
+        rm /mnt/usr/share/applications/kde4/nepomukcleaner.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/kde4/nepomukbackup.desktop ]; then
+        rm /mnt/usr/share/applications/kde4/nepomukbackup.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/feh.desktop ]; then
+        rm /mnt/usr/share/applications/feh.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/kde4/nepomukcontroller.desktop ]; then
+        rm /mnt/usr/share/applications/kde4/nepomukcontroller.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/enlightenment_filemanager.desktop ]; then
+        rm /mnt/usr/share/applications/enlightenment_filemanager.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/avahi-discover.desktop ]; then
+        rm /mnt/usr/share/applications/avahi-discover.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/bssh.desktop ]; then
+        rm /mnt/usr/share/applications/bssh.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/bvnc.desktop ]; then
+        rm /mnt/usr/share/applications/bvnc.desktop
+    fi
+
+    if [ -f /mnt/usr/share/enlightenment/data/themes/Post_It_White.edj ]; then
+        rm -f /mnt/usr/share/enlightenment/data/themes/Post_It_White.edj
+    fi
+
+    if [ -f /mnt/usr/share/enlightenment/data/themes/Simply_White_etk.edj ]; then
+        rm -f /mnt/usr/share/enlightenment/data/themes/Simply_White_etk.edj
+    fi
+
+    if [ -f /mnt/usr/share/enlightenment/data/themes/New_Millenium.edj ]; then
+        rm -f /mnt/usr/share/enlightenment/data/themes/New_Millenium.edj
+    fi
+
+    if [ -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop ]; then
+        rm -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop
+    fi
+
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 }
 
