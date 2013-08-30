@@ -541,8 +541,6 @@ chroot_configuration() {
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/arch-release /mnt/etc/arch-release
 
-    sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.png\nset timeout=7/g" /mnt/boot/grub/grub.cfg
-
     # fix missing icons in .desktop files
     sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
@@ -603,6 +601,8 @@ chroot_configuration() {
     fi
 
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
+
+    sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.png\nset timeout=7/g" /mnt/boot/grub/grub.cfg
 }
 
 generate_fstab() {
