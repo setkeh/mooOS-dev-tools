@@ -502,24 +502,24 @@ initial_install() {
     cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
     ## mooOS icon
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
-    cp -v /home/moo/github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
+    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
     
     # create ~/Github and all repos
     rm -rf /mnt/etc/skel/Github
