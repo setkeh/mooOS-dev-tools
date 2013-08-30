@@ -213,17 +213,20 @@ if [ $(id -u) -eq 0 ]; then
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
-			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
+			rm -r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
 			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
 			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
-			cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
+			#cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
 			#cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
  			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
  			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
  			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
  			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
+
+ 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/usr/share/enlightenment/data/themes
+ 			cp -vr /usr/share/enlightenment/data/themes/* ${MOO_HOME}archlive/releng/root-image/usr/share/enlightenment/data/themes
 
  			## patch config files for username
  			cd ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard

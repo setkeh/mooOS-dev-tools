@@ -468,7 +468,9 @@ initial_install() {
 
     mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
     cp -v /usr/share/enlightenment/data/backgrounds/* /mnt/usr/share/enlightenment/data/backgrounds
-
+    
+    mkdir -vp /mnt/usr/share/enlightenment/data/themes
+    cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
 
     #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
     #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
