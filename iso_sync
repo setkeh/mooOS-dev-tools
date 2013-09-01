@@ -251,7 +251,7 @@ if [ $(id -u) -eq 0 ]; then
 			sed -i "s/pdq/moo/g" ${MOO_HOME}archlive/releng/root-image/etc/skel/.gtkrc-2.0		
 
 			# copy over hosts file (needed for LAN repos) TODO
-			cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
+			#cp -v /etc/hosts ${MOO_HOME}archlive/releng/root-image/etc/hosts
 
 			rm -rf ${MOO_HOME}archlive/releng/root-image/etc/skel/Github
 
@@ -337,7 +337,8 @@ if [ $(id -u) -eq 0 ]; then
 
 			# create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
-			mkdir -v "${MOO_HOME}archlive/releng/work" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
+			mkdir -v "${MOO_HOME}archlive/releng/work"
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
 
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-x86_64.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-i686.conf
