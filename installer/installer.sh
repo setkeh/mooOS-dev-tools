@@ -268,107 +268,99 @@ make_internet() {
         return 0 
     fi
 
-    dialog --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
-    if [ $? = 0 ] ; then
-        local net_list mynet
-        for mynet in $(ip link show | awk '/: / {print $2}' | tr -d :) ; do
-            net_list+="${mynet} - "
-        done
+    # dialog --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
+    # if [ $? = 0 ] ; then
+    #     local net_list mynet
+    #     for mynet in $(ip link show | awk '/: / {print $2}' | tr -d :) ; do
+    #         net_list+="${mynet} - "
+    #     done
 
-        my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
-        --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
+    #     my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
+    #     --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
 
-        if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
-            installer_menu
-            return 0
-        fi
+    #     if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
+    #         installer_menu
+    #         return 0
+    #     fi
 
-        if [ "$my_networks" ] ; then # some better check should be here / placeholder
-            #dhcpcd $my_networks
-            if [ -f /usr/bin/netctl ]; then
-                mkdir create_network && cd create_network
-                wget http://www.opennicproject.org/nearest-servers/
-                dns_ip1=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -r | head -1)
-                dns_ip2=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -rg | head -1)
-                cp /etc/netctl/examples/ethernet-static /etc/netctl/ethernetstatic
-                sed -i "s/eth0/$my_networks/g" /etc/netctl/ethernetstatic
-                echo "DNS=('$dns_ip1' '$dns_ip2')" >> /etc/netctl/ethernetstatic
-                netctl start ethernetstatic
-                netctl enable ethernetstatic
-                cd .. && rm -r create_network
-            else
-                dhcpcd $my_networks
-            fi
+    #     if [ "$my_networks" ] ; then # some better check should be here / placeholder
+    #         #dhcpcd $my_networks
+    #         if [ -f /usr/bin/netctl ]; then
+    #             mkdir create_network && cd create_network
+    #             wget http://www.opennicproject.org/nearest-servers/
+    #             dns_ip1=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -r | head -1)
+    #             dns_ip2=$(grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' index.html | sort -rg | head -1)
+    #             cp /etc/netctl/examples/ethernet-static /etc/netctl/ethernetstatic
+    #             sed -i "s/eth0/$my_networks/g" /etc/netctl/ethernetstatic
+    #             echo "DNS=('$dns_ip1' '$dns_ip2')" >> /etc/netctl/ethernetstatic
+    #             netctl start ethernetstatic
+    #             netctl enable ethernetstatic
+    #             cd .. && rm -r create_network
+    #         else
+    #             dhcpcd $my_networks
+    #         fi
 
-            dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using netctl (enabled/started)" 10 30
-        else
-            dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
-        fi
+    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using netctl (enabled/started)" 10 30
+    #     else
+    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
+    #     fi
+    # else
+    #     dialog --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
+    #     "1" "wifi-menu" on \
+    #     "2" "wpa_supplicant" off \
+    #     2> $TMP/pwifi
+    #     if [ $? = 1 ] || [ $? = 255 ] ; then
+    #         installer_menu
+    #         return 0 
+    #     fi
 
-        # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
+    #     local net_list mynet
+    #     for mynet in $(ip link show | awk '/: / {print $2}' | tr -d :) ; do
+    #         net_list+="${mynet} - "
+    #     done
 
-        # if [ ! -s /tmp/index.google ] ; then
-        #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 10 40
-        # else
-        #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
-        # fi
-    else
-        dialog --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
-        "1" "wifi-menu" on \
-        "2" "wpa_supplicant" off \
-        2> $TMP/pwifi
-        if [ $? = 1 ] || [ $? = 255 ] ; then
-            installer_menu
-            return 0 
-        fi
+    #     my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
+    #     --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
 
-        local net_list mynet
-        for mynet in $(ip link show | awk '/: / {print $2}' | tr -d :) ; do
-            net_list+="${mynet} - "
-        done
+    #     if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
+    #         installer_menu
+    #         return 0
+    #     fi
 
-        my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
-        --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
+    #     if [ "$my_networks" ] ; then # some better check should be here / placeholder
+    #         dhcpcd $my_networks
+    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
+    #     else
+    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
+    #     fi
 
-        if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
-            installer_menu
-            return 0
-        fi
+    #     pwifi=$(cat $TMP/pwifi)
+    #     if [ "$pwifi" == "1" ] ; then
+    #         if [ -f /usr/bin/netctl ]; then
+    #             wifi-menu $my_networks
+    #         else
+    #             dhcpcd $my_networks
+    #         fi
+    #     else
+    #         dialog --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
+    #         pssid=$(cat $TMP/pssid)
 
-        if [ "$my_networks" ] ; then # some better check should be here / placeholder
-            dhcpcd $my_networks
-            dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
-        else
-            dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
-        fi
+    #         dialog --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
+    #         ppassphrase=$(cat $TMP/ppassphrase)
+    #         wpa_passphrase "$pssid" "$ppassphrase" >> /etc/wpa_supplicant.conf
+    #         wpa_supplicant -B -Dwext -i $my_networks -c /etc/wpa_supplicant.conf & >/dev/null
+    #     fi
 
-        pwifi=$(cat $TMP/pwifi)
-        if [ "$pwifi" == "1" ] ; then
-            if [ -f /usr/bin/netctl ]; then
-                wifi-menu $my_networks
-            else
-                dhcpcd $my_networks
-            fi
-        else
-            dialog --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
-            pssid=$(cat $TMP/pssid)
+    #     #dhcpcd $my_networks
+    #     # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
+    #     # if [ ! -s /tmp/index.google ] ; then
+    #     #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
+    #     # else
+    #     #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
+    #     # fi
+    # fi
 
-            dialog --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
-            ppassphrase=$(cat $TMP/ppassphrase)
-            wpa_passphrase "$pssid" "$ppassphrase" >> /etc/wpa_supplicant.conf
-            wpa_supplicant -B -Dwext -i $my_networks -c /etc/wpa_supplicant.conf & >/dev/null
-        fi
-
-        #dhcpcd $my_networks
-        # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-        # if [ ! -s /tmp/index.google ] ; then
-        #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
-        # else
-        #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
-        # fi
-    fi
-
-    dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
+    # dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
 }
 
 initial_install() {

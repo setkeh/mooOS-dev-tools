@@ -51,7 +51,7 @@ if [ $(id -u) -eq 0 ]; then
         fi
 
         local tz_list tz
-        for tz in $(grep -v "#" /usr/share/zoneinfo/zone.tab | awk '{print $3}') ; do
+        for tz in $(grep -v "#" /usr/share/zoneinfo/zone.tab | awk '{print $3}' | sort) ; do
             tz_list+="${tz} - "
         done
 
@@ -101,6 +101,19 @@ if [ $(id -u) -eq 0 ]; then
         GEN_LANG=$(dialog --stdout --backtitle "${upper_title}" --title '[ LOCALES ]' --cancel-label "Go Back" --default-item "${GEN_LANG}" \
            --menu "Choose a locale or <Go Back> to return" 16 40 23 \
             en_US.UTF-8 - \
+            en_AU.UTF-8 - \
+            en_BW.UTF-8 - \
+            en_CA.UTF-8 - \
+            en_DK.UTF-8 - \
+            en_GB.UTF-8 - \
+            en_HK.UTF-8 - \
+            en_IE.UTF-8 - \
+            en_NZ.UTF-8 - \
+            en_PH.UTF-8 - \
+            en_SG.UTF-8 - \
+            en_US.UTF-8 - \
+            en_ZA.UTF-8 - \
+            en_ZW.UTF-8 - \
             aa_DJ.UTF-8 - \
             af_ZA.UTF-8 - \
             an_ES.UTF-8 - \
@@ -138,21 +151,8 @@ if [ $(id -u) -eq 0 ]; then
             de_CH.UTF-8 - \
             de_DE.UTF-8 - \
             de_LU.UTF-8 - \
-            el_GR.UTF-8 - \
             el_CY.UTF-8 - \
-            en_AU.UTF-8 - \
-            en_BW.UTF-8 - \
-            en_CA.UTF-8 - \
-            en_DK.UTF-8 - \
-            en_GB.UTF-8 - \
-            en_HK.UTF-8 - \
-            en_IE.UTF-8 - \
-            en_NZ.UTF-8 - \
-            en_PH.UTF-8 - \
-            en_SG.UTF-8 - \
-            en_US.UTF-8 - \
-            en_ZA.UTF-8 - \
-            en_ZW.UTF-8 - \
+            el_GR.UTF-8 - \
             es_AR.UTF-8 - \
             es_BO.UTF-8 - \
             es_CL.UTF-8 - \
@@ -173,8 +173,8 @@ if [ $(id -u) -eq 0 ]; then
             es_US.UTF-8 - \
             es_UY.UTF-8 - \
             es_VE.UTF-8 - \
-            et_EE.UTF-8 - \
             et_EE.ISO-8859-15 - \
+            et_EE.UTF-8 - \
             eu_ES.UTF-8 - \
             fi_FI.UTF-8 - \
             fo_FO.UTF-8 - \
@@ -250,8 +250,8 @@ if [ $(id -u) -eq 0 ]; then
             zh_CN.GBK - \
             zh_CN.UTF-8 - \
             zh_HK.UTF-8 - \
-            zh_SG.UTF-8 - \
             zh_SG.GBK - \
+            zh_SG.UTF-8 - \
             zh_TW.EUC-TW - \
             zh_TW.UTF-8 - \
             zu_ZA.UTF-8 - "null" "-" || echo "${GEN_LANG}")
