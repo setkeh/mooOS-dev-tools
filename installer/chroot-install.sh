@@ -403,7 +403,7 @@ if [ $(id -u) -eq 0 ]; then
         echo "TIMEZONE: $(readlink /etc/localtime)"
         echo "LOCALE: $(cat /etc/locale.conf)"
         echo "ROOT PASSWORD: $(cat $TMP/rootpasswd)"
-        echo "USER: $(awk -F":" '$7 ~ /\/usr\/bin\/zsh/ {print $1}' /etc/passwd)"
+        echo "USERS: $(awk -F":" '$7 ~ /\/usr\/bin\/zsh/ {print $1}' /etc/passwd)"
         echo "BOOTLOADER: $bootmsg"
         echo "Returning to menu in 5 seconds..."
         sleep 5s
@@ -454,8 +454,8 @@ if [ $(id -u) -eq 0 ]; then
 
             if [ "$my_networks" ] ; then # some better check should be here / placeholder
                 dhcpcd $my_networks
-                systemctl start dhcpcd@$my_networks
-                systemctl enable dhcpcd@$my_networks
+                systemctl start dhcpcd
+                systemctl enable dhcpcd
 
                 # if [ -f /usr/bin/netctl ]; then
                 #     mkdir create_network && cd create_network
