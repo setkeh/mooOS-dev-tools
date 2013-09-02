@@ -55,7 +55,7 @@ exiting_installer() {
 
 current_selection() {
     _CURRENT=/tmp/current
-    echo "List linux partitions" > $_CURRENT
+    echo "1" > $_CURRENT
     if [ "$1" ]; then
         echo "$1" > $_CURRENT
     else
@@ -106,7 +106,7 @@ list_partitions() {
         partition_list="It appears you have no linux partitions yet."
     fi
 
-    current_selection "Partition editor (cfdisk)"
+    current_selection "2"
 
     dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "$partition_list \n\n Hit enter to return to menu" 15 40
 }
@@ -124,7 +124,7 @@ partition_editor() {
         cfdisk
     fi
 
-    current_selection "Format and/or mount filesystems"
+    current_selection "3"
 }
 
 make_filesystems() {
@@ -276,7 +276,7 @@ make_filesystems() {
         dialog --clear --backtitle "$upper_title" --title "SWAP SETUP" --msgbox "Ran: mkswap $psout and swapon $psout" 10 70
     fi
 
-    current_selection "Create internet connection"
+    current_selection "4"
 }
 
 make_internet() {
@@ -379,7 +379,7 @@ make_internet() {
     # fi
 
     # dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
-    current_selection "Initial install"
+    current_selection "5"
 }
 
 initial_install() {
@@ -542,7 +542,7 @@ initial_install() {
 
     install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
     gzip -f /mnt/usr/local/man/man1/mooOS.1
-    current_selection ""
+    current_selection "6"
 }
 
 chroot_configuration() {
@@ -624,7 +624,7 @@ chroot_configuration() {
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 
     sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
-    current_selection "Generate fstab"
+    current_selection "8"
 }
 
 generate_fstab() {
@@ -641,7 +641,7 @@ generate_fstab() {
     fi
     
     dialog --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Hit enter to return to menu" 10 30
-    current_selection "Configure system"
+    current_selection "7"
 }
 
 finishup() {
