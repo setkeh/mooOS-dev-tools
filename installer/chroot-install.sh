@@ -30,6 +30,9 @@ if [ $(id -u) -eq 0 ]; then
     TMP=/tmp/tmp 2>/dev/null
     echo "unset" > $TMP/rootpasswd
 
+    _CURRENT=/tmp/current
+    echo "8" > $_CURRENT
+
     #setterm -blank 0
     #pacman -Syy
     #pacman -S --noconfirm --needed dialog

@@ -45,7 +45,7 @@ _TEMP=/tmp/answer$$
 mkdir -p /tmp/tmp 2>/dev/null
 TMP=/tmp/tmp 2>/dev/null
 _CURRENT=/tmp/current
-echo "1" > $_CURRENT
+#echo "1" > $_CURRENT
 
 ## functions
 exiting_installer() {
