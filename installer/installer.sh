@@ -67,7 +67,7 @@ installer_menu() {
 
     CUR=current_selection
     dialog \
-        -default-item $CUR --colors --backtitle "$upper_title" --title "$upper_title" \
+        --default-item $CUR --colors --backtitle "$upper_title" --title "$upper_title" \
         --menu "Select action: (Do them in order)" 20 60 9 \
         1 $clr"List linux partitions" \
         2 $clr"Partition editor (cfdisk)" \
