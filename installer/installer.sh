@@ -44,6 +44,8 @@ clr=""
 _TEMP=/tmp/answer$$
 mkdir -p /tmp/tmp 2>/dev/null
 TMP=/tmp/tmp 2>/dev/null
+_CURRENT=/tmp/current
+echo "1" > $_CURRENT
 
 ## functions
 exiting_installer() {
@@ -54,18 +56,12 @@ exiting_installer() {
 }
 
 current_selection() {
-    _CURRENT=/tmp/current
-    echo "1" > $_CURRENT
-    if [ "$1" ]; then
-        echo "$1" > $_CURRENT
-    else
-        echo $(cat $_CURRENT)
-    fi
+    echo "$1" > $_CURRENT
 }
 
 installer_menu() {
 
-    CUR=$(current_selection)
+    CUR=$(cat $_CURRENT)
     dialog \
         --default-item "$CUR" --colors --backtitle "$upper_title" --title "$upper_title" \
         --menu "Select action: (Do them in order)" 20 60 9 \
