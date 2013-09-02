@@ -53,9 +53,21 @@ exiting_installer() {
     exit 0
 }
 
+current_selection() {
+    _CURRENT=/tmp/current
+    echo "List linux partitions" > $_CURRENT
+    if [ "$1" ]; then
+        echo "$1" > $_CURRENT
+    else
+        echo $(cat $_CURRENT)
+    fi
+}
+
 installer_menu() {
+
+    CUR=current_selection
     dialog \
-        --colors --backtitle "$upper_title" --title "$upper_title" \
+        -default-item $CUR --colors --backtitle "$upper_title" --title "$upper_title" \
         --menu "Select action: (Do them in order)" 20 60 9 \
         1 $clr"List linux partitions" \
         2 $clr"Partition editor (cfdisk)" \
@@ -94,6 +106,8 @@ list_partitions() {
         partition_list="It appears you have no linux partitions yet."
     fi
 
+    current_selection "Partition editor (cfdisk)"
+
     dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "$partition_list \n\n Hit enter to return to menu" 15 40
 }
 
@@ -109,6 +123,8 @@ partition_editor() {
         umount /mnt/* 2>/dev/null
         cfdisk
     fi
+
+    current_selection "Format and/or mount filesystems"
 }
 
 make_filesystems() {
@@ -259,6 +275,8 @@ make_filesystems() {
         swapon $psout
         dialog --clear --backtitle "$upper_title" --title "SWAP SETUP" --msgbox "Ran: mkswap $psout and swapon $psout" 10 70
     fi
+
+    current_selection "Create internet connection"
 }
 
 make_internet() {
@@ -361,6 +379,7 @@ make_internet() {
     # fi
 
     # dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
+    current_selection "Initial install"
 }
 
 initial_install() {
@@ -375,15 +394,25 @@ initial_install() {
     ppkgs=" $(cat $TMP/ppkgs)"
 
 
-    if [ "$archtype" = "x86_64" ]; then
-        pacman_conf="pacman-x86_64.conf"
-        mainpkgs="packages.x86_64"
+    dialog --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (Minimal)" --yesno "Installation type?" 20 70
+    if [ $? = 0 ] ; then
+        dialog --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?" 20 70
+        if [ $? = 0 ] ; then
+            basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both /home/moo/Github/mooOS-dev-tools/packages-server.both"
+        else
+            basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both"
+        fi
     else
-        mainpkgs="packages.i686"
-        pacman_conf="pacman-i686.conf"
+        basepkgs="/home/moo/Github/mooOS-dev-tools/packages-server.both"
     fi
 
-    basepkgs="packages.both"
+    if [ "$archtype" = "x86_64" ]; then
+        pacman_conf="pacman-x86_64.conf"
+        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
+    else
+        pacman_conf="pacman-i686.conf"
+        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.i686"
+    fi
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
@@ -397,7 +426,7 @@ initial_install() {
     #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
     # fi
     
-    pacstrap -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat /home/moo/Github/mooOS-dev-tools/$basepkgs) $(cat /home/moo/Github/mooOS-dev-tools/$mainpkgs)
+    pacstrap -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
 
     PWD=$(pwd)
@@ -513,6 +542,7 @@ initial_install() {
 
     install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
     gzip -f /mnt/usr/local/man/man1/mooOS.1
+    current_selection ""
 }
 
 chroot_configuration() {
@@ -594,6 +624,7 @@ chroot_configuration() {
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 
     sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
+    current_selection "Generate fstab"
 }
 
 generate_fstab() {
@@ -610,6 +641,7 @@ generate_fstab() {
     fi
     
     dialog --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Hit enter to return to menu" 10 30
+    current_selection "Configure system"
 }
 
 finishup() {
