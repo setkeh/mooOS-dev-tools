@@ -56,8 +56,8 @@ exiting_installer() {
 current_selection() {
     _CURRENT=/tmp/current
     echo "1" > $_CURRENT
-    if [ "$1" != "" ]; then
-        echo $1 > $_CURRENT
+    if [ "$1" ]; then
+        echo "$1" > $_CURRENT
     else
         echo $(cat $_CURRENT)
     fi
