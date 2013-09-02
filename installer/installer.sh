@@ -102,7 +102,7 @@ list_partitions() {
         partition_list="It appears you have no linux partitions yet."
     fi
 
-    current_selection "2"
+    current_selection 2
 
     dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "$partition_list \n\n Hit enter to return to menu" 15 40
 }

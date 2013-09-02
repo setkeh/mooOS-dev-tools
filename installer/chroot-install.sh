@@ -33,6 +33,9 @@ if [ $(id -u) -eq 0 ]; then
     _CURRENT=/tmp/current
     echo "8" > $_CURRENT
 
+    _CCURRENT=/tmp/ccurrent
+    echo "1" > $_CCURRENT
+
     #setterm -blank 0
     #pacman -Syy
     #pacman -S --noconfirm --needed dialog
@@ -45,6 +48,10 @@ if [ $(id -u) -eq 0 ]; then
         exit 0
         exit 0
     }
+
+    current_selection() {
+    echo "$1" > $_CCURRENT
+}
 
     gen_tz() {
         dialog --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Generate timezone/localtime" 10 40
@@ -72,6 +79,7 @@ if [ $(id -u) -eq 0 ]; then
         else
             dialog --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Failed to set timezone...timezone does not exist?" 10 30
         fi
+        current_selection 3
     }
 
     gen_hostname() {
@@ -91,6 +99,7 @@ if [ $(id -u) -eq 0 ]; then
 
         echo $GEN_HOSTNAME > /etc/hostname
         dialog --clear --backtitle "$upper_title" --title "[ HOSTNAME ]" --msgbox "Set hostname to $GEN_HOSTNAME" 10 30
+        current_selection 2
     }
 
     gen_locale() {
@@ -269,6 +278,7 @@ if [ $(id -u) -eq 0 ]; then
         export "LANG=${GEN_LANG}"
         locale-gen 1>/dev/null || echo "Unable to setup the locales to" "${GEN_LANG}"
         dialog --clear --backtitle "$upper_title" --title "[ LOCALES ]" --msgbox "Set locale to ${GEN_LANG}" 10 30
+        current_selection 4
     }
 
     set_root_pass() {
@@ -282,6 +292,7 @@ if [ $(id -u) -eq 0 ]; then
         passwd
         echo "set" > $TMP/rootpasswd
         dialog --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "root password set!" 10 30
+        current_selection 5
     }
 
     add_user() {
@@ -324,6 +335,7 @@ if [ $(id -u) -eq 0 ]; then
         # fi
 
         dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
+        current_selection 6
     }
 
     install_bootloader() {
@@ -399,6 +411,7 @@ if [ $(id -u) -eq 0 ]; then
             fi
             bootmsg="syslinux @ /boot/syslinux/syslinux.cfg"
         fi
+        current_selection 7
     }
 
     conf_view() {
@@ -411,6 +424,7 @@ if [ $(id -u) -eq 0 ]; then
         echo "Returning to menu in 5 seconds..."
         sleep 5s
         dialog --clear --backtitle "$upper_title" --title "[ VIEW CONFIGURATION ]" --msgbox "Return" 10 30
+        current_selection 8
     }
 
     edit_file() {
@@ -431,6 +445,7 @@ if [ $(id -u) -eq 0 ]; then
             chroot_menu
             return 0 
         fi
+        current_selection 9
     }
 
   make_internet() {
@@ -544,6 +559,7 @@ if [ $(id -u) -eq 0 ]; then
         fi
 
         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
+        current_selection 10
     }
 
     make_mooOS() {
@@ -670,6 +686,7 @@ if [ $(id -u) -eq 0 ]; then
                 systemctl enable preload.service
                 systemctl enable polipo.service
                 systemctl enable cronie.service
+                systemctl enable dhcpcd.service
 
                 dialog --clear --backtitle "$upper_title" --title "Extra" --yesno "Install Apache/MySQL/PHP/PHPMyAdmin  configuration files?" 10 30
 
@@ -1070,13 +1087,15 @@ if [ $(id -u) -eq 0 ]; then
                # fi
             #fi
         fi
+        current_selection 11
     }
 
     chroot_menu() {
         #echo "make it so"
         rootpasswd=$(cat $TMP/rootpasswd)
+        CUR=$(cat $_CCURRENT)
         dialog \
-            --colors --backtitle "$upper_title" --title "mooOS Installer (chroot)" \
+            --default-item "$CUR" --colors --backtitle "$upper_title" --title "mooOS Installer (chroot)" \
             --menu "Select action:" 20 60 11 \
             1 $clr"Generate hostname [${GEN_HOSTNAME}]" \
             2 $clr"Generate timezone [${GEN_TIMEZONE}]" \
@@ -1088,7 +1107,7 @@ if [ $(id -u) -eq 0 ]; then
             8 $clr"View/edit files [optional]" \
             9 $clr"Set up Network [mandatory]" \
             10 $clr"Install extras" \
-            11 $clr"Exit" 2>$_TEMP
+            11 $clr"Return to Installer" 2>$_TEMP
 
         if [ $? = 1 ] || [ $? = 255 ] ; then
             exiting
