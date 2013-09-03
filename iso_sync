@@ -365,14 +365,14 @@ else
 
 	## remove existing repos
 	#rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
-	#rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
 	echo "${bldyellow}Re-creating i686 repository${txtrst}"
 	#repo-add -v -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
 	echo "${bldyellow}Re-creating x86_64 repository${txtrst}"
-	repo-add -v -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
+	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 	#echo "${bldyellow}Re-creating utils repository${txtrst}"
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
 
