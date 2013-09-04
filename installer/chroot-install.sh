@@ -1052,7 +1052,10 @@ if [ $(id -u) -eq 0 ]; then
                 #     fi
                    echo "nothing done, placeholder - ask pdq"
                    sleep 3s
-               fi
+                fi
+
+                pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
+                
                 systemctl daemon-reload
                 sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
                 sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
