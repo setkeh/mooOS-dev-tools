@@ -13,6 +13,8 @@ REPO_LOG="${ABS_BASE_DIR}update.log"
 ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
 WORK_DIR="/media/truecrypt3/mooOS/work" # work
 
+GPGKEY=$(cat ${MOO_HOME}/gnupg/private_key_include) ## change this and put key in the file
+
 # Text color variables (there is no need change these)
 txtbld=$(tput bold)                # bold
 bldred=${txtbld}$(tput setaf 1)    # red
@@ -364,13 +366,13 @@ else
 	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
 
 	## remove existing repos
-	#rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
 	echo "${bldyellow}Re-creating i686 repository${txtrst}"
-	#repo-add -v -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
+	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
 	echo "${bldyellow}Re-creating x86_64 repository${txtrst}"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 	#echo "${bldyellow}Re-creating utils repository${txtrst}"
@@ -389,10 +391,10 @@ else
 	fi
 
 	# re-create repos local and remote
-	#mv -v ${REPO_BASE_DIR}/mooOS-pkgs-32 ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+	mv -v ${REPO_BASE_DIR}/mooOS-pkgs-32 ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
 	mv -v ${REPO_BASE_DIR}/mooOS-pkgs-64 ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	#mv ${REPO_BASE_DIR}/mooOS-utils ${ABS_BASE_DIR}mooOS-utils-out-of-date
-	#cp -vr ${ABS_BASE_DIR}/mooOS-pkgs-32 ${REPO_BASE_DIR}/mooOS-pkgs-32
+	cp -vr ${ABS_BASE_DIR}/mooOS-pkgs-32 ${REPO_BASE_DIR}/mooOS-pkgs-32
 	cp -vr ${ABS_BASE_DIR}/mooOS-pkgs-64 ${REPO_BASE_DIR}/mooOS-pkgs-64
 	#cp -vr ${ABS_BASE_DIR}/mooOS-utils ${REPO_BASE_DIR}mooOS-utils
 
