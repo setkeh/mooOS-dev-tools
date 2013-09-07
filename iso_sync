@@ -15,6 +15,37 @@ WORK_DIR="/media/truecrypt3/mooOS/work" # work
 
 GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key in the file
 
+# path to remote repo credentials file
+ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
+
+## BEGIN EXAMPLE of repo_creds
+#  #!/bin/sh
+
+# _remote_count=2
+# _now=$(date +"%m_%d_%Y")
+
+# #32-local -> 32-remote
+# _remote1[1]=22 # port
+# _remote1[2]="/home/pdq/abs/mooOS-pkgs-32"
+# _remote1[3]="example@:/path/to/mooOS/public_html/repos"
+# _remote1[4]="--delete --stats"
+
+# #64-local -> 64-remote
+# _remote2[1]=22 # port
+# _remote2[2]="/home/pdq/abs/mooOS-pkgs-64"
+# _remote2[3]="example@:/path/to/mooOS/public_html/repos"
+# _remote2[4]="--delete --stats"
+
+# #iso-local -> iso-remote
+# _iso_sync[1]=22
+# _iso_sync[2]="/media/truecrypt3/mooOS/out/${_iso_label}*.iso"
+# _iso_sync[3]="example@:/var/www/mooOS"
+# _iso_sync[4]="--stats"
+
+## End remote rsyncs
+## END EXAMPLE of repo_creds
+
+
 # Text color variables (there is no need change these)
 txtbld=$(tput bold)                # bold
 bldred=${txtbld}$(tput setaf 1)    # red
@@ -365,6 +396,33 @@ else
 	gh -b ## https://github.com/idk/gh
 	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
 
+	## install custom mooOS packages
+	## wallpapers
+	cd ${MOO_HOME}github/mooOS-wallpapers
+	makepkg -sf
+	schroot -p -- makepkg -sf
+
+	## github wrapper
+	rm -r ${MOO_HOME}abs/gh
+	mkdir -p ${MOO_HOME}abs/gh
+	cd ${MOO_HOME}abs/gh
+	wget https://raw.github.com/idk/gh/master/PKGBUILD
+	makepkg -sf
+	schroot -p -- makepkg -sf
+
+	## vimb web browser and tabbed, patched!
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
+	rm -r ${MOO_HOME}abs/vb-pdq
+	mkdir -p ${MOO_HOME}abs/vb-pdq
+	cd ${MOO_HOME}abs/vb-pdq
+	wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
+	wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
+	makepkg -sf
+	schroot -p -- makepkg -sf
+
+	cd "$PWD"
+
 	## remove existing repos
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz
@@ -397,6 +455,24 @@ else
 	cp -vr ${ABS_BASE_DIR}/mooOS-pkgs-32 ${REPO_BASE_DIR}/mooOS-pkgs-32
 	cp -vr ${ABS_BASE_DIR}/mooOS-pkgs-64 ${REPO_BASE_DIR}/mooOS-pkgs-64
 	#cp -vr ${ABS_BASE_DIR}/mooOS-utils ${REPO_BASE_DIR}mooOS-utils
+
+	## remote repo
+	# include login credentials:
+	if [ -f "$REPO_CREDS" ] ; then
+		echo "syncing to remote repos"
+		. $REPO_CREDS
+
+		# rsync using vars defined in credentials, e.g.:
+		#for i in {1..5}
+		for i in $(eval echo {1..$_remote_count})
+		do
+			port=$(eval echo $(echo '${'_remote$i[1]'}'))
+			flags=$(eval echo $(echo '${'_remote$i[4]'}'))
+			src=$(eval echo $(echo '${'_remote$i[2]'}'))
+			dest=$(eval echo $(echo '${'_remote$i[3]'}'))
+			torsocks rsync -navzrcPh -e "torsocks ssh -p $port" $flags $src $dest # -n, --dry-run perform a trial run with no changes made
+		done
+	fi
 
 	notify-send "Repo update complete"
 
