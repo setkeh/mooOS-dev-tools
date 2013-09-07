@@ -255,7 +255,6 @@ preload
 privoxy
 procps-ng
 profile-sync-daemon
-ps_mem
 psmisc
 pulseaudio
 pulseaudio-alsa
@@ -304,7 +303,6 @@ torsocks
 traceroute
 transcoder
 transmission-qt
-truecrypt
 ttf-bitstream-vera
 ttf-envy-code-r
 ttf-liberation
