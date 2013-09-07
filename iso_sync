@@ -13,7 +13,7 @@ REPO_LOG="${ABS_BASE_DIR}update.log"
 ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
 WORK_DIR="/media/truecrypt3/mooOS/work" # work
 
-GPGKEY=$(cat ${MOO_HOME}/gnupg/private_key_include) ## change this and put key in the file
+GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key in the file
 
 # Text color variables (there is no need change these)
 txtbld=$(tput bold)                # bold
