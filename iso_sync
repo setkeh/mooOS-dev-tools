@@ -413,7 +413,7 @@ else
 	## vimb web browser and tabbed, patched!
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
-	rm -r ${MOO_HOME}abs/vb-pdq
+	rm -fr ${MOO_HOME}abs/vb-pdq
 	mkdir -p ${MOO_HOME}abs/vb-pdq
 	cd ${MOO_HOME}abs/vb-pdq
 	wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
@@ -470,7 +470,7 @@ else
 			flags=$(eval echo $(echo '${'_remote$i[4]'}'))
 			src=$(eval echo $(echo '${'_remote$i[2]'}'))
 			dest=$(eval echo $(echo '${'_remote$i[3]'}'))
-			echo "torsocks rsync -navzrcPh -e \"torsocks ssh -p $port\" $flags $src $dest" # -n, --dry-run perform a trial run with no changes made
+			torsocks rsync -navzrcPh -e "torsocks ssh -p $port" $flags $src $dest # -n, --dry-run perform a trial run with no changes made
 		done
 	fi
 
