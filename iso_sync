@@ -470,7 +470,7 @@ else
 			flags=$(eval echo $(echo '${'_remote$i[4]'}'))
 			src=$(eval echo $(echo '${'_remote$i[2]'}'))
 			dest=$(eval echo $(echo '${'_remote$i[3]'}'))
-			torsocks rsync -navzrcPh -e "torsocks ssh -p $port" $flags $src $dest # -n, --dry-run perform a trial run with no changes made
+			rsync -navzrcPh -e "ssh -p $port" $flags $src $dest # -n, --dry-run perform a trial run with no changes made
 		done
 	fi
 
