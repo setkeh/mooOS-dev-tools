@@ -437,7 +437,7 @@ else
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
 
 	## format log a little
-	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG
+	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
 	sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
 
 	## clean up stable repos
