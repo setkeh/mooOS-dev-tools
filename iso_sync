@@ -445,7 +445,7 @@ else ## as $USER
 			flags=$(eval echo $(echo '${'_remote$i[4]'}'))
 			src=$(eval echo $(echo '${'_remote$i[2]'}'))
 			dest=$(eval echo $(echo '${'_remote$i[3]'}'))
-			rsync -navzrcPh $flags -e "ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
+			rsync -avzrcPh $flags -e "ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
 		done
 	fi
 
