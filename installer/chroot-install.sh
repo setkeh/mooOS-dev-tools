@@ -692,7 +692,7 @@ if [ $(id -u) -eq 0 ]; then
 
                 if [ $? = 0 ] ; then
 
-                    $HOSTNAME="$(cat /etc/hostname)"
+                    HOSTNAME="$(cat /etc/hostname)"
 
                     # #dialog --clear --title "$upper_title" --msgbox "Installing Apache/MySQL/PHP/PHPMyAdmin configuration files" 10 30
                     # mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
