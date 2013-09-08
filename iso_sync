@@ -429,9 +429,9 @@ else
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
-	echo "${bldyellow}Re-creating i686 repository${txtrst}"
+	echo "\n${bldyellow}Re-creating i686 repository${txtrst}\n"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
-	echo "${bldyellow}Re-creating x86_64 repository${txtrst}"
+	echo "\n${bldyellow}Re-creating x86_64 repository${txtrst}\n"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 	#echo "${bldyellow}Re-creating utils repository${txtrst}"
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
@@ -442,6 +442,7 @@ else
 
 	## clean up stable repos
 	# re-create repos local and remote
+	echo "\n================syncing to local repos===================\n"
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-32/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/mooOS-pkgs-32
@@ -450,7 +451,7 @@ else
 	## remote repo
 	# include login credentials:
 	if [ -f "$REPO_CREDS" ] ; then
-		echo "syncing to remote repos"
+		echo "\n================syncing to remote repos===================\n"
 		. $REPO_CREDS
 
 		# rsync using vars defined in credentials, e.g.:
