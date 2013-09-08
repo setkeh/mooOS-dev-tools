@@ -340,7 +340,9 @@ if [ $(id -u) -eq 0 ]; then
 			## create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
 			mkdir -v "${MOO_HOME}archlive/releng/work"
+			## create pacman.conf for livecd
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${MOO_HOME}archlive/releng/work/pacman.conf
+			## create pacman.conf for livecd specific to architecture
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-x86_64.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-i686.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${MOO_HOME}archlive/releng/work/pacman-x86_64.conf
