@@ -412,7 +412,7 @@ initial_install() {
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
-    sed -i "s/repo.mooOS.pdq/69.197.166.101\/repos/g" /etc/$pacman_conf
+    sed -i "s/repo.mooOS.pdq/mooos.biz.tm\/repos/g" /etc/$pacman_conf
     cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
     cp -v /etc/$pacman_conf /etc/pacman.conf
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
@@ -428,7 +428,7 @@ initial_install() {
     PWD=$(pwd)
 
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-    sed -i "s/repo.mooOS.pdq/69.197.166.101\/repos/g" /mnt/etc/pacman.conf
+    sed -i "s/repo.mooOS.pdq/mooos.biz.tm\/repos/g" /mnt/etc/pacman.conf
     cp -v /etc/psd.conf /mnt/etc/psd.conf
     cp -v /etc/issue /mnt/etc/issue
     cp -v /etc/lsb-release /mnt/etc/lsb-release

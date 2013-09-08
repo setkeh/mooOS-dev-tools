@@ -10,7 +10,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 ## figure out architecture type
 archtype="$(uname -m)"
-sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/69.197.166.101\/repos/g" /etc/pacman.conf
+sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/mooos.biz.tm\/repos/g" /etc/pacman.conf
 
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
@@ -74,6 +74,8 @@ if [ ! -d /home/moo ]; then
 	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
 	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
 	chmod +x /home/moo/install_mooOS.desktop
+	chmod +x /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh
+	chmod +x /home/moo/Github/mooOS-dev-tools/installer/installer.sh
 	#su -l moo -c 'kbuildsycoca4 --noincremental'
 	#chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo

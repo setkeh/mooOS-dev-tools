@@ -589,12 +589,12 @@ if [ $(id -u) -eq 0 ]; then
 #                 echo "
 # [mooOS-pkgs-64]
 # SigLevel = Never
-# Server = http://69.197.166.101/repos/mooOS-pkgs-64" >> /etc/pacman.conf
+# Server = http://mooos.biz.tm/repos/mooOS-pkgs-64" >> /etc/pacman.conf
 #             else
 #                 echo "
 # [mooOS-pkgs-32]
 # SigLevel = Never
-# Server = http://69.197.166.101/repos/mooOS-pkgs-32" >> /etc/pacman.conf
+# Server = http://mooos.biz.tm/repos/mooOS-pkgs-32" >> /etc/pacman.conf
 #             fi
 
             # if [ ! -f /usr/bin/pacaur ]; then
