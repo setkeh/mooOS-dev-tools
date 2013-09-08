@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 ## Part of mooOS-dev-tools - https://github.com/idk/mooOS-dev-tools
-## pdq 08-13-2013
+## pdq 08-13-2013 - PRESENT
 ## License: GPL3
 
 ## Script variables (you should change these)
@@ -87,26 +87,26 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v /usr/share/enlightenment/data/backgrounds/* ${MOO_HOME}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
 
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/tor
-            cp -v /etc/torrc ${MOO_HOME}archlive/releng/root-image/etc/tor/torrc
+			cp -v /etc/torrc ${MOO_HOME}archlive/releng/root-image/etc/tor/torrc
 
-            mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/privoxy
-            sh -c "echo 'forward-socks5 / localhost:9050 .' > ${MOO_HOME}archlive/releng/root-image/etc/privoxy/config"
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/privoxy
+			sh -c "echo 'forward-socks5 / localhost:9050 .' > ${MOO_HOME}archlive/releng/root-image/etc/privoxy/config"
 
-            mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/dansguardian
-            cp -v /etc/dansguardian/dansguardian.conf ${MOO_HOME}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/dansguardian
+			cp -v /etc/dansguardian/dansguardian.conf ${MOO_HOME}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
 
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/squid
-            cp -v /etc/squid/squid.conf ${MOO_HOME}archlive/releng/root-image/etc/squid/squid.conf
+			cp -v /etc/squid/squid.conf ${MOO_HOME}archlive/releng/root-image/etc/squid/squid.conf
 
-            #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-            #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-            #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
-            #mv -v /etc/php/php.ini /etc/php/php.ini.bak
-            #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+			#mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+			#cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+			#cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+			#mv -v /etc/php/php.ini /etc/php/php.ini.bak
+			#cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
 
-            # copy over custom .desktop files
-            mkdir -vp ${MOO_HOME}archlive/releng/root-image/usr/share/applications
-            cp -v ${MOO_HOME}github/mooOS-dev-tools/applications/*.desktop ${MOO_HOME}archlive/releng/root-image/usr/share/applications/
+			# copy over custom .desktop files
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/usr/share/applications
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/applications/*.desktop ${MOO_HOME}archlive/releng/root-image/usr/share/applications/
 
 			# copy over ~/bin
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/bin
