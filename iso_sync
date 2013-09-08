@@ -171,6 +171,12 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr ${MOO_HOME}.kde4/share/apps/konsole/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${MOO_HOME}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
+			
+			## copy over ~/.gnupg
+			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.gnupg
+			cp -v ${MOO_HOME}.gnupg/gpg-agent.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.gnupg/gpg-agent.conf
+			cp -v ${MOO_HOME}.gnupg/gpg.conf ${MOO_HOME}archlive/releng/root-image/etc/skel/.gnupg/gpg.conf
+
 			## copy over transmission file
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/settings.json ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
