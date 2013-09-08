@@ -360,7 +360,9 @@ if [ $(id -u) -eq 0 ]; then
 		cd ${MOO_HOME}archlive/releng
 		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
 	fi
-else
+else ## as $USER
+	## create the build environment and preparation
+	
 	## push latest code to github
 	gh -b ## https://github.com/idk/gh
 	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
