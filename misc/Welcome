@@ -1,2 +1,20 @@
 Welcome to mooOS
 ================
+
+Visit https://www.linuxdistrocommunity.com/forums
+
+Homepage: https://mooos.biz.tm
+
+
+Tip: To launch above URL in vimb try:
+	 Type: <Alt>+<Esc> (To start the Everything Starter)
+
+	 Type: vb https://mooos.biz.tm<ENTER>
+
+	 [Same as above but using proxy]
+	 Type: vbp https://mooos.biz.tm<ENTER>
+
+
+Tip: To open another tab in existing instance of vimb try:
+	Type: <t> https://www.linuxdistrocommunity.com/forums<ENTER>
+	
