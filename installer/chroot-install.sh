@@ -688,7 +688,7 @@ if [ $(id -u) -eq 0 ]; then
                 systemctl enable cronie.service
                 systemctl enable dhcpcd.service
 
-                dialog --clear --backtitle "$upper_title" --title "Extra" --yesno "Install Apache/MySQL/PHP/PHPMyAdmin  configuration files?" 10 30
+                dialog --clear --backtitle "$upper_title" --title "Extra" --yesno "Install foo and bar?" 10 30
 
                 if [ $? = 0 ] ; then
 
