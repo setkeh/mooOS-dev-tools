@@ -15,6 +15,7 @@ REPO_LOG_TEMP="/tmp/repo_renew"
 REPO_LOG="${ABS_BASE_DIR}update.log"
 ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
 WORK_DIR="/media/truecrypt3/mooOS/work" # work
+ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down"
 
 GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key in the file
 
@@ -357,11 +358,41 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v /etc/arch-release ${MOO_HOME}archlive/releng/root-image/etc/arch-release
 		fi
 
-		echo "\n${bldred}Building iso now...${txtrst}\n"
+		echo "
+${bldred}Building iso now...${txtrst}
+"
 
 		## change to build directory and build iso
 		cd ${MOO_HOME}archlive/releng
 		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+
+
+		echo "
+${bldred}iso built${txtrst}
+"
+
+		if [ -f "$REPO_CREDS" ] ; then
+			echo "
+================syncing iso to local storage repos===================
+"
+			rsync -avzrcpPh --stats $ISO_STORAGE/mooOS-beta-dual.iso $ISO_STORAGE/mooOS-beta-dual-old.iso
+			rsync -avzrcpPh --stats $ISO_DIR/*.iso $ISO_STORAGE/mooOS-beta-dual.iso
+
+			echo "
+================syncing iso to remote server===================
+"
+			echo "
+This may take a while...
+"
+			. $REPO_CREDS
+
+			## rsync .iso using vars defined in credentials, e.g.:
+				port=$(eval echo $(echo '${'_iso_sync[1]'}'))
+				flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
+				src=$(eval echo $(echo '${'_iso_sync[2]'}'))
+				dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
+				rsync -navzcPh $flags -e "ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
+		fi
 	fi
 else ## as $USER
 	## create the build environment and preparation
@@ -369,8 +400,8 @@ else ## as $USER
 	## push latest code to github
 	gh -b ## https://github.com/idk/gh
 	echo "
-	${bldyellow}Copying configuration files and recreating repos now...${txtrst}
-	"
+${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+"
 	## install custom mooOS packages
 	## wallpapers
 	# cd ${MOO_HOME}github/mooOS-wallpapers
@@ -405,12 +436,12 @@ else ## as $USER
 
 	## create repo databases
 	echo "
-	${bldyellow}Re-creating i686 repository${txtrst}
-	"
+${bldyellow}Re-creating i686 repository${txtrst}
+"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
 	echo "
-	${bldyellow}Re-creating x86_64 repository${txtrst}
-	"
+${bldyellow}Re-creating x86_64 repository${txtrst}
+"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 	#echo "${bldyellow}Re-creating utils repository${txtrst}"
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
@@ -422,8 +453,8 @@ else ## as $USER
 	## clean up stable repos
 	## re-create repos local and remote
 	echo "
-	================syncing to local repos===================
-	"
+================syncing to local repos===================
+"
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-32/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/mooOS-pkgs-32
@@ -433,8 +464,8 @@ else ## as $USER
 	## include login credentials:
 	if [ -f "$REPO_CREDS" ] ; then
 		echo "
-		================syncing to remote repos===================
-		"
+================syncing to remote repos===================
+"
 		. $REPO_CREDS
 
 		## rsync using vars defined in credentials, e.g.:
@@ -451,8 +482,10 @@ else ## as $USER
 
 	notify-send "Repo update complete"
 
-	echo "${bldyellow}Now re-run this script as root!${txtrst}"
-	sleep 3s
+	echo "
+${bldyellow}Now re-run this script as root!${txtrst}
+"
+	#sleep 3s
 fi
 
 exit 0
