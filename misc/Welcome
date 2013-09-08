@@ -15,6 +15,9 @@ Tip: To launch above URL in vimb try:
 	 Type: vbp https://mooos.biz.tm<ENTER>
 
 
+Tip: To toggle fullscreen try:
+	Type: <Modkey>+<Up Arrow> or <Modkey>+<K>
+
+
 Tip: To open another tab in existing instance of vimb try:
 	Type: <t> https://www.linuxdistrocommunity.com/forums<ENTER>
-	
