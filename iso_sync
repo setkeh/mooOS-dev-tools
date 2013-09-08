@@ -368,8 +368,9 @@ else ## as $USER
 
 	## push latest code to github
 	gh -b ## https://github.com/idk/gh
-	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
-
+	echo "
+	${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+	"
 	## install custom mooOS packages
 	## wallpapers
 	cd ${MOO_HOME}github/mooOS-wallpapers
@@ -403,9 +404,13 @@ else ## as $USER
 	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 	## create repo databases
-	echo "\n${bldyellow}Re-creating i686 repository${txtrst}\n"
+	echo "
+	${bldyellow}Re-creating i686 repository${txtrst}
+	"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS-pkgs-32.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
-	echo "\n${bldyellow}Re-creating x86_64 repository${txtrst}\n"
+	echo "
+	${bldyellow}Re-creating x86_64 repository${txtrst}
+	"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS-pkgs-64.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 	#echo "${bldyellow}Re-creating utils repository${txtrst}"
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
@@ -416,7 +421,9 @@ else ## as $USER
 
 	## clean up stable repos
 	## re-create repos local and remote
-	echo "\n================syncing to local repos===================\n"
+	echo "
+	================syncing to local repos===================
+	"
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-32/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/mooOS-pkgs-32
@@ -425,7 +432,9 @@ else ## as $USER
 	## remote repo
 	## include login credentials:
 	if [ -f "$REPO_CREDS" ] ; then
-		echo "\n================syncing to remote repos===================\n"
+		echo "
+		================syncing to remote repos===================
+		"
 		. $REPO_CREDS
 
 		## rsync using vars defined in credentials, e.g.:
