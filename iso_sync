@@ -29,19 +29,19 @@ GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key i
 # #32-local -> 32-remote
 # _remote1[1]=22 # port
 # _remote1[2]="/home/pdq/abs/mooOS-pkgs-32"
-# _remote1[3]="example@:/path/to/mooOS/public_html/repos"
+# _remote1[3]="example@127.0.0.1:/path/to/mooOS/public_html/repos"
 # _remote1[4]="--delete --stats"
 
 # #64-local -> 64-remote
 # _remote2[1]=22 # port
 # _remote2[2]="/home/pdq/abs/mooOS-pkgs-64"
-# _remote2[3]="example@:/path/to/mooOS/public_html/repos"
+# _remote2[3]="example@127.0.0.1:/path/to/mooOS/public_html/repos"
 # _remote2[4]="--delete --stats"
 
 # #iso-local -> iso-remote
 # _iso_sync[1]=22
 # _iso_sync[2]="/media/truecrypt3/mooOS/out/${_iso_label}*.iso"
-# _iso_sync[3]="example@:/var/www/mooOS"
+# _iso_sync[3]="example@127.0.0.1:/var/www/mooOS"
 # _iso_sync[4]="--stats"
 
 ## End remote rsyncs
