@@ -4,7 +4,7 @@
 ## License: GPL3
 
 ## This script is run as $USER then following that as root
-## This script creates the mooOS livecd ISO im age file
+## This script creates the mooOS livecd ISO image file
 
 ## Script variables (you should change these)
 MOO_HOME="/home/pdq/"
