@@ -3,6 +3,9 @@
 ## pdq 08-13-2013 - PRESENT
 ## License: GPL3
 
+## This script is run as $USER then following that as root
+## This script creates the mooOS livecd ISO im age file
+
 ## Script variables (you should change these)
 MOO_HOME="/home/pdq/"
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
@@ -362,7 +365,7 @@ if [ $(id -u) -eq 0 ]; then
 	fi
 else ## as $USER
 	## create the build environment and preparation
-	
+
 	## push latest code to github
 	gh -b ## https://github.com/idk/gh
 	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
