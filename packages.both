@@ -69,7 +69,6 @@ elementary-git
 elementary_test-git
 encfs
 enlightenment17-git
-epdfview
 ethtool
 f2fs-tools
 faenza-green-icon-theme
@@ -358,6 +357,7 @@ xf86-input-void
 xf86-video-vesa
 xfsprogs
 xl2tpd
+xpdf
 xorg-server
 xorg-server-utils
 xorg-utils
