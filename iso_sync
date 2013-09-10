@@ -428,7 +428,6 @@ generating md5sums... please wait a moment
 			## replace old hash with new hash in info.php on local web server
 			su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 
-
 			## create initial old name
 			if [ ! -f "$OLDNAME" ]; then
 				su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-dual.iso > $OLDNAME"
@@ -455,11 +454,11 @@ generating md5sums... please wait a moment
 
 			echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
 			## replace old release name with new release name in info.php on local web server
-			if [ $NEW_NAME -eq 0 ]; then
+			if [ $NEW_NAME -eq 1 ]; then
 				su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 			fi
 
-			if [ $NEW -eq 0 ]; then
+			if [ $NEW -eq 1 ]; then
 				echo "
 ================syncing iso to local storage repos===================
 "
@@ -488,7 +487,7 @@ This may take a while...
 					flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
 					src=$(eval echo $(echo '${'_iso_sync[2]'}'))
 					dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
-					su -l $MOO_USER -c "torsocks rsync -navzcPh $flags -e 'torsocks ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
+					su -l $MOO_USER -c "rsync -avzcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
 
 					## copy info.php with new hash to remote web server
 					echo "
