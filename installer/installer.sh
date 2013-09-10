@@ -655,6 +655,11 @@ finishup() {
     reboot
 }
 
+dialog --clear --backtitle "$upper_title" --title "Logs" --yesno "Do you wish to view the system log while installation proceeds? (This maybe helpful)" 10 30
+if [ $? = 0 ] ; then
+    urxvtc -name "Logs" -e journalctl -f
+fi
+
 # utility execution
 while true
 do
