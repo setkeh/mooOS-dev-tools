@@ -427,12 +427,19 @@ initial_install() {
 
     PWD=$(pwd)
 
+    rm -rf /mnt/etc/skel
+    cp -vr /etc/skel /mnt/etc/
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
     sed -i "s/repo.mooOS.pdq/mooos.biz.tm\/repos/g" /mnt/etc/pacman.conf
     cp -v /etc/psd.conf /mnt/etc/psd.conf
     cp -v /etc/issue /mnt/etc/issue
     cp -v /etc/lsb-release /mnt/etc/lsb-release
     cp -v /etc/os-release /mnt/etc/os-release
+    cp -v /etc/arch-release /mnt/etc/arch-release
+    cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
+    cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
+    cp -v /etc/resolv.conf /mnt/etc/resolv.conf
+    cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
     mkdir -vp /mnt/etc/tor
     cp -vr /etc/tor/* /mnt/etc/tor/
     cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
@@ -555,9 +562,9 @@ chroot_configuration() {
     cp /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
     chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
 
-    cp /etc/resolv.conf /mnt/etc/resolv.conf
-    cp -vr /etc/skel /mnt/etc/
-    cp -v /etc/arch-release /mnt/etc/arch-release
+    #cp /etc/resolv.conf /mnt/etc/resolv.conf
+    #cp -vr /etc/skel /mnt/etc/
+    #cp -v /etc/arch-release /mnt/etc/arch-release
 
     # fix missing icons in .desktop files
     sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
