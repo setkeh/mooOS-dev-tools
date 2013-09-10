@@ -589,9 +589,11 @@ ${bldyellow}Re-creating x86_64 repository${txtrst}
 	notify-send "Repo update complete"
 
 	echo "
-${bldyellow}Now re-run this script as root!${txtrst}
+${bldyellow}Re-running this script as root!${txtrst}
 "
-	#sleep 3s
+	sleep 2s
+	## re-run script as root
+ 	sudo $0
 fi
 
 exit 0

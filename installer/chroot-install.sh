@@ -1091,7 +1091,7 @@ if [ $(id -u) -eq 0 ]; then
                 vb "https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver" &
                 dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
                 if [ $? = 0 ] ; then
-                    urxvt -name "Video Driver" -title "Video Driver"
+                    urxvt -name "Video Driver" -title "Video Driver" -e
                 fi
 
                 # dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
