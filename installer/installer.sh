@@ -538,6 +538,7 @@ initial_install() {
 
     install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
     gzip -f /mnt/usr/local/man/man1/mooOS.1
+      
     current_selection 6
 }
 

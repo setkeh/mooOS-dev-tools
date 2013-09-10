@@ -1054,13 +1054,45 @@ if [ $(id -u) -eq 0 ]; then
                    sleep 3s
                 fi
 
+                squid -z &
                 pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
                 
                 systemctl daemon-reload
                 sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
                 sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
+                sed -i "s/moo/$puser/g" /etc/psd.conf
+
+                sed -i "s/alice/$GEN_HOSTNAME/g" /etc/squid/squid.conf
                 chmod -R 777 /run/transmission
                 chown -R $puser /run/transmission
+                
+                PWD=$(pwd)
+                ## patch config files for username
+                cd /home/$puser/.e/e/config/standard
+                for NEW_FILE in e.*
+                do
+                    EWW_FILE=${NEW_FILE/.cfg/.src}
+
+                    eet -d $NEW_FILE config $EWW_FILE
+                    sed -i "s/moo/$puser/g" $EWW_FILE
+                    rm $NEW_FILE
+                    eet -e $NEW_FILE config $EWW_FILE 1
+                    rm $EWW_FILE
+                done
+                cd $PWD
+
+                ## clean up files content
+                sed -i "s/moo/$puser/g" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+                sed -i "s/moo/$puser/g" /home/$puser/.config/transmission-daemon/settings.json
+                sed -i "s/moo/$puser/g" /home/$puser/.moc/config
+                sed -i "s/moo/$puser/g" /home/$puser/.kde4/share/config/dolphinrc
+                sed -i "s/moo/$puser/g" /home/$puser/.gtkrc-2.0
+
+                vb "https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver" &
+                dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
+                if [ $? = 0 ] ; then
+                    urxvt -name "Video Driver" -title "Video Driver"
+                fi
 
                 # dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
                 # if [ $? = 0 ] ; then
@@ -1081,14 +1113,10 @@ if [ $(id -u) -eq 0 ]; then
           # 'lib32-nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'
           # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
               #  else
-                dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "exiting install script...\n\nIf complete, type: sudo reboot (you may also want to search, chose and install a video driver now.\n\npacaur XXXX\n\nReplacing XXXX with:\n'ati-dri: for open source ATI driver users'
-'catalyst-utils: for AMD Catalyst users'\n
-'intel-dri: for open source Intel driver users'\n
-'nouveau-dri: for Nouveau users'\n
-'nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'\n
-'nvidia-utils: for NVIDIA proprietary blob users'" 30 70
+                dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Exiting install script...." 30 70
                # fi
             #fi
+
         fi
         current_selection 11
     }
