@@ -57,7 +57,7 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-0.999998" ## 0.97
+ISO_VERSION="$(date +%Y.%m.%d)-beta-1.0" ## 0.97
 
 
 # Text color variables (there is no need change these)
@@ -397,7 +397,7 @@ ${bldred}iso built${txtrst}
 		if ask_something; then
 			## create initial old hash
 			if [ ! -f "$OLDHASH" ]; then
-				su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > $OLDHASH"
+				su $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > $OLDHASH"
 			fi
 
 			echo "
@@ -408,7 +408,7 @@ generating md5sums... please wait a moment
 
 			## create initial current hash
 			if [ ! -f "$CURRENTHASH" ]; then
-				su -l $MOO_USER -c "echo $MD5HASH > $CURRENTHASH"
+				su $MOO_USER -c "echo $MD5HASH > $CURRENTHASH"
 			fi
 
 			CURMD5HASH=$(cat $CURRENTHASH)
@@ -416,8 +416,8 @@ generating md5sums... please wait a moment
 			NEW=0
 			## if new iso create hashes
 			if [ "$CURMD5HASH" != "$MD5HASH" ]; then
-				su -l $MOO_USER -c "echo $CURMD5HASH > $OLDHASH"
-				su -l $MOO_USER -c "echo $MD5HASH > $CURRENTHASH"
+				su $MOO_USER -c "echo $CURMD5HASH > $OLDHASH"
+				su $MOO_USER -c "echo $MD5HASH > $CURRENTHASH"
 				NEW=1
 			fi
 
@@ -426,16 +426,16 @@ generating md5sums... please wait a moment
 			echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH"
 
 			## replace old hash with new hash in info.php on local web server
-			su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+			su $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 
 			## create initial old name
 			if [ ! -f "$OLDNAME" ]; then
-				su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-dual.iso > $OLDNAME"
+				su $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-dual.iso > $OLDNAME"
 			fi
 
 			## create initial current name
 			if [ ! -f "$CURRENTNAME" ]; then
-				su -l $MOO_USER -c "ls $ISO_DIR > $CURRENTNAME"
+				su $MOO_USER -c "ls $ISO_DIR > $CURRENTNAME"
 			fi
 
 			NEW_NAME_LIST=$(ls $ISO_DIR)
@@ -445,8 +445,8 @@ generating md5sums... please wait a moment
 			NEW_NAME=0
 			## if new iso create release name
 			if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
-				su -l $MOO_USER -c "echo $CURRELNAME > $OLDNAME"
-				su -l $MOO_USER -c "echo $NEW_NAME_LIST > $CURRENTNAME"
+				su $MOO_USER -c "echo $CURRELNAME > $OLDNAME"
+				su $MOO_USER -c "echo $NEW_NAME_LIST > $CURRENTNAME"
 				NEW_NAME=1
 			fi
 
@@ -456,21 +456,21 @@ generating md5sums... please wait a moment
 			echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
 			## replace old release name with new release name in info.php on local web server
 			if [ $NEW_NAME -eq 1 ]; then
-				su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+				su $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 			fi
 
 			if [ $NEW -eq 1 ]; then
 				echo "
 ================syncing iso to local storage repos===================
 "
-				su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
-				su -l $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-dual.iso $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
-				su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
-				su -l $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
+				su $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
+				su $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-dual.iso $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
+				su $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
+				su $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
 
 				## Mount server filesystem to localhost
 				# path to remote repo credentials file
-				su -l $MOO_USER -c "cat /mnt/linux-pdq/media/truecrypt1/private/repo_creds > /tmp/repo_creds"
+				su $MOO_USER -c "cat /mnt/linux-pdq/media/truecrypt1/private/repo_creds > /tmp/repo_creds"
 				REPO_CREDS=/tmp/repo_creds
 
 				## if remote web server exists
@@ -488,13 +488,13 @@ This may take a while...
 					flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
 					src=$(eval echo $(echo '${'_iso_sync[2]'}'))
 					dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
-					su -l $MOO_USER -c "rsync -avzcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
+					su $MOO_USER -c "rsync -avzcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
 
 					## copy info.php with new hash to remote web server
 					echo "
 ================syncing info.php to remote web server===================
 "
-					su -l $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
+					su $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
 					rm "$REPO_CREDS"
 				fi
 			fi

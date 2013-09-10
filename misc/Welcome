@@ -1,17 +1,21 @@
 Welcome to mooOS
 ================
 
-Networking may take up to 1 minute to start up... be patient young jedi.
-
-
-Visit https://www.linuxdistrocommunity.com/forums
-
+You should wait a few minutes before attempt to install.
+Networking may take a few minutes to start up... be patient young jedi
+-----------------------------------------------------------------------
 Homepage: https://mooos.biz.tm
+------------------------------
+Visit: https://www.linuxdistrocommunity.com/forums
+-------------------------------------------------
 
+Tip: To view the System Log try:
+---  Type: <Alt>+<Esc> (To start the Everything Starter)
+	 Type: System Log<ENTER>
 
 
 Tip: To launch above URL in vimb try:
-	 Type: <Alt>+<Esc> (To start the Everything Starter)
+---	 Type: <Alt>+<Esc> (To start the Everything Starter)
 
 	 Type: vb https://mooos.biz.tm<ENTER>
 
@@ -19,23 +23,17 @@ Tip: To launch above URL in vimb try:
 	 Type: vbp https://mooos.biz.tm<ENTER>
 
 
-
-
 Tip: To toggle fullscreen try:
-	Type: <Modkey>+<Up Arrow> or <Modkey>+<K>
-
-
+---	 Type: <Modkey>+<Up Arrow> or <Modkey>+<K>
 
 
 Tip: To open another tab in existing instance of vimb try:
-	Type: <t> https://www.linuxdistrocommunity.com/forums<ENTER>
-
-
+---	 Type: <t> https://www.linuxdistrocommunity.com/forums<ENTER>
 
 
 Tip: To change the syntax highlighting of file in Sublime Text 3 try:
-	Type: <Ctrl>+<Shift>+<p>SYNTAX<ENTER>
-	example: <Ctrl>+<Shift>+<p>shell<ENTER>
+---	 Type: <Ctrl>+<Shift>+<p>SYNTAX<ENTER>
+	 example: <Ctrl>+<Shift>+<p>shell<ENTER>
 
 #!/usr/bin/sh
 ## Example shell script file

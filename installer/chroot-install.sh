@@ -688,7 +688,7 @@ if [ $(id -u) -eq 0 ]; then
                 systemctl enable cronie.service
                 systemctl enable dhcpcd.service
 
-                dialog --clear --backtitle "$upper_title" --title "Extra" --yesno "Install foo and bar?" 10 30
+                dialog --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
 
                 if [ $? = 0 ] ; then
 
@@ -1058,6 +1058,7 @@ if [ $(id -u) -eq 0 ]; then
                 pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
                 
                 systemctl daemon-reload
+                sed -i "s/moo/$puser/g" /etc/systemd/system/getty@tty1.service.d/autologin.conf
                 sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
                 sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
                 sed -i "s/moo/$puser/g" /etc/psd.conf
@@ -1073,25 +1074,25 @@ if [ $(id -u) -eq 0 ]; then
                 do
                     EWW_FILE=${NEW_FILE/.cfg/.src}
 
-                    eet -d $NEW_FILE config $EWW_FILE
-                    sed -i "s/moo/$puser/g" $EWW_FILE
+                    su $puser -c "eet -d $NEW_FILE config $EWW_FILE"
+                    su $puser -c "sed -i \"s/moo/$puser/g\" $EWW_FILE"
                     rm $NEW_FILE
-                    eet -e $NEW_FILE config $EWW_FILE 1
+                    su $puser -c "eet -e $NEW_FILE config $EWW_FILE 1"
                     rm $EWW_FILE
                 done
                 cd $PWD
 
                 ## clean up files content
-                sed -i "s/moo/$puser/g" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
-                sed -i "s/moo/$puser/g" /home/$puser/.config/transmission-daemon/settings.json
-                sed -i "s/moo/$puser/g" /home/$puser/.moc/config
-                sed -i "s/moo/$puser/g" /home/$puser/.kde4/share/config/dolphinrc
-                sed -i "s/moo/$puser/g" /home/$puser/.gtkrc-2.0
+                su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini"
+                su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.config/transmission-daemon/settings.json"
+                su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.moc/config"
+                su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.kde4/share/config/dolphinrc"
+                su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.gtkrc-2.0"
 
-                vb "https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver" &
+                su $puser -c "vb \"https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver\" &"
                 dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
                 if [ $? = 0 ] ; then
-                    urxvt -name "Video Driver" -title "Video Driver" -e
+                    su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
                 fi
 
                 # dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
