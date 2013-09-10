@@ -427,15 +427,15 @@ This may take a while...
 "
 				. $REPO_CREDS
 
-				## copy info.php with new hash to remote web server
-				su -l pdq -c "scp /mnt/linux-root/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
-
 				## rsync .iso using vars defined in credentials, e.g.:
 				port=$(eval echo $(echo '${'_iso_sync[1]'}'))
 				flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
 				src=$(eval echo $(echo '${'_iso_sync[2]'}'))
 				dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
 				rsync -navzcPh $flags -e "ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
+
+				## copy info.php with new hash to remote web server
+				su -l pdq -c "scp /mnt/linux-root/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
 			fi
 			#umount /mnt/linux-root
 		fi
