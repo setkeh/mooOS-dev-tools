@@ -459,14 +459,14 @@ generating md5sums... please wait a moment
 				su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 			fi
 
-			if [ $NEW -eq 0 ]; then
+			if [ $NEW -eq 1 ]; then
 				echo "
 ================syncing iso to local storage repos===================
 "
-				# su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
-				# su -l $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-dual.iso $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
-				# su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
-				# su -l $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
+				su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
+				su -l $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-dual.iso $ISO_STORAGE/$ISO_NAME-beta-dual-old.iso"
+				su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
+				su -l $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-dual.iso"
 
 				## Mount server filesystem to localhost
 				# path to remote repo credentials file
