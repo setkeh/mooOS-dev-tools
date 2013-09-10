@@ -1089,11 +1089,11 @@ if [ $(id -u) -eq 0 ]; then
                 su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.kde4/share/config/dolphinrc"
                 su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.gtkrc-2.0"
 
-                su $puser -c "vb \"https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver\" &"
-                dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
-                if [ $? = 0 ] ; then
-                    su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
-                fi
+                # su $puser -c "vb \"https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver\" &"
+                # dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
+                # if [ $? = 0 ] ; then
+                #     su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
+                # fi
 
                 # dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
                 # if [ $? = 0 ] ; then

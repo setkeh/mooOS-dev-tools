@@ -628,6 +628,13 @@ chroot_configuration() {
     export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 
     sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
+    
+    # vb "https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver" &
+    # dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
+    # if [ $? = 0 ] ; then
+    #     su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
+    # fi
+
     current_selection 8
 }
 
