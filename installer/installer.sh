@@ -114,7 +114,7 @@ partition_editor() {
         return 0            
     fi
 
-    dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 7GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
+    dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 8GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
     if [ $? = 0 ] ; then
         umount /mnt/* 2>/dev/null
         cfdisk
