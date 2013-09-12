@@ -160,6 +160,7 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.pentadactylrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.pentadactylrc			
 			cp -v ${MOO_HOME}.dialogrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.dialogrc
 			cp -v ${MOO_HOME}.wgetrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.wgetrc
+			cp -v ${MOO_HOME}.curlrc ${MOO_HOME}archlive/releng/root-image/etc/skel/.curlrc
 			## copy over ~/.themes
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
 			cp -vr ${MOO_HOME}.themes/Black/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.themes/Black
@@ -261,8 +262,8 @@ if [ $(id -u) -eq 0 ]; then
 			rm -r ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
 			mkdir -vp ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images
 			cp -vr ${MOO_HOME}.e/e/applications/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/applications
-			cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
-			cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
+			#cp -vr ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/backgrounds
+			#cp -vr ${MOO_HOME}.e/e/config/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config
 			#cp -vr ${MOO_HOME}.e/e/themes/* ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/themes
 			#cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
  			rm ${MOO_HOME}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
@@ -373,6 +374,12 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${MOO_HOME}archlive/releng/root-image/etc/pacman-i686.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${MOO_HOME}archlive/releng/work/pacman-x86_64.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${MOO_HOME}archlive/releng/work/pacman-i686.conf
+
+			## packages
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.both ${MOO_HOME}archlive/releng/packages.both
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages-server.both ${MOO_HOME}archlive/releng/packages-server.both
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.i686 ${MOO_HOME}archlive/releng/packages.i686
+			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.x86_64 ${MOO_HOME}archlive/releng/packages.x86_64
 
 			## copy over boot splash screen and mooOS branding
 			cp -v ${MOO_HOME}archlive/releng/syslinux/splash.png ${MOO_HOME}archlive/releng/root-image/etc/grub.d/splash.png
