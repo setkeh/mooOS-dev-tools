@@ -49,6 +49,7 @@ hicolor-icon-theme
 htop
 hub
 i7z
+iceweasel
 iftop
 iotop
 ipw2100-fw
@@ -147,8 +148,8 @@ tls
 transmission-cli
 ttf-envy-code-r
 udevil
-unrar
-unzip
+unar
+unzip-libre
 update-mirrorlist
 upx
 urxvt-perls
