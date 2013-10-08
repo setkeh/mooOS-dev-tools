@@ -90,6 +90,12 @@ if [ $(id -u) -eq 0 ]; then
 		if ! ask_something; then
 			PWD=$(pwd)
 
+			## push latest code to github
+			su -l $MOO_USER -c "gh -b" ## https://github.com/idk/gh
+			echo "
+			${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+			"
+			
 			## copy root files
 			## profile-sync-daemon
 			cp -v /etc/psd.conf ${MOO_HOME}archlive/releng/root-image/etc/psd.conf
@@ -569,10 +575,10 @@ ${bldyellow}Re-creating x86_64 repository${txtrst}
 	echo "
 ================syncing to local repos===================
 "
-	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-32/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
-	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
-	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/mooOS-pkgs-32
-	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-64/ ${REPO_BASE_DIR}/mooOS-pkgs-64
+	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
+	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
 
 	## remote repo
 	## include login credentials:
