@@ -255,7 +255,6 @@ preload
 privoxy
 procps-ng
 profile-sync-daemon
-ps_mem
 psmisc
 pulseaudio
 pulseaudio-alsa

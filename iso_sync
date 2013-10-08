@@ -91,11 +91,11 @@ if [ $(id -u) -eq 0 ]; then
 			PWD=$(pwd)
 
 			## push latest code to github
-			su -l $MOO_USER -c "gh -b" ## https://github.com/idk/gh
-			echo "
-			${bldyellow}Copying configuration files and recreating repos now...${txtrst}
-			"
-			
+			#su -l $MOO_USER -c "gh -b" ## https://github.com/idk/gh
+			#echo "
+			#${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+			#"
+
 			## copy root files
 			## profile-sync-daemon
 			cp -v /etc/psd.conf ${MOO_HOME}archlive/releng/root-image/etc/psd.conf
