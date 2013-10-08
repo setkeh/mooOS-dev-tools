@@ -169,7 +169,7 @@ libvpx
 libxft
 libxft
 licenses
-linux
+linux-libre
 linux-atm
 lm_sensors
 logrotate
