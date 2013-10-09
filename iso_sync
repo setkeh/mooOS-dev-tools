@@ -528,24 +528,24 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	# makepkg -sf
 	# schroot -p -- makepkg -sf
 
-	## github wrapper
-	rm -r ${MOO_HOME}abs/gh
-	mkdir -p ${MOO_HOME}abs/gh
-	cd ${MOO_HOME}abs/gh
-	wget https://raw.github.com/idk/gh/master/PKGBUILD
-	makepkg -sf
-	schroot -p -- makepkg -sf
+	# ## github wrapper
+	# rm -r ${MOO_HOME}abs/gh
+	# mkdir -p ${MOO_HOME}abs/gh
+	# cd ${MOO_HOME}abs/gh
+	# wget https://raw.github.com/idk/gh/master/PKGBUILD
+	# makepkg -sf
+	# schroot -p -- makepkg -sf
 
-	## vimb web browser and tabbed, patched!
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
-	rm -fr ${MOO_HOME}abs/vb-pdq
-	mkdir -p ${MOO_HOME}abs/vb-pdq
-	cd ${MOO_HOME}abs/vb-pdq
-	wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
-	wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
-	makepkg -sf
-	schroot -p -- makepkg -sf
+	# ## vimb web browser and tabbed, patched!
+	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
+	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
+	# rm -fr ${MOO_HOME}abs/vb-pdq
+	# mkdir -p ${MOO_HOME}abs/vb-pdq
+	# cd ${MOO_HOME}abs/vb-pdq
+	# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
+	# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
+	# makepkg -sf
+	# schroot -p -- makepkg -sf
 
 	cd "$PWD"
 
