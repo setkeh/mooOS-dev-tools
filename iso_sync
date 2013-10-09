@@ -220,24 +220,24 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${MOO_HOME}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
 			## https://github.com/dmatarazzo/Sublime-Text-2-Icon
 			echo "Updating Sublime Text 3 icons"
-			cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
-			cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
-			cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
-			cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
-			cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/sublime-text.png
-			cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/sublime-text.png
-			cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/sublime-text.png
-			cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/sublime-text.png
-			cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/sublime-text.png
-			cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/sublime-text.png
-			cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/sublime-text.png
-			cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/sublime-text.png
-			cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/sublime-text.png
-			cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png
-			cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png
-			cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
-			cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
-			cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
+			# cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+			# cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+			# cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+			# cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+			# cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/sublime-text.png
+			# cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/sublime-text.png
+			# cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/sublime-text.png
+			# cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/sublime-text.png
+			# cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+			# cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+			# cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+			# cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+			# cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+			# cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+			# cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+			# cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+			# cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+			# cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 			## mooOS icon
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${MOO_HOME}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
