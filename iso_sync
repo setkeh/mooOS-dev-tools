@@ -19,9 +19,10 @@ OLDHASH="${ABS_BASE_DIR}mooOS.md5sum.old"
 CURRENTNAME="${ABS_BASE_DIR}mooOS.name"
 OLDNAME="${ABS_BASE_DIR}mooOS.name.old"
 ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
-WORK_DIR="/media/truecrypt3/mooOS/work" # work
+WORK_DIR="${MOO_HOME}mooOS/work" # work
 ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down"
-ARCHLIVE='/media/truecrypt3/'
+ARCHLIVE=$MOO_HOME
+
 
 GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key in the file
 
