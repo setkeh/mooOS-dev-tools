@@ -191,6 +191,7 @@ meld
 memcached
 mencoder-libre
 mesa-libgl
+mkinitcpio
 mlocate
 mlt
 mlt-python-bindings
