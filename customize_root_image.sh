@@ -10,7 +10,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 ## figure out architecture type
 archtype="$(uname -m)"
-sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/mooos.biz.tm\/repos/g" /etc/pacman.conf
+sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/repos.mooos.org/g" /etc/pacman.conf
 
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
