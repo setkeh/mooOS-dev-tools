@@ -306,7 +306,7 @@ spectrwm-libre
 smartmontools
 speedtouch
 squashfs-tools
-sqlmap
+sqlmap-git
 squid
 sshfs
 ssldump
