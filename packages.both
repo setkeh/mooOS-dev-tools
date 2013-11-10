@@ -11,7 +11,7 @@ archiso
 ati-dri
 atop
 audio-convert-libre
-audiothumbsaudiothumbs
+audiothumbs
 autoconf
 autocutsel
 automake
@@ -73,6 +73,7 @@ efl-git-debug
 eggdrop
 elementary-git
 elementary_test-git
+elementary-icon-theme
 encfs
 enlightenment17-git
 ethtool
