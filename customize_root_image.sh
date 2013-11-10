@@ -94,6 +94,7 @@ chmod 750 /etc/sudoers.d
 chmod 440 /etc/sudoers.d/g_wheel
 
 sed -i "s/#Server/Server/g" /etc/pacman.d/mirrorlist
+sed -i 's/#\(Storage=\)auto/\1volatile/' /etc/systemd/journald.conf
 squid -z &
 
 #chmod -R 777 /run/transmission
