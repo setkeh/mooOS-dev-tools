@@ -19,8 +19,8 @@ OLDHASH="${ABS_BASE_DIR}mooOS.md5sum.old"
 CURRENTNAME="${ABS_BASE_DIR}mooOS.name"
 OLDNAME="${ABS_BASE_DIR}mooOS.name.old"
 ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
-#WORK_DIR="/media/truecrypt3/mooOS/work" # work
-WORK_DIR="${MOO_HOME}mooOS/work" # work
+WORK_DIR="/media/truecrypt3/mooOS/work" # work
+#WORK_DIR="${MOO_HOME}mooOS/work" # work
 
 ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down"
 ARCHLIVE=$MOO_HOME
@@ -61,7 +61,7 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-1.3" ## 0.97
+ISO_VERSION="$(date +%Y.%m.%d)-beta-1.4" ## 0.97
 
 
 # Text color variables (there is no need change these)
