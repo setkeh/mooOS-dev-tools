@@ -43,6 +43,7 @@ cpupower-libre
 crda
 cronie
 cryptsetup
+cvs
 cursetheweather
 dansguardian
 darkhttpd
@@ -145,6 +146,7 @@ iceweasel-libre
 iftop
 inetutils
 intel-dri
+intrace
 iotop
 iproute2
 iputils
@@ -153,6 +155,7 @@ ipw2200-fw
 irssi
 jfsutils
 jhead
+johnny
 k3b
 kde-servicemenus-meld-menu-extended
 kdebase-kdialog
@@ -173,6 +176,7 @@ lftp
 libavc1394
 libgl
 libisoburn
+libjpeg6
 libldap
 libmodplug
 libpng12
@@ -195,6 +199,7 @@ lm_sensors
 logrotate
 logstalgia
 lvm2
+lxappearance
 lxtask
 lzop
 m4
@@ -204,6 +209,7 @@ man-db
 man-pages
 mc
 mcomix-libre
+md5deep
 mdadm
 mediadownloader
 mediainfo
@@ -315,7 +321,7 @@ ssldump
 stardork
 steam-skin-ambiance
 steam-skin-manager
-steam-skin-radiance 
+steam-skin-radiance
 strace
 sublime-text-dev
 sudo
