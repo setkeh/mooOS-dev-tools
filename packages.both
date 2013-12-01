@@ -24,6 +24,7 @@ bison
 bitcoin-qt
 bitlbee-libre
 blender-libre
+brutaldoom
 bsd-games
 btrfs-progs
 bzip2
@@ -61,6 +62,7 @@ dmidecode
 dmraid
 dnsmasq
 dnsutils
+doomseeker
 dosfstools
 downgrade
 dtrx
@@ -123,6 +125,7 @@ gstreamer0.10-ffmpeg
 gstreamer0.10-good
 gstreamer0.10-ugly
 gstreamer0.10-ugly-plugins
+gtmsu_servicemenu
 gzip
 hardinfo
 haveged
@@ -310,6 +313,9 @@ squid
 sshfs
 ssldump
 stardork
+steam-skin-ambiance
+steam-skin-manager
+steam-skin-radiance 
 strace
 sublime-text-dev
 sudo
@@ -326,7 +332,6 @@ testdisk
 texinfo
 tig
 tls
-tmsu-bin
 tor
 torsocks
 traceroute
@@ -411,6 +416,7 @@ yeahconsole
 youtube-dl
 youtube-viewer-git
 zd1211-firmware
+zandronum
 zenity
 zip
 zsh
