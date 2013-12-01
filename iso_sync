@@ -23,8 +23,8 @@ WORK_DIR="/media/truecrypt3/mooOS/work" # work
 #WORK_DIR="${MOO_HOME}mooOS/work" # work
 
 ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down"
-ARCHLIVE=$MOO_HOME
-
+#ARCHLIVE=$MOO_HOME
+ARCHLIVE=/media/truecrypt3/
 
 GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key in the file
 
