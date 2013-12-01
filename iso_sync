@@ -403,7 +403,7 @@ ${bldred}Building iso now...${txtrst}
 
 		## change to build directory and build iso
 		cd ${ARCHLIVE}archlive/releng
-		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL" 2>&1 >> ${MOO_HOME}output.txt
 
 		echo "
 ${bldred}iso built${txtrst}
