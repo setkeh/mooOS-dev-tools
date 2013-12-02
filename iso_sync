@@ -61,7 +61,7 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-1.4" ## 0.97
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.986"
 
 
 # Text color variables (there is no need change these)
@@ -195,6 +195,8 @@ if [ $(id -u) -eq 0 ]; then
 			cp -vr ${MOO_HOME}.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 			cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
+			cp -v ${MOO_HOME}.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc
+			cp -v ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc-2.0
 			
 			## copy over ~/.gnupg
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg
@@ -403,7 +405,8 @@ ${bldred}Building iso now...${txtrst}
 
 		## change to build directory and build iso
 		cd ${ARCHLIVE}archlive/releng
-		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL" 2>&1 >> ${MOO_HOME}output.txt
+		 ./build.sh -v -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+		#2>&1 >> ${MOO_HOME}output.txt
 
 		echo "
 ${bldred}iso built${txtrst}
