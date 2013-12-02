@@ -34,6 +34,7 @@ canto-daemon
 ccache
 cclive
 cdrdao
+cdrkit-libre
 cheser-icon-theme
 cmatrix
 coreutils
@@ -103,6 +104,7 @@ gdb
 getmail
 gettext
 gh
+ghostscript-libre
 gimp
 git
 gkrellm
@@ -162,6 +164,8 @@ kde-servicemenus-meld-menu-extended
 kdebase-kdialog
 kdebase-dolphin
 kdebase-konsole
+kdebase-runtime-libre
+kdelibs-libre
 kdemultimedia-ffmpegthumbs
 kdemultimedia-kmix
 kdenlive
@@ -195,6 +199,7 @@ libxft
 licenses
 linux-libre
 linux-atm
+lirc-utils-libre
 livestreamer
 lm_sensors
 logrotate
@@ -208,7 +213,7 @@ mach64-dri
 make
 man-db
 man-pages
-mc
+mc-libre
 mcomix-libre
 md5deep
 mdadm
@@ -306,6 +311,7 @@ rtmpdump
 rxvt-unicode
 schroot
 scrot
+sdl-libre
 sdlmame
 secure-delete
 sed
