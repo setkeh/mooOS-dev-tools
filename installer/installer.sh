@@ -412,7 +412,7 @@ initial_install() {
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
-    sed -i "s/repo.mooOS.pdq/mooos.biz.tm\/repos/g" /etc/$pacman_conf
+    sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /etc/$pacman_conf
     cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
     cp -v /etc/$pacman_conf /etc/pacman.conf
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
@@ -430,7 +430,7 @@ initial_install() {
     rm -rf /mnt/etc/skel
     cp -vr /etc/skel /mnt/etc/
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-    sed -i "s/repo.mooOS.pdq/mooos.biz.tm\/repos/g" /mnt/etc/pacman.conf
+    sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
     cp -v /etc/psd.conf /mnt/etc/psd.conf
     cp -v /etc/issue /mnt/etc/issue
     cp -v /etc/lsb-release /mnt/etc/lsb-release
@@ -625,7 +625,7 @@ chroot_configuration() {
         rm -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop
     fi
 
-    export TERM=xterm-color && arch-chroot /mnt /bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
+    export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 
     sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
     
