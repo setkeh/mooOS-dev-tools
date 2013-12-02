@@ -422,7 +422,7 @@ initial_install() {
     #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
     # fi
     
-    pacstrap -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
+    pacstrap -i -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
 
     PWD=$(pwd)
