@@ -110,3 +110,5 @@ systemctl enable cronie.service
 #systemctl daemon-reload
 #systemctl disable getty@tty1
 #systemctl enable autologin@tty1
+
+exit 0
