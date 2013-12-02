@@ -46,8 +46,10 @@ Enlightenment17 window manager
 | - Win + Grave                | - Close                                     |
 | - Win + Backspace            | - Close                                     |
 | - Win + KP_End               | - Command:    /usr/bin/dolphin              |
-| - Win + Return               | - Command:    /usr/bin/urxvtc               |
+| - Win + Return               | - Command:    /usr/bin/terminology          |
 | - Win + KP_Down              | - Command:    /usr/bin/firefox              |
++------------------------------+---------------------------------------------+
+| - Win + Shift + Return       | - Command:    /usr/bin/urcvtc               |
 +------------------------------+---------------------------------------------+
 | - Ctrl + Shift + Left        | - Send Mouse Back 1 Screen                  |
 | - Ctrl + Shift + Right       | - Send Mouse Forward 1 Screen               |
