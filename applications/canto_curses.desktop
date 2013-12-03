@@ -2,8 +2,8 @@
 Version=1.0
 Name=Canto Curses - RSS manager
 Comment=Deskop file for Canto Curses - mooOS
-Exec=urxvtc -name "RSS" -e canto-curses
-Icon=liferea
+Exec=urxvtc -name "RSS" -title "RSS" -e canto-curses
+Icon=internet-news-reader
 Terminal=false
 Type=Application
 Categories=Network;

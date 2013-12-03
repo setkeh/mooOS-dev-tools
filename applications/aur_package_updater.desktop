@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Update AUR Packages
+Comment=Desktop file for AUR package updates - mooOS
+Exec=urxvtc -name "Updates" -e packerupdater
+Icon=update-manager
+Terminal=false
+Type=Application
+Categories=Other;Application;

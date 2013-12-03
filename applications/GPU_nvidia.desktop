@@ -2,7 +2,7 @@
 Version=1.0
 Name=GPU Stats
 Comment=Deskop file for nvidia gpu stats - mooOS
-Exec=urxvtc -name "GPU" -e nvidia-smi -l 5 -q -d "MEMORY,TEMPERATURE"
+Exec=urxvtc -name "GPU" -title "GPU" -e nvidia-smi -l 5 -q -d "MEMORY,TEMPERATURE"
 Icon=nvidia-settings
 Terminal=false
 Type=Application

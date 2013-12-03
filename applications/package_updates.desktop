@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
-Name=Update Packages
-Comment=Deskop file for package updates - mooOS
-Exec=urxvtc -name "Updates" -e sudo pacman -Syu && pacaur -Syud && echo "This will stay open for 10 mins then close..." && sleep 10m
+Name=Update Repo Packages
+Comment=Desktop file for package updates - mooOS
+Exec=urxvtc -name "Updates" -e pacupdater
 Icon=update-manager
 Terminal=false
 Type=Application

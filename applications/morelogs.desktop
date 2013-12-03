@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=More Logs
+Comment=Deskop file for more logs - mooOS
+Exec=urxvtc -name "More Logs" -title "More Logs" -e sh more_logs
+Icon=logview
+Terminal=false
+Type=Application
+Categories=Utility;Application;

@@ -21,9 +21,16 @@ sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadown
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
 #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
 sed -i "s/Exec=/Exec=kdesudo /g" /usr/share/applications/gparted.desktop
+sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /usr/share/applications/kde4/krandrtray.desktop
+sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /usr/share/applications/kde4/kinfocenter.desktop
+sed -i "s/Icon=/opt/johnny/johnny-128.png/Icon=seahorse/g" /usr/share/applications/johnny.desktop
 
 if [ -f /usr/share/applications/kde4/nepomukcleaner.desktop ]; then
 	rm /usr/share/applications/kde4/nepomukcleaner.desktop
+fi
+
+if [ -f /usr/share/applications/kde4/akonaditray.desktop ]; then
+	rm /usr/share/applications/kde4/akonaditray.desktop
 fi
 
 if [ -f /usr/share/applications/kde4/nepomukbackup.desktop ]; then
@@ -32,6 +39,10 @@ fi
 
 if [ -f /usr/share/applications/feh.desktop ]; then
 	rm /usr/share/applications/feh.desktop
+fi
+
+if [ -f /usr/share/applications/kde4/klipper.desktop ]; then
+	rm /usr/share/applications/kde4/klipper.desktop
 fi
 
 if [ -f /usr/share/applications/kde4/nepomukcontroller.desktop ]; then

@@ -2,8 +2,8 @@
 Version=1.0
 Name=Music On Console Player
 Comment=Deskop file for music on console player - mooOS
-Exec=urxvtc -name "MOCP" -e mocp
-Icon=minitunes
+Exec=urxvtc -name "MOCP" -title MOCP -e mocp
+Icon=rhythmbox
 Terminal=false
 Type=Application
 Categories=AudioVideo;Player;Recorder;

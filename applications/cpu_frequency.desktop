@@ -2,8 +2,8 @@
 Version=1.0
 Name=CPU Frequency
 Comment=Deskop file for CPU Frequency - mooOS
-Exec=urxvtc -name "CPU Freq" -e watch grep \"cpu MHz\" /proc/cpuinfo
-Icon=defcon
+Exec=urxvtc -name "CPU Freq" -title "CPU Freq" -e cpu_freq
+Icon=yelp-note-warning.png
 Terminal=false
 Type=Application
 Categories=Utility;Application;
