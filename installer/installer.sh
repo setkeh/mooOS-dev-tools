@@ -425,128 +425,134 @@ initial_install() {
     pacstrap -i -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
 
-    PWD=$(pwd)
+    dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
+    if [ $? = 0 ] ; then
 
-    rm -rf /mnt/etc/skel
-    cp -vr /etc/skel /mnt/etc/
-    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-    sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
-    cp -v /etc/psd.conf /mnt/etc/psd.conf
-    cp -v /etc/issue /mnt/etc/issue
-    cp -v /etc/lsb-release /mnt/etc/lsb-release
-    cp -v /etc/os-release /mnt/etc/os-release
-    cp -v /etc/arch-release /mnt/etc/arch-release
-    cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
-    cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
-    cp -v /etc/resolv.conf /mnt/etc/resolv.conf
-    cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
-    mkdir -vp /mnt/etc/tor
-    cp -vr /etc/tor/* /mnt/etc/tor/
-    cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
-    
-    mkdir -vp /mnt/etc/privoxy
-    sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
+        PWD=$(pwd)
 
-    mkdir -vp /mnt/etc/dansguardian
-    cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
+        rm -rf /mnt/etc/skel
+        cp -vr /etc/skel /mnt/etc/
+        cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+        sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
+        cp -v /etc/psd.conf /mnt/etc/psd.conf
+        cp -v /etc/issue /mnt/etc/issue
+        cp -v /etc/lsb-release /mnt/etc/lsb-release
+        cp -v /etc/os-release /mnt/etc/os-release
+        cp -v /etc/arch-release /mnt/etc/arch-release
+        cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
+        cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
+        cp -v /etc/resolv.conf /mnt/etc/resolv.conf
+        cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
+        mkdir -vp /mnt/etc/tor
+        cp -vr /etc/tor/* /mnt/etc/tor/
+        cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
+        
+        mkdir -vp /mnt/etc/privoxy
+        sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
 
-    mkdir -vp /mnt/etc/squid
-    cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf
+        mkdir -vp /mnt/etc/dansguardian
+        cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
 
-    mkdir -vp /mnt/etc/pacserve
-    cp -vr /etc/pacserve/* /mnt/etc/pacserve/
+        mkdir -vp /mnt/etc/squid
+        cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf
 
-    mkdir -vp /mnt/etc/modules-load.d
-    cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
+        mkdir -vp /mnt/etc/pacserve
+        cp -vr /etc/pacserve/* /mnt/etc/pacserve/
 
-    mkdir -vp /mnt/etc/grub.d
-    cp -vr /etc/grub.d/* /mnt/etc/grub.d/
+        mkdir -vp /mnt/etc/modules-load.d
+        cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
 
-    mkdir -vp /mnt/etc/default
-    cp -vr /etc/default/* /mnt/etc/default/
+        mkdir -vp /mnt/etc/grub.d
+        cp -vr /etc/grub.d/* /mnt/etc/grub.d/
 
-    mkdir -vp /mnt/usr/share/nano
-    cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
+        mkdir -vp /mnt/etc/default
+        cp -vr /etc/default/* /mnt/etc/default/
 
-    mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
-    cp -v /usr/share/enlightenment/data/backgrounds/* /mnt/usr/share/enlightenment/data/backgrounds
+        mkdir -vp /mnt/usr/share/nano
+        cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
 
-    mkdir -vp /mnt/usr/share/enlightenment/data/themes
-    cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
+        mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
+        cp -v /usr/share/enlightenment/data/backgrounds/* /mnt/usr/share/enlightenment/data/backgrounds
 
-    #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-    #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-    #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
-    #mv -v /etc/php/php.ini /etc/php/php.ini.bak
-    #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+        mkdir -vp /mnt/usr/share/enlightenment/data/themes
+        cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
 
-    # copy over custom .desktop files
-    mkdir -vp /mnt/usr/share/applications
-    cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
-    
-    ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-    echo "Updating Sublime Text 3 icons"
-    cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
-    cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
-    cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
-    cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
-    cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
-    cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
-    cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
-    cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
-    cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
-    cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
-    cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
-    cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
-    cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
-    cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
-    cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
-    cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
-    cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
-    cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
+        #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+        #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+        #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+        #mv -v /etc/php/php.ini /etc/php/php.ini.bak
+        #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
 
-    ## mooOS icon
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
-    cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
-    
-    # create ~/Github and all repos
-    rm -rf /mnt/etc/skel/Github
-    mkdir -vp /mnt/etc/skel/Github
-    cd /mnt/etc/skel/Github
-    git clone git://github.com/idk/pdq.git
-    git clone git://github.com/idk/bin.git
-    #git clone git://github.com/idk/awesomewm-X.git
-    git clone git://github.com/idk/zsh.git
-    git clone git://github.com/idk/bin.git
-    git clone git://github.com/idk/php.git
-    git clone git://github.com/idk/systemd.git
-    git clone git://github.com/idk/eggdrop-scripts.git
-    git clone git://github.com/idk/gh.git
-    git clone git://github.com/idk/vb-pdq.git
-    git clone git://github.com/idk/mooOS-dev-tools.git
-    git clone git://github.com/idk/mooOS-wallpapers.git
-    cd "$PWD"
+        # copy over custom .desktop files
+        mkdir -vp /mnt/usr/share/applications
+        cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
+        
+        ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
+        echo "Updating Sublime Text 3 icons"
+        cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+        cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+        cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+        cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+        cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
+        cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
+        cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
+        cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
+        cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+        cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+        cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+        cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+        cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+        cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+        cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+        cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+        cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+        cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
-    install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
-    gzip -f /mnt/usr/local/man/man1/mooOS.1
-      
-    current_selection 6
+        ## mooOS icon
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
+        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
+        
+        # create ~/Github and all repos
+        rm -rf /mnt/etc/skel/Github
+        mkdir -vp /mnt/etc/skel/Github
+        cd /mnt/etc/skel/Github
+        git clone git://github.com/idk/pdq.git
+        git clone git://github.com/idk/bin.git
+        #git clone git://github.com/idk/awesomewm-X.git
+        git clone git://github.com/idk/zsh.git
+        git clone git://github.com/idk/bin.git
+        git clone git://github.com/idk/php.git
+        git clone git://github.com/idk/systemd.git
+        git clone git://github.com/idk/eggdrop-scripts.git
+        git clone git://github.com/idk/gh.git
+        git clone git://github.com/idk/vb-pdq.git
+        git clone git://github.com/idk/mooOS-dev-tools.git
+        git clone git://github.com/idk/mooOS-wallpapers.git
+        cd "$PWD"
+
+        install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
+        gzip -f /mnt/usr/local/man/man1/mooOS.1
+
+        current_selection 6
+    else 
+        current_selection 5
+    fi
 }
 
 chroot_configuration() {
