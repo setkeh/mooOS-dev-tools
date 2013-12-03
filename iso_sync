@@ -363,18 +363,19 @@ if [ $(id -u) -eq 0 ]; then
 
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 			
+			#umount -a
 			## deprecated method
-			if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
-				rm -r ${ARCHLIVE}archlive/releng/work
-			fi
+			#if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
+				#rm -r ${ARCHLIVE}archlive/releng/work
+			#fi
 
 			## new method
 			if [ -d "$ISO_DIR" ]; then
 				rm -r "$ISO_DIR"
 			fi
-			if [ -d "$WORK_DIR" ]; then
-				rm -r "$WORK_DIR"
-			fi
+			#if [ -d "$WORK_DIR" ]; then
+				#rm -r "$WORK_DIR"
+			#fi
 
 			## create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
