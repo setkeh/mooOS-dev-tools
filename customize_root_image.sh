@@ -23,7 +23,7 @@ sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadown
 sed -i "s/Exec=/Exec=kdesudo /g" /usr/share/applications/gparted.desktop
 sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /usr/share/applications/kde4/krandrtray.desktop
 sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /usr/share/applications/kde4/kinfocenter.desktop
-sed -i "s/Icon=/opt/johnny/johnny-128.png/Icon=seahorse/g" /usr/share/applications/johnny.desktop
+sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /usr/share/applications/johnny.desktop
 
 if [ -f /usr/share/applications/kde4/nepomukcleaner.desktop ]; then
 	rm /usr/share/applications/kde4/nepomukcleaner.desktop
