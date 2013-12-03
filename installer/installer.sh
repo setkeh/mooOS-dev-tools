@@ -422,7 +422,7 @@ initial_install() {
     #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
     # fi
     
-    pacstrap -i -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
+    pacstrap -C /mnt/etc/pacman.conf /mnt base base-devel sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
     #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
 
     dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
@@ -573,18 +573,25 @@ chroot_configuration() {
     #cp -v /etc/arch-release /mnt/etc/arch-release
 
     # fix missing icons in .desktop files
+
+    sed -i "/<Filename>install_mooOS.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+    sed -i "s/install_mooOS/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
+
     sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
     sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
+    sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /mnt/usr/share/applications/kde4/krandrtray.desktop
+    sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /mnt/usr/share/applications/kde4/kinfocenter.desktop
+    sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /mnt/usr/share/applications/johnny.desktop
 
-    sed -i "/<Filename>install_mooOS.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+    if [ -f /mnt/usr/share/applications/kde4/nepomukcleaner.desktop ]; then
+        rm /mnt/usr/share/applications/kde4/nepomukcleaner.desktop
+    fi
 
-    sed -i "s/install_mooOS/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
-
-    if [ -f /mnt/etc/skel/.local/applications/install_mooOS.desktop ]; then
-        rm /mnt/etc/skel/.local/applications/install_mooOS.desktop
+    if [ -f /mnt/usr/share/applications/kde4/akonaditray.desktop ]; then
+        rm /mnt/usr/share/applications/kde4/akonaditray.desktop
     fi
 
     if [ -f /mnt/usr/share/applications/kde4/nepomukbackup.desktop ]; then
@@ -593,6 +600,10 @@ chroot_configuration() {
 
     if [ -f /mnt/usr/share/applications/feh.desktop ]; then
         rm /mnt/usr/share/applications/feh.desktop
+    fi
+
+    if [ -f /mnt/usr/share/applications/kde4/klipper.desktop ]; then
+        rm /mnt/usr/share/applications/kde4/klipper.desktop
     fi
 
     if [ -f /mnt/usr/share/applications/kde4/nepomukcontroller.desktop ]; then
