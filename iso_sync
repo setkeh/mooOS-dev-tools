@@ -365,17 +365,17 @@ if [ $(id -u) -eq 0 ]; then
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 			
 			## deprecated method
-			# if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
-			# 	rm -r ${ARCHLIVE}archlive/releng/work
-			# fi
+			if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
+				rm -r ${ARCHLIVE}archlive/releng/work
+			fi
 
-			# ## new method
-			# if [ -d "$ISO_DIR" ]; then
-			# 	rm -r "$ISO_DIR"
-			# fi
-			# if [ -d "$WORK_DIR" ]; then
-			# 	rm -r "$WORK_DIR"
-			# fi
+			## new method
+			if [ -d "$ISO_DIR" ]; then
+				rm -r "$ISO_DIR"
+			fi
+			if [ -d "$WORK_DIR" ]; then
+				rm -r "$WORK_DIR"
+			fi
 
 			## create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
@@ -397,7 +397,7 @@ if [ $(id -u) -eq 0 ]; then
 			## copy over boot splash screen and mooOS branding
 			cp -v ${ARCHLIVE}archlive/releng/syslinux/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png
 			convert ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.jpg
-			cp -v /etc/arch-release ${ARCHLIVE}archlive/releng/root-image/etc/arch-release
+			#cp -v /etc/arch-release ${ARCHLIVE}archlive/releng/root-image/etc/arch-release
 		fi
 
 		echo "
