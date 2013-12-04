@@ -337,7 +337,6 @@ syslinux
 systemd-sysvcompat
 tar
 tcpdump
-tcplay
 tcptraceroute
 terminology-git
 terminus-font

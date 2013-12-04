@@ -151,8 +151,9 @@ if [ $(id -u) -eq 0 ]; then
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
 			cp -v ${MOO_HOME}.canto-ng/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/config
 			## copy over firefox files
+			su -l $MOO_USER -c "cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User"
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
-			cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+			cp -vr ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 			## copy over ~/.local files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
 			cp -v ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
@@ -363,19 +364,18 @@ if [ $(id -u) -eq 0 ]; then
 
 			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 			
-			#umount -a
 			## deprecated method
-			#if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
-				#rm -r ${ARCHLIVE}archlive/releng/work
-			#fi
+			# if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
+			# 	rm -r ${ARCHLIVE}archlive/releng/work
+			# fi
 
-			## new method
-			if [ -d "$ISO_DIR" ]; then
-				rm -r "$ISO_DIR"
-			fi
-			#if [ -d "$WORK_DIR" ]; then
-				#rm -r "$WORK_DIR"
-			#fi
+			# ## new method
+			# if [ -d "$ISO_DIR" ]; then
+			# 	rm -r "$ISO_DIR"
+			# fi
+			# if [ -d "$WORK_DIR" ]; then
+			# 	rm -r "$WORK_DIR"
+			# fi
 
 			## create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
