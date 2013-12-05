@@ -30,7 +30,6 @@ cclive
 cdrdao
 cheser-icon-theme
 cmatrix
-codecs64
 cower
 cowsay
 cpupower-libre
@@ -131,8 +130,6 @@ kdeutils-ark-libre
 keepassx
 key-mon
 keychain
-lib32-nvidia-libgl-full-beta
-lib32-nvidia-utils-full-beta
 libavc1394
 libisoburn
 libmodplug
@@ -234,8 +231,6 @@ python3-xynexdg
 qmc2
 rkhunter
 roccat-dkms
-roccat-tools-common
-roccat-tools-isku
 rsync
 rtmpdump
 rxvt-unicode
@@ -261,7 +256,6 @@ syslinux
 tcpdump
 tcplay
 tcptraceroute
-teamviewer
 terminology-git
 terminology-git-debug
 terminus-font
