@@ -597,44 +597,44 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	schroot -p -- makepkg -sf
 
 	## GRUB
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
-	rm -fr ${MOO_HOME}abs/grub
-	cp -r /var/abs/core/grub/ ${MOO_HOME}abs
-	sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
-	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
-	GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
-	GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
-		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
-	sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
+	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
+	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
+	# rm -fr ${MOO_HOME}abs/grub
+	# cp -r /var/abs/core/grub/ ${MOO_HOME}abs
+	# sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
+	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
+	# GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
+	# GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
+	# 	sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
+	# sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
 
-	cd ${MOO_HOME}abs/grub
-	makepkg -sf
+	# cd ${MOO_HOME}abs/grub
+	# makepkg -sf
 	#schroot -p -- makepkg -sf
 
 	## SYSLINUX
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
-	# rm -fr ${MOO_HOME}abs/syslinux
-	# cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
-	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
-	# SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
-	# sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
-	# cd ${MOO_HOME}abs/syslinux
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
+	rm -fr ${MOO_HOME}abs/syslinux
+	cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
+	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+	SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
+	sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
+	cd ${MOO_HOME}abs/syslinux
+	makepkg -sf
+	schroot -p -- makepkg -sf
 
 	## HARDINFO
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
-	# rm -fr ${MOO_HOME}abs/hardinfo
-	# cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
-	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
-	# HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
-	# sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-	# sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-	# cd ${MOO_HOME}abs/hardinfo
-	#makepkg -sf
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
+	rm -fr ${MOO_HOME}abs/hardinfo
+	cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
+	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
+	HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
+	sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+	sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+	cd ${MOO_HOME}abs/hardinfo
+	makepkg -sf
 	##TODO
 	#schroot -p -- makepkg -sf
 
