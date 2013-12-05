@@ -621,8 +621,9 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	rm -fr ${MOO_HOME}abs/hardinfo
 	cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
 	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
+	HARDINFO_HASH=$(md5sum ${MOO_HOME}abs/syslinux/hardinfo.distro)
 	sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-	sed -i "s/9425e09191cd3a365a3afce57ca1973a6439fa57/60b15f8bda17a4f12005879fc8d8af6a69c94a7c/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+	sed -i "s/9425e09191cd3a365a3afce57ca1973a6439fa57/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
 	cd ${MOO_HOME}abs/hardinfo
 	makepkg -sf
 	schroot -p -- makepkg -sf
