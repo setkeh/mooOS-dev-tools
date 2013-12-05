@@ -389,7 +389,8 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/work/pacman-i686.conf
 
 			## packages
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.both ${ARCHLIVE}archlive/releng/packages.both
+			#cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.both ${ARCHLIVE}archlive/releng/packages.both
+			pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx steam | grep -vx codecs > ${ARCHLIVE}archlive/releng/packages.both
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages-server.both ${ARCHLIVE}archlive/releng/packages-server.both
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.i686 ${ARCHLIVE}archlive/releng/packages.i686
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.x86_64 ${ARCHLIVE}archlive/releng/packages.x86_64
