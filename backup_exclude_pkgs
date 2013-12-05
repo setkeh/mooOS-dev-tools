@@ -3,6 +3,7 @@ codecs64
 lib32-nvidia-libgl-full-beta
 lib32-nvidia-utils-full-beta
 lwks
+nvidia
 nvidia-libgl
 python2-sqlalchemy
 roccat-tools-arvo
