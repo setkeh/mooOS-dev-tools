@@ -61,7 +61,7 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 # Build settings (you chould change these)
 ISO_NAME=mooOS
 ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-0.986"
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.987"
 
 
 # Text color variables (there is no need change these)
