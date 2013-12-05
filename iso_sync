@@ -577,6 +577,10 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
 	cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
 	cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/os-release ${MOO_HOME}abs/filesystem/
+	FILESYSTEM_HASH=$(md5sum ${MOO_HOME}abs/filesystem/issue | awk '{print $1}')
+	FILESYSTEM2_HASH=$(md5sum ${MOO_HOME}abs/filesystem/os-release | awk '{print $1}')
+	sed -i "s/7813c481156f6b280a3ba91fc6236368/$FILESYSTEM_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+	sed -i "s/b16a4674ccf3a932ff34c6c8393a4f33/$FILESYSTEM2_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
 	cd ${MOO_HOME}abs/filesystem
 	makepkg -sf
 	schroot -p -- makepkg -sf
@@ -593,15 +597,15 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	# schroot -p -- makepkg -sf
 
 	## GRUB
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
-	rm -fr ${MOO_HOME}abs/grub
-	cp -r /var/abs/core/grub/ ${MOO_HOME}abs
-	sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
-	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
-	cd ${MOO_HOME}abs/grub
-	makepkg -sf
-	schroot -p -- makepkg -sf
+	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
+	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
+	# rm -fr ${MOO_HOME}abs/grub
+	# cp -r /var/abs/core/grub/ ${MOO_HOME}abs
+	# sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
+	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
+	# cd ${MOO_HOME}abs/grub
+	# makepkg -sf
+	# schroot -p -- makepkg -sf
 
 	## SYSLINUX
 	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
