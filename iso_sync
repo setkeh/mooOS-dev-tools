@@ -623,8 +623,6 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
 	HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}' )
 	sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-	echo $HARDINFO_HASH
-	exit 0
 	sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
 	cd ${MOO_HOME}abs/hardinfo
 	makepkg -sf
