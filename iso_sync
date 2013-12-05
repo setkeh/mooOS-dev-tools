@@ -414,6 +414,11 @@ ${bldred}Building iso now...${txtrst}
 ${bldred}iso built${txtrst}
 "
 
+		umount $WORK_DIR/x86_64/root-image/dev
+		umount $WORK_DIR/x86_64/root-image/
+		umount $WORK_DIR/i686/root-image/dev
+		umount $WORK_DIR/i686/root-image/
+
 		## sync .iso to remote server
 		question="${bldyellow}Do you wish to rysnc this .iso to remote server (Y/N)?\n${txtrst}"
 		if ask_something; then
