@@ -385,7 +385,15 @@ initial_install() {
         return 0 
     fi
 
-    pacstrap -C /mnt/etc/pacman.conf /mnt base base-devel
+    if [ "$archtype" = "x86_64" ]; then
+        pacman_conf="pacman-x86_64.conf"
+        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
+    else
+        pacman_conf="pacman-i686.conf"
+        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.i686"
+    fi
+
+    pacstrap -C /etc/pacman.conf /mnt base base-devel
     
     echo "" > $TMP/ppkgs
     dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
@@ -403,14 +411,6 @@ initial_install() {
     else
         basepkgs="/home/moo/Github/mooOS-dev-tools/packages-server.both"
     fi
-
-    if [ "$archtype" = "x86_64" ]; then
-        pacman_conf="pacman-x86_64.conf"
-        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
-    else
-        pacman_conf="pacman-i686.conf"
-        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.i686"
-    fi
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
@@ -425,7 +425,6 @@ initial_install() {
     # fi
     
     pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
-    #pacstrap /mnt base base-devel sudo git rsync wget zsh$ppkgs
 
     dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
     if [ $? = 0 ] ; then
