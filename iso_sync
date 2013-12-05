@@ -625,7 +625,7 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
 	sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
 	cd ${MOO_HOME}abs/hardinfo
-	makepkg -sf
+	makepkg -sfi
 	schroot -p -- makepkg -sf
 
 	sudo pkgcacheclean -v 1
