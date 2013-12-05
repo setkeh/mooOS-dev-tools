@@ -1,10 +1,14 @@
+apache
 codecs
 codecs64
 lib32-nvidia-libgl-full-beta
 lib32-nvidia-utils-full-beta
 lwks
+mod_evasive
+mysql
 nvidia
 nvidia-libgl
+php
 python2-sqlalchemy
 roccat-tools-arvo
 roccat-tools-common
