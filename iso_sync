@@ -600,13 +600,13 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
 	rm -fr ${MOO_HOME}abs/grubtesting
-	cp -r /var/abs/testing/grub/ ${MOO_HOME}abs
-	sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
-	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
-	GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
-	GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
-	sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
-	sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
+	cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
+	sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
+	sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grubtesting/grub.cfg
+	GRUB_HASH=$(md5sum ${MOO_HOME}abs/grubtesting/grub.default | awk '{print $1}')
+	GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grubtesting/grub.cfg | awk '{print $1}')
+	sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
+	sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
 
 	cd ${MOO_HOME}abs/grubtesting
 	makepkg -sf
