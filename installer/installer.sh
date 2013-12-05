@@ -436,10 +436,10 @@ initial_install() {
         cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
         sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
         cp -v /etc/psd.conf /mnt/etc/psd.conf
-        cp -v /etc/issue /mnt/etc/issue
-        cp -v /etc/lsb-release /mnt/etc/lsb-release
-        cp -v /etc/os-release /mnt/etc/os-release
-        cp -v /etc/arch-release /mnt/etc/arch-release
+        #cp -v /etc/issue /mnt/etc/issue
+        #cp -v /etc/lsb-release /mnt/etc/lsb-release
+        #cp -v /etc/os-release /mnt/etc/os-release
+        #cp -v /etc/arch-release /mnt/etc/arch-release
         cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
         cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
         cp -v /etc/resolv.conf /mnt/etc/resolv.conf

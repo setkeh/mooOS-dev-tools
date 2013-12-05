@@ -7,6 +7,7 @@ lwks
 mod_evasive
 mysql
 nvidia
+nvidia-cg-toolkit
 nvidia-libgl
 php
 python2-sqlalchemy

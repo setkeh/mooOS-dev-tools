@@ -1,0 +1,8 @@
+NAME="mooOS GNU/Linux "
+ID=mooos
+PRETTY_NAME="mooOS GNU/Linux "
+ANSI_COLOR="0;36"
+HOME_URL="https://mooos.org/"
+SUPPORT_URL="https://mooos.org/"
+BUG_REPORT_URL="https://github.com/idk/mooOS/issues"
+
