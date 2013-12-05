@@ -165,7 +165,6 @@ mlocate
 mlt
 mlt-python-bindings
 moc
-mod_evasive
 mooOS-wallpapers
 mplayer-libre
 mtools
@@ -196,7 +195,6 @@ perl-lwp-protocol-https
 perl-umph-prompt
 pgl
 phonon-vlc
-php
 pkg-config
 pkgcacheclean
 pkgfile

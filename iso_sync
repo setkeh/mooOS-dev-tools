@@ -322,14 +322,14 @@ if [ $(id -u) -eq 0 ]; then
 		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
 		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music
 		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures
-		 	cp -vr ${MOO_HOME}Dev/mooOS_backups/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
+		 	cp -vr ${MOO_HOME}info/mooOS_backups/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
 
 		 	## copy home files and create default directories
 		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Desktop.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop/
 		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Dev.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/
 		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Downloads.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads/
 		 	cp -v ${MOO_HOME}Videos/Videos.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos/
-		 	cp -v ${MOO_HOME}Dropbox/Dropbox.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox/
+		 	#cp -v ${MOO_HOME}Dropbox/Dropbox.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox/
 		 	cp -v ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
 		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
 		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
