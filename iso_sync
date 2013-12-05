@@ -586,15 +586,15 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 	schroot -p -- makepkg -sf
 
 	## LSB-RELEASE
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
-	# rm -fr ${MOO_HOME}abs/lsb-release
-	# cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
-	# cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
-	# cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
-	# cd ${MOO_HOME}abs/lsb-release
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
+	rm -fr ${MOO_HOME}abs/lsb-release
+	cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
+	cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
+	cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
+	cd ${MOO_HOME}abs/lsb-release
+	makepkg -sf
+	schroot -p -- makepkg -sf
 
 	## GRUB
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
