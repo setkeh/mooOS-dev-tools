@@ -576,7 +576,7 @@ else ## as $USER
 		if ask_something; then
 			devel= --devel
 		fi
-		
+
 		sudo pacman -Syu && pacaur -Syua$devel
 		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
 	fi
@@ -593,6 +593,12 @@ ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 
 	question="${bldyellow}Rebrand packages? (Y/N)?\n${txtrst}"
 	if ask_something; then
+		## sync ABS
+			echo "
+${bldyellow}Syncing Arch Build System...${txtrst}
+"
+		sudo abs
+
 		## install custom mooOS packages
 		## wallpapers
 		# cd ${MOO_HOME}github/mooOS-wallpapers
