@@ -4,31 +4,41 @@
 ## License: GPL3
 
 ## This script is run as $USER then following that as root
-## This script creates the mooOS livecd ISO image file
+## This script creates the mooOS livecd ISO image file from current OS
 
-## Script variables (you should change these)
+## Script variables
+
+
+## (you could change these)
 MOO_USER=pdq
 MOO_HOME="/home/$MOO_USER/"
+
+# Build settings (you could change these)
+ISO_NAME=mooOS
+ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.987" ## change me!
+
+## (you should change these paths)
+ARCHLIVE=/media/truecrypt3/
+ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down" ## directroy where iso is cp to rsync from
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
-#REPO_BASE_URL="http://repo.mooos.pdq/"
 ABS_BASE_DIR="${MOO_HOME}abs/"
+
+## (no need to change these)
 REPO_LOG_TEMP="/tmp/repo_renew"
 REPO_LOG="${ABS_BASE_DIR}update.log"
 CURRENTHASH="${ABS_BASE_DIR}mooOS.md5sum"
 OLDHASH="${ABS_BASE_DIR}mooOS.md5sum.old"
 CURRENTNAME="${ABS_BASE_DIR}mooOS.name"
 OLDNAME="${ABS_BASE_DIR}mooOS.name.old"
-ISO_DIR="/media/truecrypt3/mooOS/out"   # iso
-WORK_DIR="/media/truecrypt3/mooOS/work" # work
-#WORK_DIR="${MOO_HOME}mooOS/work" # work
+ISO_DIR="${ARCHLIVE}mooOS/out"   # iso
+WORK_DIR="${ARCHLIVE}mooOS/work" # work
 
-ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down"
-#ARCHLIVE=$MOO_HOME
-ARCHLIVE=/media/truecrypt3/
+## gpg key used to sign the repos/packages
+GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ##  you must put key in this file
 
-GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ## change this and put key in the file
 
-# path to remote repo credentials file
+# path to remote repo credentials file - (you should change this path)
 REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 ## BEGIN EXAMPLE of repo_creds
 #  #!/bin/sh
@@ -50,19 +60,12 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 
 # #iso-local -> iso-remote
 # _iso_sync[1]=22
-# _iso_sync[2]="/media/truecrypt3/mooOS/out/${_iso_label}*.iso"
+# _iso_sync[2]="${ARCHLIVE}mooOS/out/${_iso_label}*.iso"
 # _iso_sync[3]="example@127.0.0.1:/var/www/mooOS"
 # _iso_sync[4]="--stats"
 
 ## End remote rsyncs
 ## END EXAMPLE of repo_creds
-
-
-# Build settings (you chould change these)
-ISO_NAME=mooOS
-ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-0.987"
-
 
 # Text color variables (there is no need change these)
 txtbld=$(tput bold)                # bold
@@ -94,37 +97,46 @@ if [ $(id -u) -eq 0 ]; then
 		if ! ask_something; then
 			PWD=$(pwd)
 
-			## push latest code to github
-			#su -l $MOO_USER -c "gh -b" ## https://github.com/idk/gh
-			#echo "
-			#${bldyellow}Copying configuration files and recreating repos now...${txtrst}
-			#"
+			echo "
+			${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+			"
 
 			## copy root files
+
 			## profile-sync-daemon
 			cp -v /etc/psd.conf ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
+			
 			## resolv.conf
 			cp -v /etc/resolv.conf ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf
+			
 			## resolv.conf.head
 			cp -v /etc/resolv.conf.head ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf.head
+			
 			## dnsmasq
 			cp -v /etc/dnsmasq.conf ${ARCHLIVE}archlive/releng/root-image/etc/dnsmasq.conf
+			
 			## dhcpcd
 			cp -v /etc/dhcpcd.conf ${ARCHLIVE}archlive/releng/root-image/etc/dhcpcd.conf
+			
 			## nano config
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/nano
 			cp -v /usr/share/nano/pkgbuild.nanorc ${ARCHLIVE}archlive/releng/root-image//usr/share/nano/pkgbuild.nanorc
+			
 			## e17 backgrounds
 			cp -v /usr/share/enlightenment/data/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
+			
 			## tor config
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/tor
 			cp -v /etc/torrc ${ARCHLIVE}archlive/releng/root-image/etc/tor/torrc
+			
 			## privoxy config
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/privoxy
 			sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
+			
 			## dansguardian config
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian
 			cp -v /etc/dansguardian/dansguardian.conf ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
+			
 			## squid config
 			#mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/squid
 			#cp -v /etc/squid/squid.conf ${ARCHLIVE}archlive/releng/root-image/etc/squid/squid.conf
@@ -139,21 +151,26 @@ if [ $(id -u) -eq 0 ]; then
 			## copy over custom .desktop files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/applications
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/applications/*.desktop ${ARCHLIVE}archlive/releng/root-image/usr/share/applications/
+			
 			## copy over ~/bin
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/bin
 			cp -vr ${MOO_HOME}bin/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/bin
+			
 			## copy over pentadactyl files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
 			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
 			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+			
 			## copy over rss reader files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
 			cp -v ${MOO_HOME}.canto-ng/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/config
+			
 			## copy over firefox files
 			su -l $MOO_USER -c "cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User"
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 			cp -vr ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+			
 			## copy over ~/.local files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
 			cp -v ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
@@ -161,6 +178,7 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
 			cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
 			cp -v ${MOO_HOME}.local/applications/man_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/man_mooOS.desktop
+			
 			## copy over ~/.* (dotfiles)
 			cp -v ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
 			cp -v ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
@@ -172,12 +190,15 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
 			cp -v ${MOO_HOME}.wgetrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.wgetrc
 			cp -v ${MOO_HOME}.curlrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.curlrc
+			
 			## copy over ~/.themes
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
 			cp -vr ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+			
 			## copy over ~/.fonts
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
 			cp -vr ${MOO_HOME}.fonts/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
+			
 			## copy over kde files
 			mkdir -vp  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive
@@ -207,24 +228,31 @@ if [ $(id -u) -eq 0 ]; then
 			## copy over transmission file
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/settings.json ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+			
 			## copy over key-mon config
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon
 			cp -v ${MOO_HOME}.config/key-mon/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon/config
+			
 			## copy lxtask config
 			cp -v ${MOO_HOME}.config/lxtask.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/lxtask.conf
+			
 			## copy pavucontrol config
 			cp -v ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
+			
 			## copy over mocp file
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc
 			cp -v ${MOO_HOME}.moc/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
+			
 			## copy htop file
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop
 			cp -v ${MOO_HOME}.config/htop/htoprc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop/htoprc
+			
 			## copy sublime text 3 files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
 			cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
 			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+			
 			## https://github.com/dmatarazzo/Sublime-Text-2-Icon
 			echo "Updating Sublime Text 3 icons"
 			# cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
@@ -245,6 +273,7 @@ if [ $(id -u) -eq 0 ]; then
 			# cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
 			# cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
 			# cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
+			
 			## mooOS icon
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
@@ -264,10 +293,12 @@ if [ $(id -u) -eq 0 ]; then
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
+			
 			## copy vlc files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/vlc-qt-interface.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
 			cp -v ${MOO_HOME}.config/vlc/vlcrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
+			
 			## copy over window manager files
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
@@ -379,16 +410,19 @@ if [ $(id -u) -eq 0 ]; then
 
 			## create pacman.conf for build
 			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
+
 			mkdir -v "${ARCHLIVE}archlive/releng/work"
+			
 			## create pacman.conf for livecd
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
+			
 			## create pacman.conf for livecd specific to architecture
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-x86_64.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-i686.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/work/pacman-x86_64.conf
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/work/pacman-i686.conf
 
-			## packages
+			## packages lists
 			#cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.both ${ARCHLIVE}archlive/releng/packages.both
 			pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx "$(cat ${MOO_HOME}github/mooOS-dev-tools/backup_exclude_pkgs)" > ${ARCHLIVE}archlive/releng/packages.both
 			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.extra ${ARCHLIVE}archlive/releng/packages.extra
@@ -536,188 +570,219 @@ This may take a while...
 else ## as $USER
 	## create the build environment and preparation
 
-	## push latest code to github
-	gh -b ## https://github.com/idk/gh
+	question="${bldyellow}Run system updates? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		question="${bldyellow}with --devel? (Y/N)?\n${txtrst}"
+		if ask_something; then
+			devel= --devel
+		fi
+		
+		sudo pacman -Syu && pacaur -Syua$devel
+		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
+	fi
+
+	question="${bldyellow}Sync to github? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## push latest code to github
+		gh -b ## https://github.com/idk/gh
+	fi
+
 	echo "
 ${bldyellow}Copying configuration files and recreating repos now...${txtrst}
 "
-	## install custom mooOS packages
-	## wallpapers
-	# cd ${MOO_HOME}github/mooOS-wallpapers
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
 
-	## github wrapper
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/gh*
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/gh*
-	rm -fr ${MOO_HOME}abs/gh
-	mkdir -p ${MOO_HOME}abs/gh
-	cd ${MOO_HOME}abs/gh
-	wget https://raw.github.com/idk/gh/master/PKGBUILD
-	makepkg -sf
-	schroot -p -- makepkg -sf
+	question="${bldyellow}Rebrand packages? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## install custom mooOS packages
+		## wallpapers
+		# cd ${MOO_HOME}github/mooOS-wallpapers
+		# makepkg -sf
+		# schroot -p -- makepkg -sf
 
-	## vimb web browser and tabbed, patched!
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
-	# rm -fr ${MOO_HOME}abs/vb-pdq
-	# mkdir -p ${MOO_HOME}abs/vb-pdq
-	# cd ${MOO_HOME}abs/vb-pdq
-	# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
-	# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+		## github wrapper
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/gh*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/gh*
+		rm -fr ${MOO_HOME}abs/gh
+		mkdir -p ${MOO_HOME}abs/gh
+		cd ${MOO_HOME}abs/gh
+		wget https://raw.github.com/idk/gh/master/PKGBUILD
+		makepkg -sf
+		schroot -p -- makepkg -sf
 
-	## make custom branded packages
+		## vimb web browser and tabbed, patched!
+		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
+		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
+		# rm -fr ${MOO_HOME}abs/vb-pdq
+		# mkdir -p ${MOO_HOME}abs/vb-pdq
+		# cd ${MOO_HOME}abs/vb-pdq
+		# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
+		# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
+		# makepkg -sf
+		# schroot -p -- makepkg -sf
 
-	## FILESYSTEM
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/filesystem*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/filesystem*
-	# rm -fr ${MOO_HOME}abs/filesystem
-	# cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
-	# cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
-	# cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/os-release ${MOO_HOME}abs/filesystem/
-	# FILESYSTEM_HASH=$(md5sum ${MOO_HOME}abs/filesystem/issue | awk '{print $1}')
-	# FILESYSTEM2_HASH=$(md5sum ${MOO_HOME}abs/filesystem/os-release | awk '{print $1}')
-	# sed -i "s/7813c481156f6b280a3ba91fc6236368/$FILESYSTEM_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
-	# sed -i "s/b16a4674ccf3a932ff34c6c8393a4f33/$FILESYSTEM2_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
-	# cd ${MOO_HOME}abs/filesystem
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+		## make custom branded packages
 
-	## LSB-RELEASE
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
-	# rm -fr ${MOO_HOME}abs/lsb-release
-	# cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
-	# cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
-	# cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
-	# cd ${MOO_HOME}abs/lsb-release
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+		## FILESYSTEM
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/filesystem*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/filesystem*
+		rm -fr ${MOO_HOME}abs/filesystem
+		cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/os-release ${MOO_HOME}abs/filesystem/
+		FILESYSTEM_HASH=$(md5sum ${MOO_HOME}abs/filesystem/issue | awk '{print $1}')
+		FILESYSTEM2_HASH=$(md5sum ${MOO_HOME}abs/filesystem/os-release | awk '{print $1}')
+		sed -i "s/7813c481156f6b280a3ba91fc6236368/$FILESYSTEM_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+		sed -i "s/b16a4674ccf3a932ff34c6c8393a4f33/$FILESYSTEM2_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+		cd ${MOO_HOME}abs/filesystem
+		makepkg -sf
+		schroot -p -- makepkg -sf
 
-	## GRUB
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
-	# rm -fr ${MOO_HOME}abs/grubtesting
-	# cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
-	# sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
-	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grubtesting/grub.cfg
-	# GRUB_HASH=$(md5sum ${MOO_HOME}abs/grubtesting/grub.default | awk '{print $1}')
-	# GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grubtesting/grub.cfg | awk '{print $1}')
-	# sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
-	# sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
+		## LSB-RELEASE
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
+		rm -fr ${MOO_HOME}abs/lsb-release
+		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
+		cd ${MOO_HOME}abs/lsb-release
+		makepkg -sf
+		schroot -p -- makepkg -sf
 
-	# cd ${MOO_HOME}abs/grubtesting
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+		## GRUB
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
+		rm -fr ${MOO_HOME}abs/grubtesting
+		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
+		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grubtesting/grub.cfg
+		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grubtesting/grub.default | awk '{print $1}')
+		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grubtesting/grub.cfg | awk '{print $1}')
+		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
+		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
 
-	## SYSLINUX
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
-	# rm -fr ${MOO_HOME}abs/syslinux
-	# cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
-	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
-	# SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
-	# sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
-	# cd ${MOO_HOME}abs/syslinux
-	# makepkg -sf
-	# schroot -p -- makepkg -sf
+		cd ${MOO_HOME}abs/grubtesting
+		makepkg -sf
+		schroot -p -- makepkg -sf
 
-	## HARDINFO
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
-	# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
-	# rm -fr ${MOO_HOME}abs/hardinfo
-	# cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
-	# sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
-	# HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
-	# sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-	# sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-	# cd ${MOO_HOME}abs/hardinfo
-	# makepkg -sf
-	##TODO
-	#schroot -p -- makepkg -sf
+		## SYSLINUX
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
+		rm -fr ${MOO_HOME}abs/syslinux
+		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+		SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
+		sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
+		cd ${MOO_HOME}abs/syslinux
+		makepkg -sf
+		schroot -p -- makepkg -sf
 
+		## HARDINFO
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
+		rm -fr ${MOO_HOME}abs/hardinfo
+		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
+		HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
+		sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+		sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+		cd ${MOO_HOME}abs/hardinfo
+		makepkg -sf
+		#TODO
+		schroot -p -- makepkg -sf
+	fi
+
+	## delete useless package caches
 	sudo pkgcacheclean -v 1
+	schroot -p -- sudo pkgcacheclean -v 1
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1
+	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/i686 1
+	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/x86_64 1
 
 	## DEBUG
 	#exit 0
 
-	cd "$PWD"
+	question="${bldyellow}Create and cleanup mooOS repos? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		cd "$PWD"
 
-	## remove existing repos
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
-	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
+		## remove existing repos
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
+		#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
-	## make RMS happy :D
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
-	cp -v /var/cache/pacman/pkg/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-	cp -v /var/cache/pacman/pkg/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		## make RMS happy :D
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
+		cp -v /var/cache/pacman/pkg/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp -v /var/cache/pacman/pkg/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any*
-	cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
-	cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any*
+		cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/unar-*
-	cp -v /var/cache/pacman/pkg/unar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-	cp -v /var/cache/pacman/pkg/unar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/unar-*
+		cp -v /var/cache/pacman/pkg/unar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp -v /var/cache/pacman/pkg/unar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-*
-	cp -v /var/cache/pacman/pkg/opencollada-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-	cp -v /var/cache/pacman/pkg/opencollada-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-*
+		cp -v /var/cache/pacman/pkg/opencollada-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp -v /var/cache/pacman/pkg/opencollada-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-*
-	cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
-	cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-*
+		cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-	## create repo databases
-	echo "
-${bldyellow}Re-creating i686 repository${txtrst}
-"
-	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
-	echo "
-${bldyellow}Re-creating x86_64 repository${txtrst}
-"
-	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
-	#echo "${bldyellow}Re-creating utils repository${txtrst}"
-	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
-
-	## format log a little
-	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
-	sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
-
-	## clean up stable repos
-	## re-create repos local and remote
-	echo "
-================syncing to local repos===================
-"
-	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
-	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
-	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
-	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
-
-	## remote repo
-	## include login credentials:
-	if [ -f "$REPO_CREDS" ] ; then
+		## create repo databases
 		echo "
-================syncing to remote repos===================
-"
-		. $REPO_CREDS
+	${bldyellow}Re-creating i686 repository${txtrst}
+	"
+		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
+		echo "
+	${bldyellow}Re-creating x86_64 repository${txtrst}
+	"
+		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
+		#echo "${bldyellow}Re-creating utils repository${txtrst}"
+		#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
 
-		## rsync using vars defined in credentials, e.g.:
-		#for i in {1..5}
-		for i in $(eval echo {1..$_remote_count})
-		do
-			port=$(eval echo $(echo '${'_remote$i[1]'}'))
-			flags=$(eval echo $(echo '${'_remote$i[4]'}'))
-			src=$(eval echo $(echo '${'_remote$i[2]'}'))
-			dest=$(eval echo $(echo '${'_remote$i[3]'}'))
-			torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
-		done
+		## format log a little
+		echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
+		sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
+
+		## clean up stable repos
+		## re-create repos local and remote
+		echo "
+	================syncing to local repos===================
+	"
+		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
+		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
 	fi
 
-	notify-send "Repo update complete"
+	question="${bldyellow}Sync remote mooOS repo? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## remote repo
+		## include login credentials:
+		if [ -f "$REPO_CREDS" ] ; then
+			echo "
+	================syncing to remote repos===================
+	"
+			. $REPO_CREDS
+
+			## rsync using vars defined in credentials, e.g.:
+			#for i in {1..5}
+			for i in $(eval echo {1..$_remote_count})
+			do
+				port=$(eval echo $(echo '${'_remote$i[1]'}'))
+				flags=$(eval echo $(echo '${'_remote$i[4]'}'))
+				src=$(eval echo $(echo '${'_remote$i[2]'}'))
+				dest=$(eval echo $(echo '${'_remote$i[3]'}'))
+				torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
+			done
+		fi
+	fi
+
+	notify-send "User portion of script complete"
 
 	echo "
 ${bldyellow}Re-running this script as root!${txtrst}
