@@ -10,6 +10,10 @@ mod_evasive
 mysql
 nvidia
 nvidia-cg-toolkit
+nvidia-full-beta-all
+nvidia-libgl-full-beta
+nvidia-utils-full-beta
+opencl-nvidia-full-beta
 nvidia-libgl
 php
 python2-sqlalchemy
