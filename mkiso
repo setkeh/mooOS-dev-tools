@@ -577,7 +577,13 @@ else ## as $USER
 			devel= --devel
 		fi
 
+		echo "
+${bldred}Applying x86_64 updates...${txtrst}
+"
 		sudo pacman -Syu && pacaur -Syua$devel
+		echo "
+${bldred}Applying i686 updates...${txtrst}
+"
 		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
 	fi
 
@@ -588,14 +594,14 @@ else ## as $USER
 	fi
 
 	echo "
-${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+${bldred}Copying configuration files and recreating repos now...${txtrst}
 "
 
 	question="${bldyellow}Rebrand packages? (gh/vb-pdq/filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
 	if ask_something; then
 		## sync ABS
 			echo "
-${bldyellow}Syncing Arch Build System...${txtrst}
+${bldred}Syncing Arch Build System...${txtrst}
 "
 		sudo abs
 
@@ -698,6 +704,9 @@ ${bldyellow}Syncing Arch Build System...${txtrst}
 	fi
 
 	## delete useless package caches
+	echo "
+${bldred}Deteing old packages cache...${txtrst}
+"
 	sudo pkgcacheclean -v 1
 	schroot -p -- sudo pkgcacheclean -v 1
 	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1
@@ -740,11 +749,11 @@ ${bldyellow}Syncing Arch Build System...${txtrst}
 
 		## create repo databases
 		echo "
-	${bldyellow}Re-creating i686 repository${txtrst}
+	${bldred}Re-creating i686 repository${txtrst}
 	"
 		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
 		echo "
-	${bldyellow}Re-creating x86_64 repository${txtrst}
+	${bldred}Re-creating x86_64 repository${txtrst}
 	"
 		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 		#echo "${bldyellow}Re-creating utils repository${txtrst}"
@@ -791,7 +800,7 @@ ${bldyellow}Syncing Arch Build System...${txtrst}
 	notify-send "User portion of script complete"
 
 	echo "
-${bldyellow}Re-running this script as root!${txtrst}
+${bldred}Re-running this script as root!${txtrst}
 "
 	sleep 2s
 	## re-run script as root
