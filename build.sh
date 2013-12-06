@@ -59,7 +59,7 @@ make_basefs() {
 
 # Additional packages (root-image)
 make_packages() {
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -p "$(grep -h -v ^# ${script_path}/packages.{both,${arch}})" install
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -p "$(grep -h -v ^# ${script_path}/packages.{extra,both,${arch}})" install
 }
 
 # Copy mkinitcpio archiso hooks and build initramfs (root-image)
