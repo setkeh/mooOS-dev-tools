@@ -181,7 +181,6 @@ ninvaders
 nmap
 ntfs-3g
 ntp
-nvidia-cg-toolkit
 ocenaudio
 omg-suite
 openssh
@@ -227,6 +226,7 @@ python3-xynexdg
 qmc2
 rkhunter
 roccat-dkms
+rp-pppoe-libre
 rsync
 rtmpdump
 rxvt-unicode
