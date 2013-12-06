@@ -1,6 +1,8 @@
 apache
 codecs
 codecs64
+elementary_test-git
+elementary_test-git-debug
 lib32-nvidia-libgl-full-beta
 lib32-nvidia-utils-full-beta
 lwks
