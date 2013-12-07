@@ -14,6 +14,7 @@ MOO_USER=pdq
 MOO_HOME="/home/$MOO_USER/"
 
 # Build settings (you could change these)
+ISO_ARCH="i686 x86_64"
 ISO_NAME=mooOS
 ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
 ISO_VERSION="$(date +%Y.%m.%d)-beta-0.987" ## change me!
@@ -783,14 +784,16 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 	if ask_something; then
 
 		## cleanup work/build env
-		umount_work_env i686
-		umount_work_env x86_64
+		for m in ${ISO_ARCH}
+		do
+			umount_work_env $m
+		done
 
 		## create the build env
 		create_build_env	
 
 		## change to build directory and build iso
-		for moo in i686 x86_64
+		for moo in ${ISO_ARCH}
 		do
 			echo "${bldcyan}Building $moo iso now...${txtrst}"
 			cd ${ARCHLIVE}archlive/releng
@@ -802,7 +805,7 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 		done
 
 		## sync .isos to local directory and remote server
-		for mooos in i686 x86_64
+		for mooos in ${ISO_ARCH}
 		do
 			question="${bldyellow}Do you wish to rysnc this $mooos .iso to remote server (Y/N)?\n${txtrst}"
 			if ask_something; then
