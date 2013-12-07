@@ -354,7 +354,8 @@ umount_work_env() {
 	if ask_something; then
 		umount $WORK_DIR/$moo/root-image/dev
 		umount $WORK_DIR/$moo/root-image/
-		rm $WORK_DIR/$moo/*$moo
+		rm -r $WORK_DIR/$moo
+		rm $WORK_DIR/*$moo
 	fi
 }
 
