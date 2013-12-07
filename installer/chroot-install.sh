@@ -327,6 +327,29 @@ if [ $(id -u) -eq 0 ]; then
 
         usermod -s /usr/bin/zsh root
 
+        ## patch config files for username
+        PWD=$(pwd)
+        cd /etc/skel/.e/e/config/standard
+        for NEW_FILE in e.*
+        do
+            EWW_FILE=${NEW_FILE/.cfg/.src}
+
+            eet -d $NEW_FILE config $EWW_FILE
+            sed -i "s/moo/$puser/g" $EWW_FILE
+            rm $NEW_FILE
+            eet -e $NEW_FILE config $EWW_FILE 1
+            rm $EWW_FILE
+        done
+        cd $PWD
+
+        ## clean up files content
+        sed -i "s/moo/$puser/g" /etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+        sed -i "s/moo/$puser/g" /etc/skel/.config/transmission-daemon/settings.json
+        sed -i "s/moo/$puser/g" /etc/skel/.moc/config
+        sed -i "s/moo/$puser/g" /etc/skel/.kde4/share/config/dolphinrc
+        sed -i "s/moo/$puser/g" /etc/psd.conf 
+        sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0    
+
         ## copy this script to user home directory
         # if [ ! -f /home/$puser/install_mooOS_user ]; then
         #     wget http://is.gd/mooOS -O /home/$puser/install_mooOS_user
