@@ -27,15 +27,15 @@ ABS_BASE_DIR="${MOO_HOME}abs/"
 ## (no need to change these)
 REPO_LOG_TEMP="/tmp/repo_renew"
 REPO_LOG="${ABS_BASE_DIR}update.log"
-CURRENTHASH_i686="${ABS_BASE_DIR}mooOS.md5sum"
-OLDHASH_i686="${ABS_BASE_DIR}mooOS.md5sum.old"
-CURRENTNAME_i686="${ABS_BASE_DIR}mooOS.name"
-OLDNAME_i686="${ABS_BASE_DIR}mooOS.name.old"
+CURRENTHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum"
+OLDHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum.old"
+CURRENTNAME_i686="${ABS_BASE_DIR}mooOS_i686.name"
+OLDNAME_i686="${ABS_BASE_DIR}mooOS_i686.name.old"
 
-CURRENTHASH_x86_64="${ABS_BASE_DIR}mooOS.md5sum"
-OLDHASH_x86_64="${ABS_BASE_DIR}mooOS.md5sum.old"
-CURRENTNAME_x86_64="${ABS_BASE_DIR}mooOS.name"
-OLDNAME_x86_64="${ABS_BASE_DIR}mooOS.name.old"
+CURRENTHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum"
+OLDHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum.old"
+CURRENTNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name"
+OLDNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name.old"
 ISO_DIR="${ARCHLIVE}mooOS/out"   # iso
 WORK_DIR="${ARCHLIVE}mooOS/work" # work
 
@@ -94,11 +94,149 @@ ask_something() {
 	return $return
 }
 
+do_system_updates() {
+	question="${bldyellow}Run system updates? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		question="${bldyellow}with --devel? (Y/N)?\n${txtrst}"
+		if ask_something; then
+			devel= --devel
+		fi
+
+		echo "
+${bldred}Applying i686 updates...${txtrst}
+"
+		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
+
+		echo "
+${bldred}Applying x86_64 updates...${txtrst}
+"
+		sudo pacman -Syu && pacaur -Syua$devel
+	fi
+}
+
+create_custom_packages() {
+	question="${bldyellow}Rebrand packages? (gh/vb-pdq/filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## sync ABS
+			echo "
+${bldred}Syncing Arch Build System...${txtrst}
+"
+		sudo abs
+
+		## install custom mooOS packages
+		## wallpapers
+		# cd ${MOO_HOME}github/mooOS-wallpapers
+		# makepkg -sf
+		# schroot -p -- makepkg -sf
+
+		## github wrapper
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/gh*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/gh*
+		rm -fr ${MOO_HOME}abs/gh
+		mkdir -p ${MOO_HOME}abs/gh
+		cd ${MOO_HOME}abs/gh
+		wget https://raw.github.com/idk/gh/master/PKGBUILD
+		makepkg -sf
+		schroot -p -- makepkg -sf
+
+		## vimb web browser and tabbed, patched!
+		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
+		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
+		# rm -fr ${MOO_HOME}abs/vb-pdq
+		# mkdir -p ${MOO_HOME}abs/vb-pdq
+		# cd ${MOO_HOME}abs/vb-pdq
+		# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
+		# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
+		# makepkg -sf
+		# schroot -p -- makepkg -sf
+
+		## make custom branded packages
+
+		## FILESYSTEM
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/filesystem*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/filesystem*
+		rm -fr ${MOO_HOME}abs/filesystem
+		cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/os-release ${MOO_HOME}abs/filesystem/
+		FILESYSTEM_HASH=$(md5sum ${MOO_HOME}abs/filesystem/issue | awk '{print $1}')
+		FILESYSTEM2_HASH=$(md5sum ${MOO_HOME}abs/filesystem/os-release | awk '{print $1}')
+		sed -i "s/7813c481156f6b280a3ba91fc6236368/$FILESYSTEM_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+		sed -i "s/b16a4674ccf3a932ff34c6c8393a4f33/$FILESYSTEM2_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+		cd ${MOO_HOME}abs/filesystem
+		makepkg -sf
+		schroot -p -- makepkg -sf
+
+		## LSB-RELEASE
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
+		rm -fr ${MOO_HOME}abs/lsb-release
+		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
+		cd ${MOO_HOME}abs/lsb-release
+		makepkg -sf
+		schroot -p -- makepkg -sf
+
+		## GRUB
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
+		rm -fr ${MOO_HOME}abs/grubtesting
+		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
+		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grubtesting/grub.cfg
+		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grubtesting/grub.default | awk '{print $1}')
+		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grubtesting/grub.cfg | awk '{print $1}')
+		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
+		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
+
+		cd ${MOO_HOME}abs/grubtesting
+		makepkg -sf
+		schroot -p -- makepkg -sf
+
+		## SYSLINUX
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
+		rm -fr ${MOO_HOME}abs/syslinux
+		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+		SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
+		sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
+		cd ${MOO_HOME}abs/syslinux
+		makepkg -sf
+		schroot -p -- makepkg -sf
+
+		## HARDINFO
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
+		rm -fr ${MOO_HOME}abs/hardinfo
+		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
+		HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
+		sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+		sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+		cd ${MOO_HOME}abs/hardinfo
+		makepkg -sf
+		#TODO
+		schroot -p -- makepkg -sf
+	fi
+}
+
+delete_package_caches() {
+		echo "
+${bldred}Deleting old packages cache...${txtrst}
+"
+	sudo pkgcacheclean -v 1
+	schroot -p -- sudo pkgcacheclean -v 1
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1
+	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/i686 1
+	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/x86_64 1
+}
+
 rsync_iso_remote() {
 	## sync .iso to remote server
 	ARCH_ISO=$1
-	question="${bldyellow}Do you wish to rysnc this ${ARCH_ISO} .iso to remote server (Y/N)?\n${txtrst}"
-	if ask_something; then
 		## create initial old hash
 		if [ ! -f "$OLDHASH_${ARCH_ISO}" ]; then
 			su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > $OLDHASH_${ARCH_ISO}"
@@ -204,17 +342,28 @@ This may take a while...
 			fi
 		fi
 
-	fi
-
 	echo "
 ${ARCH_ISO} synced!
 "
+}
+
+umount_work_env() {
+	## unmount work env
+	moo=$1
+	question="${bldyellow}Do you wish to unmount the $moo work env (Y/N)?\n${txtrst}"
+	if ask_something; then
+		umount $WORK_DIR/$moo/root-image/dev
+		umount $WORK_DIR/$moo/root-image/
+		rm $WORK_DIR/$moo/*$moo
+	fi
 }
 
 ## root script
 if [ $(id -u) -eq 0 ]; then
 	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
 	if ask_something; then
+		umount_work_env i686
+		umount_work_env x86_64
 		question="${bldyellow}You wish to skip to create iso (Y/N)? (default: no)\n${txtrst}"
 		if ! ask_something; then
 			PWD=$(pwd)
@@ -565,47 +714,29 @@ if [ $(id -u) -eq 0 ]; then
 
 			## change to build directory and build iso
 			cd ${ARCHLIVE}archlive/releng
-			 ./build.sh -v -a "$moo"-o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+			 ./build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
 			#2>&1 >> ${MOO_HOME}output.txt
 
 			echo "${bldred}$moo iso built${txtrst}"
 			echo ""
+			umount_work_env $moo
 		done
 
-		## unmount work env
-		question="${bldyellow}Do you wish to unmount the work env (Y/N)?\n${txtrst}"
-		if ask_something; then
-			umount $WORK_DIR/x86_64/root-image/dev
-			umount $WORK_DIR/x86_64/root-image/
-			umount $WORK_DIR/i686/root-image/dev
-			umount $WORK_DIR/i686/root-image/
-		fi
+		
 
 		## sync .isos to local directory and remote server
 		for mooos in i686 x86_64
 		do
-		    rsync_iso_remote $mooos
+			question="${bldyellow}Do you wish to rysnc this $mooos .iso to remote server (Y/N)?\n${txtrst}"
+			if ask_something; then
+		    	rsync_iso_remote $mooos
+		    fi
 		done
 	fi
 else ## as $USER
 	## create the build environment and preparation
 
-	question="${bldyellow}Run system updates? (Y/N)?\n${txtrst}"
-	if ask_something; then
-		question="${bldyellow}with --devel? (Y/N)?\n${txtrst}"
-		if ask_something; then
-			devel= --devel
-		fi
-
-		echo "
-${bldred}Applying x86_64 updates...${txtrst}
-"
-		sudo pacman -Syu && pacaur -Syua$devel
-		echo "
-${bldred}Applying i686 updates...${txtrst}
-"
-		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
-	fi
+	do_system_updates
 
 	question="${bldyellow}Sync to github? (Y/N)?\n${txtrst}"
 	if ask_something; then
@@ -617,122 +748,10 @@ ${bldred}Applying i686 updates...${txtrst}
 ${bldred}Copying configuration files and recreating repos now...${txtrst}
 "
 
-	question="${bldyellow}Rebrand packages? (gh/vb-pdq/filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
-	if ask_something; then
-		## sync ABS
-			echo "
-${bldred}Syncing Arch Build System...${txtrst}
-"
-		sudo abs
-
-		## install custom mooOS packages
-		## wallpapers
-		# cd ${MOO_HOME}github/mooOS-wallpapers
-		# makepkg -sf
-		# schroot -p -- makepkg -sf
-
-		## github wrapper
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/gh*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/gh*
-		rm -fr ${MOO_HOME}abs/gh
-		mkdir -p ${MOO_HOME}abs/gh
-		cd ${MOO_HOME}abs/gh
-		wget https://raw.github.com/idk/gh/master/PKGBUILD
-		makepkg -sf
-		schroot -p -- makepkg -sf
-
-		## vimb web browser and tabbed, patched!
-		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
-		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
-		# rm -fr ${MOO_HOME}abs/vb-pdq
-		# mkdir -p ${MOO_HOME}abs/vb-pdq
-		# cd ${MOO_HOME}abs/vb-pdq
-		# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
-		# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
-		# makepkg -sf
-		# schroot -p -- makepkg -sf
-
-		## make custom branded packages
-
-		## FILESYSTEM
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/filesystem*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/filesystem*
-		rm -fr ${MOO_HOME}abs/filesystem
-		cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
-		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
-		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/os-release ${MOO_HOME}abs/filesystem/
-		FILESYSTEM_HASH=$(md5sum ${MOO_HOME}abs/filesystem/issue | awk '{print $1}')
-		FILESYSTEM2_HASH=$(md5sum ${MOO_HOME}abs/filesystem/os-release | awk '{print $1}')
-		sed -i "s/7813c481156f6b280a3ba91fc6236368/$FILESYSTEM_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
-		sed -i "s/b16a4674ccf3a932ff34c6c8393a4f33/$FILESYSTEM2_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
-		cd ${MOO_HOME}abs/filesystem
-		makepkg -sf
-		schroot -p -- makepkg -sf
-
-		## LSB-RELEASE
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
-		rm -fr ${MOO_HOME}abs/lsb-release
-		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
-		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
-		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
-		cd ${MOO_HOME}abs/lsb-release
-		makepkg -sf
-		schroot -p -- makepkg -sf
-
-		## GRUB
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
-		rm -fr ${MOO_HOME}abs/grubtesting
-		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
-		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grubtesting/grub.cfg
-		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grubtesting/grub.default | awk '{print $1}')
-		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grubtesting/grub.cfg | awk '{print $1}')
-		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
-		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
-
-		cd ${MOO_HOME}abs/grubtesting
-		makepkg -sf
-		schroot -p -- makepkg -sf
-
-		## SYSLINUX
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
-		rm -fr ${MOO_HOME}abs/syslinux
-		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
-		SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
-		sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
-		cd ${MOO_HOME}abs/syslinux
-		makepkg -sf
-		schroot -p -- makepkg -sf
-
-		## HARDINFO
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
-		rm -fr ${MOO_HOME}abs/hardinfo
-		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
-		HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
-		sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-		sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
-		cd ${MOO_HOME}abs/hardinfo
-		makepkg -sf
-		#TODO
-		schroot -p -- makepkg -sf
-	fi
+	create_custom_packages
 
 	## delete useless package caches
-	echo "
-${bldred}Deleting old packages cache...${txtrst}
-"
-	sudo pkgcacheclean -v 1
-	schroot -p -- sudo pkgcacheclean -v 1
-	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1
-	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1
-	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/i686 1
-	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/x86_64 1
+	delete_package_caches
 
 	## DEBUG
 	##exit 0

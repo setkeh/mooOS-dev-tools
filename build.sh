@@ -1,7 +1,8 @@
 #!/bin/bash
-## i686
-set -e -u
+## mooOS
 
+set -e -u
+arch=$(uname -m)
 iso_name=mooOSlinux
 iso_label="mooOS_$(date +%Y%m)"
 iso_version=$(date +%Y.%m.%d)
@@ -38,12 +39,12 @@ _usage ()
 }
 
 # Helper function to run make_*() only one time per architecture.
-# run_once() {
-#     if [[ ! -e ${work_dir}/build.${1}_${arch} ]]; then
-#         $1
-#         touch ${work_dir}/build.${1}_${arch}
-#     fi
-# }
+run_once() {
+    if [[ ! -e ${work_dir}/build.${1}_${arch} ]]; then
+        $1
+        touch ${work_dir}/build.${1}_${arch}
+    fi
+}
 
 # Setup custom pacman.conf with current cache directories.
 make_pacman_conf() {
