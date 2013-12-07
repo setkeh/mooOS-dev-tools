@@ -359,358 +359,437 @@ umount_work_env() {
 	fi
 }
 
-## root script
-if [ $(id -u) -eq 0 ]; then
+create_build_env() {
+	PWD=$(pwd)
+	echo "
+	${bldyellow}Copying configuration files and recreating repos now...${txtrst}
+	"
+
+	## copy root files
+
+	## profile-sync-daemon
+	cp -v /etc/psd.conf ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
+	
+	## resolv.conf
+	cp -v /etc/resolv.conf ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf
+	
+	## resolv.conf.head
+	cp -v /etc/resolv.conf.head ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf.head
+	
+	## dnsmasq
+	cp -v /etc/dnsmasq.conf ${ARCHLIVE}archlive/releng/root-image/etc/dnsmasq.conf
+	
+	## dhcpcd
+	cp -v /etc/dhcpcd.conf ${ARCHLIVE}archlive/releng/root-image/etc/dhcpcd.conf
+	
+	## nano config
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/nano
+	cp -v /usr/share/nano/pkgbuild.nanorc ${ARCHLIVE}archlive/releng/root-image//usr/share/nano/pkgbuild.nanorc
+	
+	## e17 backgrounds
+	cp -v /usr/share/enlightenment/data/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
+	
+	## tor config
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/tor
+	cp -v /etc/torrc ${ARCHLIVE}archlive/releng/root-image/etc/tor/torrc
+	
+	## privoxy config
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/privoxy
+	sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
+	
+	## dansguardian config
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian
+	cp -v /etc/dansguardian/dansguardian.conf ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
+	
+	## squid config
+	#mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/squid
+	#cp -v /etc/squid/squid.conf ${ARCHLIVE}archlive/releng/root-image/etc/squid/squid.conf
+
+	## TODO
+	#mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+	#cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+	#cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+	#mv -v /etc/php/php.ini /etc/php/php.ini.bak
+	#cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+
+	## copy over custom .desktop files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/applications
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/applications/*.desktop ${ARCHLIVE}archlive/releng/root-image/usr/share/applications/
+	
+	## copy over ~/bin
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/bin
+	cp -vr ${MOO_HOME}bin/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/bin
+	
+	## copy over pentadactyl files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+	cp -vr ${MOO_HOME}.pentadactyl/colors/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
+	cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+	
+	## copy over rss reader files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
+	cp -v ${MOO_HOME}.canto-ng/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/config
+	
+	## copy over firefox files
+	su -l $MOO_USER -c "cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User"
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+	cp -vr ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+	
+	## copy over ~/.local files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
+	cp -v ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
+	cp -v ${MOO_HOME}.local/applications/tabbed.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
+	cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
+	cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
+	cp -v ${MOO_HOME}.local/applications/man_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/man_mooOS.desktop
+	
+	## copy over ~/.* (dotfiles)
+	cp -v ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
+	cp -v ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
+	cp -v ${MOO_HOME}.zshrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.zshrc
+	cp -v ${MOO_HOME}.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
+	cp -v ${MOO_HOME}.nanorc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.nanorc
+	cp -v ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
+	cp -v ${MOO_HOME}.pentadactylrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactylrc			
+	cp -v ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
+	cp -v ${MOO_HOME}.wgetrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.wgetrc
+	cp -v ${MOO_HOME}.curlrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.curlrc
+	
+	## copy over ~/.themes
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+	cp -vr ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+	
+	## copy over ~/.fonts
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
+	cp -vr ${MOO_HOME}.fonts/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
+	
+	## copy over kde files
+	mkdir -vp  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
+	cp -vr ${MOO_HOME}.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
+	cp -v ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/kdenliveuirc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliveuirc
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
+	cp -v ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
+	cp -v ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
+		cp -v ${MOO_HOME}.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc 
+	cp -vr ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
+	cp -vr ${MOO_HOME}.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
+	cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+	cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
+	cp -v ${MOO_HOME}.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc
+	cp -v ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc-2.0
+	
+	## copy over ~/.gnupg
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg
+	cp -v ${MOO_HOME}.gnupg/gpg-agent.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg-agent.conf
+	cp -v ${MOO_HOME}.gnupg/gpg.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg.conf
+
+	## copy over transmission file
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/settings.json ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+	
+	## copy over key-mon config
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon
+	cp -v ${MOO_HOME}.config/key-mon/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon/config
+	
+	## copy lxtask config
+	cp -v ${MOO_HOME}.config/lxtask.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/lxtask.conf
+	
+	## copy pavucontrol config
+	cp -v ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
+	
+	## copy over mocp file
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc
+	cp -v ${MOO_HOME}.moc/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
+	
+	## copy htop file
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop
+	cp -v ${MOO_HOME}.config/htop/htoprc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop/htoprc
+	
+	## copy sublime text 3 files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
+	cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
+	cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+	
+	## https://github.com/dmatarazzo/Sublime-Text-2-Icon
+	echo "Updating Sublime Text 3 icons"
+	# cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+	# cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+	# cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+	# cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+	# cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/sublime-text.png
+	# cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/sublime-text.png
+	# cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/sublime-text.png
+	# cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/sublime-text.png
+	# cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+	# cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+	# cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+	# cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+	# cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+	# cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+	# cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+	# cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+	# cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+	# cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
+	
+	## mooOS icon
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
+	
+	## copy vlc files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/vlc-qt-interface.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
+	cp -v ${MOO_HOME}.config/vlc/vlcrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
+	
+	## copy over window manager files
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
+	rm -r ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images
+	cp -vr ${MOO_HOME}.e/e/applications/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
+	#cp -vr ${MOO_HOME}.e/e/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
+	cp -vr ${MOO_HOME}.e/e/config/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
+	#cp -vr ${MOO_HOME}.e/e/themes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
+	#cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
+		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
+		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
+		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
+		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
+		mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+		cp -vr /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+
+		## patch config files for username
+		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
+	for NEW_FILE in e.*
+	do
+		EWW_FILE=${NEW_FILE/.cfg/.src}
+
+		eet -d $NEW_FILE config $EWW_FILE
+		sed -i "s/$MOO_USER/moo/g" $EWW_FILE
+		rm $NEW_FILE
+		eet -e $NEW_FILE config $EWW_FILE 1
+		rm $EWW_FILE
+	done
+	cd $PWD
+
+	## clean up files content
+	sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+	sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+	sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
+	sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+	sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf 
+	sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0		
+
+	## copy over hosts file (needed for LAN repos) TODO
+	#cp -v /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
+
+	## cleanup Github local repos
+	rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+	## mooOS stuffs
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music
+ 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures
+ 	cp -vr ${MOO_HOME}info/mooOS_backups/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
+
+ 	## copy home files and create default directories
+ 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Desktop.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop/
+ 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Dev.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/
+ 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Downloads.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads/
+ 	cp -v ${MOO_HOME}Videos/Videos.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos/
+ 	#cp -v ${MOO_HOME}Dropbox/Dropbox.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox/
+ 	cp -v ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
+ 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
+ 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
+
+	## create ~/Github and all repos
+		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+	git clone git://github.com/idk/pdq.git
+	git clone git://github.com/idk/bin.git
+	#git clone git://github.com/idk/awesomewm-X.git
+	git clone git://github.com/idk/zsh.git
+	git clone git://github.com/idk/bin.git
+	git clone git://github.com/idk/php.git
+	git clone git://github.com/idk/systemd.git
+	git clone git://github.com/idk/eggdrop-scripts.git
+	git clone git://github.com/idk/gh.git
+	git clone git://github.com/idk/vb-pdq.git
+	git clone git://github.com/idk/mooOS-dev-tools.git
+	git clone git://github.com/idk/mooOS-wallpapers.git
+	cd "$PWD"
+
+	## vimb files copied
+	cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
+	cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/config_proxy ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
+	cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/style.css ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
+
+	## preserve wallpapers
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
+	cp -vr /usr/share/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
+
+	install -Dm644 "${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/mooOS-dev-tools/misc/man.1" "${ARCHLIVE}archlive/releng/root-image/usr/local/man/man1/mooOS.1"
+	gzip -f ${ARCHLIVE}archlive/releng/root-image/usr/local/man/man1/mooOS.1
+
+	echo "${bldyellow}Removing previous build and work directories...${txtrst}"
+	
+	## deprecated method
+	if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
+		rm -r ${ARCHLIVE}archlive/releng/work
+	fi
+
+	## new method
+	if [ -d "$ISO_DIR" ]; then
+		rm -r "$ISO_DIR"
+	fi
+	if [ -d "$WORK_DIR" ]; then
+		rm -r "$WORK_DIR"
+	fi
+
+	## create pacman.conf for build
+	mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
+
+	mkdir -v "${ARCHLIVE}archlive/releng/work"
+	
+	## create pacman.conf for livecd
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
+	
+	## create pacman.conf for livecd specific to architecture
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-x86_64.conf
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-i686.conf
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/work/pacman-x86_64.conf
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/work/pacman-i686.conf
+
+	## packages lists
+	#cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.both ${ARCHLIVE}archlive/releng/packages.both
+	pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx "$(cat ${MOO_HOME}github/mooOS-dev-tools/backup_exclude_pkgs)" > ${ARCHLIVE}archlive/releng/packages.both
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.extra ${ARCHLIVE}archlive/releng/packages.extra
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/packages-server.both ${ARCHLIVE}archlive/releng/packages-server.both
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.i686 ${ARCHLIVE}archlive/releng/packages.i686
+	cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.x86_64 ${ARCHLIVE}archlive/releng/packages.x86_64
+
+	## copy over boot splash screen and mooOS branding
+	cp -v ${ARCHLIVE}archlive/releng/syslinux/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png
+	convert ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.jpg
+	#cp -v /etc/arch-release ${ARCHLIVE}archlive/releng/root-image/etc/arch-release
+}
+
+create_mooos_repos() {
+	cd "$PWD"
+
+	## remove existing repos
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
+	#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
+
+	## make RMS happy :D
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
+	cp -v /var/cache/pacman/pkg/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+	cp -v /var/cache/pacman/pkg/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any*
+	cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+	cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/unar-*
+	cp -v /var/cache/pacman/pkg/unar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+	cp -v /var/cache/pacman/pkg/unar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-*
+	cp -v /var/cache/pacman/pkg/opencollada-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+	cp -v /var/cache/pacman/pkg/opencollada-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+	rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-*
+	cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+	cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+	## create repo databases
+	echo "
+${bldred}Re-creating i686 repository${txtrst}
+"
+	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
+	echo "
+${bldred}Re-creating x86_64 repository${txtrst}
+"
+	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
+	#echo "${bldyellow}Re-creating utils repository${txtrst}"
+	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
+
+	## format log a little
+	echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
+	sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
+
+	## clean up stable repos
+	## re-create repos local and remote
+	echo "
+================syncing to local repos===================
+"
+	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
+	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
+}
+
+sync_mooos_repos() {
+	## include login credentials:
+	if [ -f "$REPO_CREDS" ] ; then
+		echo "
+================syncing to remote repos===================
+"
+		. $REPO_CREDS
+
+		## rsync using vars defined in credentials, e.g.:
+		#for i in {1..5}
+		for i in $(eval echo {1..$_remote_count})
+		do
+			port=$(eval echo $(echo '${'_remote$i[1]'}'))
+			flags=$(eval echo $(echo '${'_remote$i[4]'}'))
+			src=$(eval echo $(echo '${'_remote$i[2]'}'))
+			dest=$(eval echo $(echo '${'_remote$i[3]'}'))
+			torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
+		done
+	fi
+}
+
+## EXECUTE SCRIPT START
+if [ $(id -u) -eq 0 ]; then ## as $ROOT
 	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
 	if ask_something; then
 		umount_work_env i686
 		umount_work_env x86_64
 		question="${bldyellow}You wish to skip to create iso (Y/N)? (default: no)\n${txtrst}"
 		if ! ask_something; then
-			PWD=$(pwd)
-
-			echo "
-			${bldyellow}Copying configuration files and recreating repos now...${txtrst}
-			"
-
-			## copy root files
-
-			## profile-sync-daemon
-			cp -v /etc/psd.conf ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
-			
-			## resolv.conf
-			cp -v /etc/resolv.conf ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf
-			
-			## resolv.conf.head
-			cp -v /etc/resolv.conf.head ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf.head
-			
-			## dnsmasq
-			cp -v /etc/dnsmasq.conf ${ARCHLIVE}archlive/releng/root-image/etc/dnsmasq.conf
-			
-			## dhcpcd
-			cp -v /etc/dhcpcd.conf ${ARCHLIVE}archlive/releng/root-image/etc/dhcpcd.conf
-			
-			## nano config
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/nano
-			cp -v /usr/share/nano/pkgbuild.nanorc ${ARCHLIVE}archlive/releng/root-image//usr/share/nano/pkgbuild.nanorc
-			
-			## e17 backgrounds
-			cp -v /usr/share/enlightenment/data/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
-			
-			## tor config
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/tor
-			cp -v /etc/torrc ${ARCHLIVE}archlive/releng/root-image/etc/tor/torrc
-			
-			## privoxy config
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/privoxy
-			sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
-			
-			## dansguardian config
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian
-			cp -v /etc/dansguardian/dansguardian.conf ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
-			
-			## squid config
-			#mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/squid
-			#cp -v /etc/squid/squid.conf ${ARCHLIVE}archlive/releng/root-image/etc/squid/squid.conf
-
-			## TODO
-			#mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-			#cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-			#cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
-			#mv -v /etc/php/php.ini /etc/php/php.ini.bak
-			#cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
-
-			## copy over custom .desktop files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/applications
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/applications/*.desktop ${ARCHLIVE}archlive/releng/root-image/usr/share/applications/
-			
-			## copy over ~/bin
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/bin
-			cp -vr ${MOO_HOME}bin/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/bin
-			
-			## copy over pentadactyl files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
-			cp -vr ${MOO_HOME}.pentadactyl/colors/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
-			cp -vr ${MOO_HOME}.pentadactyl/plugins/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
-			
-			## copy over rss reader files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
-			cp -v ${MOO_HOME}.canto-ng/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/config
-			
-			## copy over firefox files
-			su -l $MOO_USER -c "cp -vr ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User"
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
-			cp -vr ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
-			
-			## copy over ~/.local files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
-			cp -v ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
-			cp -v ${MOO_HOME}.local/applications/tabbed.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
-			cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
-			cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
-			cp -v ${MOO_HOME}.local/applications/man_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/man_mooOS.desktop
-			
-			## copy over ~/.* (dotfiles)
-			cp -v ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
-			cp -v ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
-			cp -v ${MOO_HOME}.zshrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.zshrc
-			cp -v ${MOO_HOME}.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
-			cp -v ${MOO_HOME}.nanorc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.nanorc
-			cp -v ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
-			cp -v ${MOO_HOME}.pentadactylrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactylrc			
-			cp -v ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
-			cp -v ${MOO_HOME}.wgetrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.wgetrc
-			cp -v ${MOO_HOME}.curlrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.curlrc
-			
-			## copy over ~/.themes
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
-			cp -vr ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
-			
-			## copy over ~/.fonts
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
-			cp -vr ${MOO_HOME}.fonts/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
-			
-			## copy over kde files
-			mkdir -vp  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
-			cp -vr ${MOO_HOME}.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
-			cp -v ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/kdenliveuirc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliveuirc
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
-			cp -v ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
-			cp -v ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
- 			cp -v ${MOO_HOME}.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc 
-			cp -vr ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
-			cp -vr ${MOO_HOME}.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
-			cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
-			cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
-			cp -v ${MOO_HOME}.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc
-			cp -v ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc-2.0
-			
-			## copy over ~/.gnupg
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg
-			cp -v ${MOO_HOME}.gnupg/gpg-agent.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg-agent.conf
-			cp -v ${MOO_HOME}.gnupg/gpg.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg.conf
-
-			## copy over transmission file
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/settings.json ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
-			
-			## copy over key-mon config
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon
-			cp -v ${MOO_HOME}.config/key-mon/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon/config
-			
-			## copy lxtask config
-			cp -v ${MOO_HOME}.config/lxtask.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/lxtask.conf
-			
-			## copy pavucontrol config
-			cp -v ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
-			
-			## copy over mocp file
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc
-			cp -v ${MOO_HOME}.moc/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
-			
-			## copy htop file
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop
-			cp -v ${MOO_HOME}.config/htop/htoprc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop/htoprc
-			
-			## copy sublime text 3 files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
-			cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
-			cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
-			
-			## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-			echo "Updating Sublime Text 3 icons"
-			# cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
-			# cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
-			# cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
-			# cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
-			# cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/sublime-text.png
-			# cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/sublime-text.png
-			# cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/sublime-text.png
-			# cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/sublime-text.png
-			# cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/sublime-text.png
-			# cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/sublime-text.png
-			# cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/sublime-text.png
-			# cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/sublime-text.png
-			# cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/sublime-text.png
-			# cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png
-			# cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png
-			# cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
-			# cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
-			# cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
-			
-			## mooOS icon
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
-			
-			## copy vlc files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/vlc-qt-interface.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
-			cp -v ${MOO_HOME}.config/vlc/vlcrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
-			
-			## copy over window manager files
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
-			rm -r ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images
-			cp -vr ${MOO_HOME}.e/e/applications/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
-			#cp -vr ${MOO_HOME}.e/e/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
-			cp -vr ${MOO_HOME}.e/e/config/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
-			#cp -vr ${MOO_HOME}.e/e/themes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
-			#cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
- 			rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
- 			rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
- 			rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
- 			rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
- 			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
- 			cp -vr /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
-
- 			## patch config files for username
- 			cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
-			for NEW_FILE in e.*
-			do
-				EWW_FILE=${NEW_FILE/.cfg/.src}
-
-				eet -d $NEW_FILE config $EWW_FILE
-				sed -i "s/$MOO_USER/moo/g" $EWW_FILE
-				rm $NEW_FILE
-				eet -e $NEW_FILE config $EWW_FILE 1
-				rm $EWW_FILE
-			done
-			cd $PWD
-
-			## clean up files content
-			sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
-			sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
-			sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
-			sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
-			sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf 
-			sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0		
-
-			## copy over hosts file (needed for LAN repos) TODO
-			#cp -v /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
-
-			## cleanup Github local repos
-			rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
-			## mooOS stuffs
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music
-		 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures
-		 	cp -vr ${MOO_HOME}info/mooOS_backups/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
-
-		 	## copy home files and create default directories
-		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Desktop.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop/
-		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Dev.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/
-		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Downloads.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads/
-		 	cp -v ${MOO_HOME}Videos/Videos.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos/
-		 	#cp -v ${MOO_HOME}Dropbox/Dropbox.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox/
-		 	cp -v ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
-		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
-		 	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
-
-			## create ~/Github and all repos
-	 		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
-			git clone git://github.com/idk/pdq.git
-			git clone git://github.com/idk/bin.git
-			#git clone git://github.com/idk/awesomewm-X.git
-			git clone git://github.com/idk/zsh.git
-			git clone git://github.com/idk/bin.git
-			git clone git://github.com/idk/php.git
-			git clone git://github.com/idk/systemd.git
-			git clone git://github.com/idk/eggdrop-scripts.git
-			git clone git://github.com/idk/gh.git
-			git clone git://github.com/idk/vb-pdq.git
-			git clone git://github.com/idk/mooOS-dev-tools.git
-			git clone git://github.com/idk/mooOS-wallpapers.git
-			cd "$PWD"
-
-			## vimb files copied
-			cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
-			cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/config_proxy ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
-			cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/style.css ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
-
-			## preserve wallpapers
-			mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
-			cp -vr /usr/share/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
-
-			install -Dm644 "${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/mooOS-dev-tools/misc/man.1" "${ARCHLIVE}archlive/releng/root-image/usr/local/man/man1/mooOS.1"
-			gzip -f ${ARCHLIVE}archlive/releng/root-image/usr/local/man/man1/mooOS.1
-
-			echo "${bldyellow}Removing previous build and work directories...${txtrst}"
-			
-			## deprecated method
-			if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
-				rm -r ${ARCHLIVE}archlive/releng/work
-			fi
-
-			## new method
-			if [ -d "$ISO_DIR" ]; then
-				rm -r "$ISO_DIR"
-			fi
-			if [ -d "$WORK_DIR" ]; then
-				rm -r "$WORK_DIR"
-			fi
-
-			## create pacman.conf for build
-			mkdir -v "$WORK_DIR" && cp ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${WORK_DIR}/pacman.conf
-
-			mkdir -v "${ARCHLIVE}archlive/releng/work"
-			
-			## create pacman.conf for livecd
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
-			
-			## create pacman.conf for livecd specific to architecture
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-x86_64.conf
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-i686.conf
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/work/pacman-x86_64.conf
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/work/pacman-i686.conf
-
-			## packages lists
-			#cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.both ${ARCHLIVE}archlive/releng/packages.both
-			pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx "$(cat ${MOO_HOME}github/mooOS-dev-tools/backup_exclude_pkgs)" > ${ARCHLIVE}archlive/releng/packages.both
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.extra ${ARCHLIVE}archlive/releng/packages.extra
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages-server.both ${ARCHLIVE}archlive/releng/packages-server.both
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.i686 ${ARCHLIVE}archlive/releng/packages.i686
-			cp -v ${MOO_HOME}github/mooOS-dev-tools/packages.x86_64 ${ARCHLIVE}archlive/releng/packages.x86_64
-
-			## copy over boot splash screen and mooOS branding
-			cp -v ${ARCHLIVE}archlive/releng/syslinux/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png
-			convert ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.jpg
-			#cp -v /etc/arch-release ${ARCHLIVE}archlive/releng/root-image/etc/arch-release
+			create_build_env	
 		fi
 
 		for moo in i686 x86_64
 		do
-			echo ""
 			echo "${bldred}Building $moo iso now...${txtrst}"
 
 			## change to build directory and build iso
@@ -719,11 +798,8 @@ if [ $(id -u) -eq 0 ]; then
 			#2>&1 >> ${MOO_HOME}output.txt
 
 			echo "${bldred}$moo iso built${txtrst}"
-			echo ""
 			umount_work_env $moo
 		done
-
-		
 
 		## sync .isos to local directory and remote server
 		for mooos in i686 x86_64
@@ -736,7 +812,6 @@ if [ $(id -u) -eq 0 ]; then
 	fi
 else ## as $USER
 	## create the build environment and preparation
-
 	do_system_updates
 
 	question="${bldyellow}Sync to github? (Y/N)?\n${txtrst}"
@@ -745,104 +820,28 @@ else ## as $USER
 		gh -b ## https://github.com/idk/gh
 	fi
 
-	echo "
-${bldred}Copying configuration files and recreating repos now...${txtrst}
-"
+	echo "${bldred}Copying configuration files and recreating repos now...${txtrst}"
 
+	## add branding and custom packages
 	create_custom_packages
 
 	## delete useless package caches
 	delete_package_caches
 
-	## DEBUG
-	##exit 0
-
 	question="${bldyellow}Create and cleanup mooOS repos? (Y/N)?\n${txtrst}"
 	if ask_something; then
-		cd "$PWD"
-
-		## remove existing repos
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
-		#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
-
-		## make RMS happy :D
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
-		cp -v /var/cache/pacman/pkg/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp -v /var/cache/pacman/pkg/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any*
-		cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp -v /var/cache/pacman/pkg/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
-
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/unar-*
-		cp -v /var/cache/pacman/pkg/unar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp -v /var/cache/pacman/pkg/unar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-*
-		cp -v /var/cache/pacman/pkg/opencollada-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp -v /var/cache/pacman/pkg/opencollada-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-*
-		cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
-
-		## create repo databases
-		echo "
-	${bldred}Re-creating i686 repository${txtrst}
-	"
-		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
-		echo "
-	${bldred}Re-creating x86_64 repository${txtrst}
-	"
-		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
-		#echo "${bldyellow}Re-creating utils repository${txtrst}"
-		#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
-
-		## format log a little
-		echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
-		sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $REPO_LOG
-
-		## clean up stable repos
-		## re-create repos local and remote
-		echo "
-	================syncing to local repos===================
-	"
-		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
-		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
-		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
-		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
+		create_mooos_repos
 	fi
 
 	question="${bldyellow}Sync remote mooOS repo? (Y/N)?\n${txtrst}"
 	if ask_something; then
-		## remote repo
-		## include login credentials:
-		if [ -f "$REPO_CREDS" ] ; then
-			echo "
-	================syncing to remote repos===================
-	"
-			. $REPO_CREDS
-
-			## rsync using vars defined in credentials, e.g.:
-			#for i in {1..5}
-			for i in $(eval echo {1..$_remote_count})
-			do
-				port=$(eval echo $(echo '${'_remote$i[1]'}'))
-				flags=$(eval echo $(echo '${'_remote$i[4]'}'))
-				src=$(eval echo $(echo '${'_remote$i[2]'}'))
-				dest=$(eval echo $(echo '${'_remote$i[3]'}'))
-				torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
-			done
-		fi
+		sync_mooos_repos
 	fi
 
 	notify-send "User portion of script complete"
 
-	echo "
-${bldred}Re-running this script as root!${txtrst}
-"
-	sleep 2s
+	echo "${bldred}Re-running this script as root!${txtrst}"
+
 	## re-run script as root
  	sudo $0
 fi
