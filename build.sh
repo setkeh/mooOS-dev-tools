@@ -1,5 +1,5 @@
 #!/bin/bash
-
+## i686
 set -e -u
 
 iso_name=mooOSlinux
@@ -9,7 +9,6 @@ install_dir=arch
 work_dir=work
 out_dir=out
 
-arch=$(uname -m)
 verbose=""
 pacman_conf=${work_dir}/pacman
 script_path=$(readlink -f ${0%/*})
@@ -31,18 +30,20 @@ _usage ()
     echo "                        Default: ${work_dir}"
     echo "    -o <out_dir>       Set the output directory"
     echo "                        Default: ${out_dir}"
+    echo "    -a <architecture>  Set the architecture"
+    echo "                        Default: ${arch}"
     echo "    -v                 Enable verbose output"
     echo "    -h                 This help message"
     exit ${1}
 }
 
 # Helper function to run make_*() only one time per architecture.
-run_once() {
-    if [[ ! -e ${work_dir}/build.${1}_${arch} ]]; then
-        $1
-        touch ${work_dir}/build.${1}_${arch}
-    fi
-}
+# run_once() {
+#     if [[ ! -e ${work_dir}/build.${1}_${arch} ]]; then
+#         $1
+#         touch ${work_dir}/build.${1}_${arch}
+#     fi
+# }
 
 # Setup custom pacman.conf with current cache directories.
 make_pacman_conf() {
@@ -200,7 +201,7 @@ make_prepare() {
 # Build ISO
 make_iso() {
     mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" checksum
-    mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" -L "${iso_label}" -o "${out_dir}" iso "${iso_name}-${iso_version}-dual.iso"
+    mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" -L "${iso_label}" -o "${out_dir}" iso "${iso_name}-${iso_version}-${arch}.iso"
 }
 
 if [[ ${EUID} -ne 0 ]]; then
@@ -213,7 +214,7 @@ if [[ ${arch} != x86_64 ]]; then
     _usage 1
 fi
 
-while getopts 'N:V:L:D:w:o:vh' arg; do
+while getopts 'N:V:L:D:w:o:a:vh' arg; do
     case "${arg}" in
         N) iso_name="${OPTARG}" ;;
         V) iso_version="${OPTARG}" ;;
@@ -221,6 +222,7 @@ while getopts 'N:V:L:D:w:o:vh' arg; do
         D) install_dir="${OPTARG}" ;;
         w) work_dir="${OPTARG}" ;;
         o) out_dir="${OPTARG}" ;;
+        a) arch="${OPTARG}" ;;
         v) verbose="-v" ;;
         h) _usage 0 ;;
         *)
@@ -235,16 +237,11 @@ mkdir -p ${work_dir}
 run_once make_pacman_conf
 
 # Do all stuff for each root-image
-for arch in i686 x86_64; do
-    run_once make_basefs
-    run_once make_packages
-    run_once make_setup_mkinitcpio
-    run_once make_customize_root_image
-done
-
-for arch in i686 x86_64; do
-    run_once make_boot
-done
+run_once make_basefs
+run_once make_packages
+run_once make_setup_mkinitcpio
+run_once make_customize_root_image
+run_once make_boot
 
 # Do all stuff for "iso"
 run_once make_boot_extra
@@ -252,11 +249,6 @@ run_once make_syslinux
 run_once make_isolinux
 #run_once make_efi
 #run_once make_efiboot
-
 run_once make_aitab
-
-for arch in i686 x86_64; do
-    run_once make_prepare
-done
-
+run_once make_prepare
 run_once make_iso
