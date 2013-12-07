@@ -705,7 +705,7 @@ ${bldred}Syncing Arch Build System...${txtrst}
 
 	## delete useless package caches
 	echo "
-${bldred}Deteing old packages cache...${txtrst}
+${bldred}Deleting old packages cache...${txtrst}
 "
 	sudo pkgcacheclean -v 1
 	schroot -p -- sudo pkgcacheclean -v 1
@@ -715,7 +715,7 @@ ${bldred}Deteing old packages cache...${txtrst}
 	sudo pkgcacheclean -v -k --cachedir=${ARCHLIVE}mooOS/x86_64 1
 
 	## DEBUG
-	#exit 0
+	exit 0
 
 	question="${bldyellow}Create and cleanup mooOS repos? (Y/N)?\n${txtrst}"
 	if ask_something; then
