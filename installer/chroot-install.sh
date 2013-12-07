@@ -698,10 +698,19 @@ if [ $(id -u) -eq 0 ]; then
                 # chown -R tor:tor /usr/share/tor/hidden_service4
                 # cp ${dev_directory}bin/lamp.sh /usr/bin/lamp
 
+                groupadd -r polipo
+                useradd -d /var/cache/polipo -g polipo -r -s /bin/false polipo
+                touch /var/log/polipo.log
+                chown -R polipo:polipo /var/log/polipo.log /var/cache/polipo
+
+                sh -c "echo '.include /usr/lib/systemd/system/polipo.service
+[Service]
+User=polipo  > /etc/systemd/system/polipo.service"
+
                 #systemctl enable dhcpcd@eth0.service
                 #systemctl enable NetworkManager.service
                 #systemctl enable vnstat.sevice
-
+                systemctl disable iptables.service cpupower.service
                 systemctl enable multi-user.target pacman-init.service choose-mirror.service
                 systemctl enable ntpd.service
                 systemctl enable tor.service

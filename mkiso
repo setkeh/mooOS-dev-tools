@@ -73,10 +73,14 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 ## END EXAMPLE of repo_creds
 
 # Text color variables (there is no need change these)
-txtbld=$(tput bold)                # bold
-bldred=${txtbld}$(tput setaf 1)    # red
-bldyellow=${txtbld}$(tput setaf 3) # yellow
-txtrst=$(tput sgr0)                # reset
+txtbld=$(tput bold)                 # bold
+bldred=${txtbld}$(tput setaf 1)     # red
+bldgreen=${txtbld}$(tput setaf 2)   # green
+bldyellow=${txtbld}$(tput setaf 3)  # yellow
+bldblue=${txtbld}$(tput setaf 4)    # blue
+bldmagenta=${txtbld}$(tput setaf 5) # magenta
+bldcyan=${txtbld}$(tput setaf 6)    # cyan
+txtrst=$(tput sgr0)                 # reset
 
 
 ## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
@@ -102,14 +106,10 @@ do_system_updates() {
 			devel= --devel
 		fi
 
-		echo "
-${bldred}Applying i686 updates...${txtrst}
-"
+		echo "${bldgreen}Applying i686 updates...${txtrst}"
 		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
 
-		echo "
-${bldred}Applying x86_64 updates...${txtrst}
-"
+		echo "${bldgreen}Applying x86_64 updates...${txtrst}"
 		sudo pacman -Syu && pacaur -Syua$devel
 	fi
 }
@@ -118,9 +118,7 @@ create_custom_packages() {
 	question="${bldyellow}Rebrand packages? (gh/vb-pdq/filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
 	if ask_something; then
 		## sync ABS
-			echo "
-${bldred}Syncing Arch Build System...${txtrst}
-"
+		echo "${bldgreen}Syncing Arch Build System...${txtrst}"
 		sudo abs
 
 		## install custom mooOS packages
@@ -223,9 +221,7 @@ ${bldred}Syncing Arch Build System...${txtrst}
 }
 
 delete_package_caches() {
-		echo "
-${bldred}Deleting old packages cache...${txtrst}
-"
+	echo "${bldgreen}Deleting old packages cache...${txtrst}"
 	sudo pkgcacheclean -v 1
 	schroot -p -- sudo pkgcacheclean -v 1
 	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1
@@ -237,114 +233,104 @@ ${bldred}Deleting old packages cache...${txtrst}
 rsync_iso_remote() {
 	## sync .iso to remote server
 	ARCH_ISO=$1
-		## create initial old hash
-		if [ ! -f "$OLDHASH_${ARCH_ISO}" ]; then
-			su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > $OLDHASH_${ARCH_ISO}"
-		fi
+	## create initial old hash
+	if [ ! -f "$OLDHASH_${ARCH_ISO}" ]; then
+		su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > $OLDHASH_${ARCH_ISO}"
+	fi
 
+	echo "generating md5sums... please wait a moment"
+	# md5sums of current and old .iso
+	MD5HASH=$(md5sum $ISO_DIR/-${ARCH_ISO}*.iso | cut -d " " -f 1)
+
+	## create initial current hash
+	if [ ! -f "$CURRENTHASH_${ARCH_ISO}" ]; then
+		su -l $MOO_USER -c "echo $MD5HASH_${ARCH_ISO} > $CURRENTHASH_${ARCH_ISO}"
+	fi
+
+	CURMD5HASH=$(cat $CURRENTHASH_${ARCH_ISO})
+	OLDMD5HASH=$(cat $OLDHASH_${ARCH_ISO})
+	NEW=0
+	## if new iso create hashes
+	if [ "$CURMD5HASH" != "$MD5HASH_${ARCH_ISO}" ]; then
+		su -l $MOO_USER -c "echo $CURMD5HASH > $OLDHASH_${ARCH_ISO}"
+		su -l $MOO_USER -c "echo $MD5HASH_${ARCH_ISO} > $CURRENTHASH_${ARCH_ISO}"
+		NEW=1
+	fi
+
+	OLDMD5HASH=$(cat $OLDHASH_${ARCH_ISO})
+
+	echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH_${ARCH_ISO}"
+
+	## replace old hash with new hash in info.php on local web server
+	su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH_${ARCH_ISO}/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+
+	## create initial old name
+	if [ ! -f "$OLDNAME_${ARCH_ISO}" ]; then
+		su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > $OLDNAME_${ARCH_ISO}"
+	fi
+
+	## create initial current name
+	if [ ! -f "$CURRENTNAME_${ARCH_ISO}" ]; then
+		su -l $MOO_USER -c "ls $ISO_DIR > $CURRENTNAME_${ARCH_ISO}"
+	fi
+
+	NEW_NAME_LIST=$(ls $ISO_DIR)
+	CURRELNAME=$(cat $CURRENTNAME_${ARCH_ISO})
+	OLDRELNAME=$(cat $OLDNAME_${ARCH_ISO})
+
+	NEW_NAME=0
+	## if new iso create release name
+	if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
+		su -l $MOO_USER -c "echo $CURRELNAME > $OLDNAME_${ARCH_ISO}"
+		su -l $MOO_USER -c "echo $NEW_NAME_LIST > $CURRENTNAME_${ARCH_ISO}"
+		NEW_NAME=1
+	fi
+
+	CURRELNAME=$(cat $CURRENTNAME_${ARCH_ISO})
+	OLDRELNAME=$(cat $OLDNAME_${ARCH_ISO})
+
+	echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
+	## replace old release name with new release name in info.php on local web server
+	if [ $NEW_NAME -eq 1 ]; then
+		su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+	fi
+
+	if [ $NEW -eq 1 ]; then
 		echo "
-generating md5sums... please wait a moment
-"
-		# md5sums of current and old .iso
-		MD5HASH=$(md5sum $ISO_DIR/-${ARCH_ISO}*.iso | cut -d " " -f 1)
-
-		## create initial current hash
-		if [ ! -f "$CURRENTHASH_${ARCH_ISO}" ]; then
-			su -l $MOO_USER -c "echo $MD5HASH_${ARCH_ISO} > $CURRENTHASH_${ARCH_ISO}"
-		fi
-
-		CURMD5HASH=$(cat $CURRENTHASH_${ARCH_ISO})
-		OLDMD5HASH=$(cat $OLDHASH_${ARCH_ISO})
-		NEW=0
-		## if new iso create hashes
-		if [ "$CURMD5HASH" != "$MD5HASH_${ARCH_ISO}" ]; then
-			su -l $MOO_USER -c "echo $CURMD5HASH > $OLDHASH_${ARCH_ISO}"
-			su -l $MOO_USER -c "echo $MD5HASH_${ARCH_ISO} > $CURRENTHASH_${ARCH_ISO}"
-			NEW=1
-		fi
-
-		OLDMD5HASH=$(cat $OLDHASH_${ARCH_ISO})
-
-		echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH_${ARCH_ISO}"
-
-		## replace old hash with new hash in info.php on local web server
-		su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH_${ARCH_ISO}/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
-
-		## create initial old name
-		if [ ! -f "$OLDNAME_${ARCH_ISO}" ]; then
-			su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > $OLDNAME_${ARCH_ISO}"
-		fi
-
-		## create initial current name
-		if [ ! -f "$CURRENTNAME_${ARCH_ISO}" ]; then
-			su -l $MOO_USER -c "ls $ISO_DIR > $CURRENTNAME_${ARCH_ISO}"
-		fi
-
-		NEW_NAME_LIST=$(ls $ISO_DIR)
-		CURRELNAME=$(cat $CURRENTNAME_${ARCH_ISO})
-		OLDRELNAME=$(cat $OLDNAME_${ARCH_ISO})
-
-		NEW_NAME=0
-		## if new iso create release name
-		if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
-			su -l $MOO_USER -c "echo $CURRELNAME > $OLDNAME_${ARCH_ISO}"
-			su -l $MOO_USER -c "echo $NEW_NAME_LIST > $CURRENTNAME_${ARCH_ISO}"
-			NEW_NAME=1
-		fi
-
-		CURRELNAME=$(cat $CURRENTNAME_${ARCH_ISO})
-		OLDRELNAME=$(cat $OLDNAME_${ARCH_ISO})
-
-		echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
-		## replace old release name with new release name in info.php on local web server
-		if [ $NEW_NAME -eq 1 ]; then
-			su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
-		fi
-
-		if [ $NEW -eq 1 ]; then
-			echo "
 ================syncing iso to local storage repos===================
 "
-			su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}-old.iso"
-			su -l $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}-old.iso"
-			su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso"
-			su -l $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso"
+		su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}-old.iso"
+		su -l $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}-old.iso"
+		su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso"
+		su -l $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso"
 
-			## Mount server filesystem to localhost
-			# path to remote repo credentials file
-			su -l $MOO_USER -c "cat /mnt/linux-pdq/media/truecrypt1/private/repo_creds > /tmp/repo_creds"
-			REPO_CREDS=/tmp/repo_creds
+		## Mount server filesystem to localhost
+		# path to remote repo credentials file
+		su -l $MOO_USER -c "cat /mnt/linux-pdq/media/truecrypt1/private/repo_creds > /tmp/repo_creds"
+		REPO_CREDS=/tmp/repo_creds
 
-			## if remote web server exists
-			if [ "$REPO_CREDS" ] ; then
-				. $REPO_CREDS
+		## if remote web server exists
+		if [ "$REPO_CREDS" ] ; then
+			. $REPO_CREDS
 
-				## rsync .iso using vars defined in credentials, e.g.:
-				port=$(eval echo $(echo '${'_iso_sync[1]'}'))
-				flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
-				src=$(eval echo $(echo '${'_iso_sync[2]'}'))
-				dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
+			## rsync .iso using vars defined in credentials, e.g.:
+			port=$(eval echo $(echo '${'_iso_sync[1]'}'))
+			flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
+			src=$(eval echo $(echo '${'_iso_sync[2]'}'))
+			dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
 
-				## copy info.php with new hash to remote web server
-				echo "
-================syncing info.php to remote web server===================
-"
-				su -l $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
-				echo "
-================syncing iso to remote server===================
-"
-				echo "
-This may take a while...
-"
-				su -l $MOO_USER -c "rsync -avzcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
+			## copy info.php with new hash to remote web server
+			echo "================syncing info.php to remote web server==================="
+			su -l $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
+			echo "================syncing iso to remote server==================="
+			echo "This may take a while..."
+			su -l $MOO_USER -c "rsync -avzcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
 
-				rm "$REPO_CREDS"
-			fi
+			rm "$REPO_CREDS"
 		fi
+	fi
 
-	echo "
-${ARCH_ISO} synced!
-"
+	echo "${ARCH_ISO} synced!"
 }
 
 umount_work_env() {
@@ -361,9 +347,7 @@ umount_work_env() {
 
 create_build_env() {
 	PWD=$(pwd)
-	echo "
-	${bldyellow}Copying configuration files and recreating repos now...${txtrst}
-	"
+	echo "${bldyellow}Copying configuration files and recreating repos now...${txtrst}"
 
 	## copy root files
 
@@ -574,19 +558,18 @@ create_build_env() {
 	cp -vr ${MOO_HOME}.e/e/config/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
 	#cp -vr ${MOO_HOME}.e/e/themes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
 	#cp -v ${MOO_HOME}.e/e/images/tw_cache_images.eet ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
-		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
-		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
-		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
-		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
-		mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
-		cp -vr /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+	rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
+	rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
+	rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
+	rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
+	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+	cp -vr /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
 
-		## patch config files for username
-		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
+	## patch config files for username
+	cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
 	for NEW_FILE in e.*
 	do
 		EWW_FILE=${NEW_FILE/.cfg/.src}
-
 		eet -d $NEW_FILE config $EWW_FILE
 		sed -i "s/$MOO_USER/moo/g" $EWW_FILE
 		rm $NEW_FILE
@@ -630,7 +613,7 @@ create_build_env() {
  	cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
 
 	## create ~/Github and all repos
-		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+	cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
 	git clone git://github.com/idk/pdq.git
 	git clone git://github.com/idk/bin.git
 	#git clone git://github.com/idk/awesomewm-X.git
@@ -702,7 +685,6 @@ create_build_env() {
 
 create_mooos_repos() {
 	cd "$PWD"
-
 	## remove existing repos
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
 	rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
@@ -730,13 +712,9 @@ create_mooos_repos() {
 	cp -v /var/cache/pacman/pkg/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
 	## create repo databases
-	echo "
-${bldred}Re-creating i686 repository${txtrst}
-"
+	echo "${bldmagenta}Re-creating i686 repository${txtrst}"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
-	echo "
-${bldred}Re-creating x86_64 repository${txtrst}
-"
+	echo "${bldmagenta}Re-creating x86_64 repository${txtrst}"
 	repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 	#echo "${bldyellow}Re-creating utils repository${txtrst}"
 	#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
@@ -747,9 +725,7 @@ ${bldred}Re-creating x86_64 repository${txtrst}
 
 	## clean up stable repos
 	## re-create repos local and remote
-	echo "
-================syncing to local repos===================
-"
+	echo "================syncing to local repos==================="
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
 	rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 	rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}/mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
@@ -759,9 +735,7 @@ ${bldred}Re-creating x86_64 repository${txtrst}
 sync_mooos_repos() {
 	## include login credentials:
 	if [ -f "$REPO_CREDS" ] ; then
-		echo "
-================syncing to remote repos===================
-"
+		echo "================syncing to remote repos==================="
 		. $REPO_CREDS
 
 		## rsync using vars defined in credentials, e.g.:
@@ -781,8 +755,10 @@ sync_mooos_repos() {
 if [ $(id -u) -eq 0 ]; then ## as $ROOT
 	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
 	if ask_something; then
+		
 		umount_work_env i686
 		umount_work_env x86_64
+
 		question="${bldyellow}You wish to skip to create iso (Y/N)? (default: no)\n${txtrst}"
 		if ! ask_something; then
 			create_build_env	
@@ -790,14 +766,13 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 
 		for moo in i686 x86_64
 		do
-			echo "${bldred}Building $moo iso now...${txtrst}"
-
+			echo "${bldcyan}Building $moo iso now...${txtrst}"
 			## change to build directory and build iso
 			cd ${ARCHLIVE}archlive/releng
 			 ./build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
 			#2>&1 >> ${MOO_HOME}output.txt
 
-			echo "${bldred}$moo iso built${txtrst}"
+			echo "${bldcyan}$moo iso built${txtrst}"
 			umount_work_env $moo
 		done
 
@@ -806,8 +781,8 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 		do
 			question="${bldyellow}Do you wish to rysnc this $mooos .iso to remote server (Y/N)?\n${txtrst}"
 			if ask_something; then
-		    	rsync_iso_remote $mooos
-		    fi
+				rsync_iso_remote $mooos
+			fi
 		done
 	fi
 else ## as $USER
@@ -820,8 +795,7 @@ else ## as $USER
 		gh -b ## https://github.com/idk/gh
 	fi
 
-	echo "${bldred}Copying configuration files and recreating repos now...${txtrst}"
-
+	echo "${bldgreen}Copying configuration files and recreating repos now...${txtrst}"
 	## add branding and custom packages
 	create_custom_packages
 
@@ -841,7 +815,6 @@ else ## as $USER
 	notify-send "User portion of script complete"
 
 	echo "${bldred}Re-running this script as root!${txtrst}"
-
 	## re-run script as root
  	sudo $0
 fi

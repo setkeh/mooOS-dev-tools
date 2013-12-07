@@ -110,7 +110,7 @@ squid -z &
 
 #chmod -R 777 /run/transmission
 #chown -R moo /run/transmission
-
+systemctl disable iptables.service cpupower.service
 systemctl enable multi-user.target pacman-init.service choose-mirror.service
 systemctl enable ntpd.service
 systemctl enable tor.service
