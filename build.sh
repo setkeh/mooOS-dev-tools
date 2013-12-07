@@ -187,7 +187,7 @@ make_isolinux() {
 # Copy aitab
 make_aitab() {
     mkdir -p ${work_dir}/iso/${install_dir}
-    cp ${script_path}/aitab ${work_dir}/iso/${install_dir}/aitab
+    cp ${script_path}/aitab.${arch} ${work_dir}/iso/${install_dir}/aitab
 }
 
 # Build all filesystem images specified in aitab (.fs.sfs .sfs)
