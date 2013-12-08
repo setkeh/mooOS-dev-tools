@@ -347,8 +347,10 @@ if [ $(id -u) -eq 0 ]; then
         sed -i "s/moo/$puser/g" /etc/skel/.config/transmission-daemon/settings.json
         sed -i "s/moo/$puser/g" /etc/skel/.moc/config
         sed -i "s/moo/$puser/g" /etc/skel/.kde4/share/config/dolphinrc
-        sed -i "s/moo/$puser/g" /etc/psd.conf 
-        sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0    
+        sed -i "s/moo/$puser/g" /etc/psd.conf
+        sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
+
+        su -l $puser -c "pacaur -S packer" #
 
         ## copy this script to user home directory
         # if [ ! -f /home/$puser/install_mooOS_user ]; then
