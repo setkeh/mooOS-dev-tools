@@ -220,7 +220,7 @@ create_custom_packages() {
 		cd ${MOO_HOME}abs/hardinfo
 		makepkg -sf
 		#TODO
-		schroot -p -- makepkg -sf
+		#schroot -p -- makepkg -sf
 	fi
 }
 
