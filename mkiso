@@ -346,10 +346,10 @@ umount_work_env() {
 		rm -r $WORK_DIR/$moo
 		rm $WORK_DIR/*$moo
 
-		rm -r $WORK_DIR/iso/arch/$moo
-		rm $WORK_DIR/iso/arch/*.$moo.*
+		rm -r $WORK_DIR/iso/$moo/$moo
+		rm $WORK_DIR/iso/$moo/*.$moo.*
 
-		rm -r $WORK_DIR/iso/arch/boot/$moo
+		rm -r $WORK_DIR/iso/$moo/boot/$moo
 	fi
 }
 

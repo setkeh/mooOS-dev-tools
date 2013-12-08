@@ -6,7 +6,7 @@ arch=$(uname -m)
 iso_name=mooOSlinux
 iso_label="mooOS_$(date +%Y%m)"
 iso_version=$(date +%Y.%m.%d)
-install_dir=arch
+install_dir=${arch}
 work_dir=work
 out_dir=out
 
