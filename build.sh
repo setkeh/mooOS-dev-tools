@@ -6,7 +6,7 @@ arch=$(uname -m)
 iso_name=mooOSlinux
 iso_label="mooOS_$(date +%Y%m)"
 iso_version=$(date +%Y.%m.%d)
-install_dir=${arch}
+#install_dir=${arch}
 work_dir=work
 out_dir=out
 
@@ -55,13 +55,13 @@ make_pacman_conf() {
 
 # Base installation, plus needed packages (root-image)
 make_basefs() {
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" init
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -p "memtest86+ mkinitcpio-nfs-utils nbd" install
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${arch}" init
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${arch}" -p "memtest86+ mkinitcpio-nfs-utils nbd" install
 }
 
 # Additional packages (root-image)
 make_packages() {
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -p "$(grep -h -v ^# ${script_path}/packages.{extra,both,${arch}})" install
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${arch}" -p "$(grep -h -v ^# ${script_path}/packages.{extra,both,${arch}})" install
 }
 
 # Copy mkinitcpio archiso hooks and build initramfs (root-image)
@@ -74,7 +74,7 @@ make_setup_mkinitcpio() {
     cp /usr/lib/initcpio/install/archiso_kms ${work_dir}/${arch}/root-image/usr/lib/initcpio/install
     cp /usr/lib/initcpio/archiso_shutdown ${work_dir}/${arch}/root-image/usr/lib/initcpio
     cp ${script_path}/mkinitcpio.conf ${work_dir}/${arch}/root-image/etc/mkinitcpio-archiso.conf
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -r 'mkinitcpio -c /etc/mkinitcpio-archiso.conf -k /boot/vmlinuz-linux -g /boot/archiso.img' run
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${arch}" -r 'mkinitcpio -c /etc/mkinitcpio-archiso.conf -k /boot/vmlinuz-linux -g /boot/archiso.img' run
 }
 
 # Customize installation (root-image)
@@ -85,43 +85,43 @@ make_customize_root_image() {
 
     lynx -dump -nolist 'https://wiki.archlinux.org/index.php/Installation_Guide?action=render' >> ${work_dir}/${arch}/root-image/root/install.txt
 
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${install_dir}" -r '/root/customize_root_image.sh' run
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}/${arch}" -C "${pacman_conf}-${arch}.conf" -D "${arch}" -r '/root/customize_root_image.sh' run
     rm ${work_dir}/${arch}/root-image/root/customize_root_image.sh
 }
 
 # Prepare kernel/initramfs ${install_dir}/boot/
 make_boot() {
-    mkdir -p ${work_dir}/iso/${install_dir}/boot/${arch}
-    cp ${work_dir}/${arch}/root-image/boot/archiso.img ${work_dir}/iso/${install_dir}/boot/${arch}/archiso.img
-    cp ${work_dir}/${arch}/root-image/boot/vmlinuz-linux ${work_dir}/iso/${install_dir}/boot/${arch}/vmlinuz
+    mkdir -p ${work_dir}/iso/${arch}/boot/${arch}
+    cp ${work_dir}/${arch}/root-image/boot/archiso.img ${work_dir}/iso/${arch}/boot/${arch}/archiso.img
+    cp ${work_dir}/${arch}/root-image/boot/vmlinuz-linux ${work_dir}/iso/${arch}/boot/${arch}/vmlinuz
 }
 
 # Add other aditional/extra files to ${install_dir}/boot/
 make_boot_extra() {
-    cp ${work_dir}/${arch}/root-image/boot/memtest86+/memtest.bin ${work_dir}/iso/${install_dir}/boot/memtest
-    cp ${work_dir}/${arch}/root-image/usr/share/licenses/common/GPL2/license.txt ${work_dir}/iso/${install_dir}/boot/memtest.COPYING
+    cp ${work_dir}/${arch}/root-image/boot/memtest86+/memtest.bin ${work_dir}/iso/${arch}/boot/memtest
+    cp ${work_dir}/${arch}/root-image/usr/share/licenses/common/GPL2/license.txt ${work_dir}/iso/${arch}/boot/memtest.COPYING
 }
 
 # Prepare /${install_dir}/boot/syslinux
 make_syslinux() {
-    mkdir -p ${work_dir}/iso/${install_dir}/boot/syslinux
+    mkdir -p ${work_dir}/iso/${arch}/boot/syslinux
     for _cfg in ${script_path}/syslinux/*.cfg; do
         sed "s|%ARCHISO_LABEL%|${iso_label}|g;
-             s|%INSTALL_DIR%|${install_dir}|g" ${_cfg} > ${work_dir}/iso/${install_dir}/boot/syslinux/${_cfg##*/}
+             s|%INSTALL_DIR%|${arch}|g" ${_cfg} > ${work_dir}/iso/${arch}/boot/syslinux/${_cfg##*/}
     done
-    cp ${script_path}/syslinux/splash.png ${work_dir}/iso/${install_dir}/boot/syslinux
-    cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/*.c32 ${work_dir}/iso/${install_dir}/boot/syslinux
-    cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/lpxelinux.0 ${work_dir}/iso/${install_dir}/boot/syslinux
-    cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/memdisk ${work_dir}/iso/${install_dir}/boot/syslinux
-    mkdir -p ${work_dir}/iso/${install_dir}/boot/syslinux/hdt
-    gzip -c -9 ${work_dir}/${arch}/root-image/usr/share/hwdata/pci.ids > ${work_dir}/iso/${install_dir}/boot/syslinux/hdt/pciids.gz
-    gzip -c -9 ${work_dir}/${arch}/root-image/usr/lib/modules/*-ARCH/modules.alias > ${work_dir}/iso/${install_dir}/boot/syslinux/hdt/modalias.gz
+    cp ${script_path}/syslinux/splash.png ${work_dir}/iso/${arch}/boot/syslinux
+    cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/*.c32 ${work_dir}/iso/${arch}/boot/syslinux
+    cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/lpxelinux.0 ${work_dir}/iso/${arch}/boot/syslinux
+    cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/memdisk ${work_dir}/iso/${arch}/boot/syslinux
+    mkdir -p ${work_dir}/iso/${arch}/boot/syslinux/hdt
+    gzip -c -9 ${work_dir}/${arch}/root-image/usr/share/hwdata/pci.ids > ${work_dir}/iso/${arch}/boot/syslinux/hdt/pciids.gz
+    gzip -c -9 ${work_dir}/${arch}/root-image/usr/lib/modules/*-ARCH/modules.alias > ${work_dir}/iso/${arch}/boot/syslinux/hdt/modalias.gz
 }
 
 # Prepare /isolinux
 make_isolinux() {
     mkdir -p ${work_dir}/iso/isolinux
-    sed "s|%INSTALL_DIR%|${install_dir}|g" ${script_path}/isolinux/isolinux.cfg > ${work_dir}/iso/isolinux/isolinux.cfg
+    sed "s|%INSTALL_DIR%|${arch}|g" ${script_path}/isolinux/isolinux.cfg > ${work_dir}/iso/isolinux/isolinux.cfg
     cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/isolinux.bin ${work_dir}/iso/isolinux/
     cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/isohdpfx.bin ${work_dir}/iso/isolinux/
     cp ${work_dir}/${arch}/root-image/usr/lib/syslinux/bios/ldlinux.c32 ${work_dir}/iso/isolinux/
@@ -186,23 +186,23 @@ make_isolinux() {
 
 # Copy aitab
 make_aitab() {
-    mkdir -p ${work_dir}/iso/${install_dir}
-    cp ${script_path}/aitab.${arch} ${work_dir}/iso/${install_dir}/aitab
+    mkdir -p ${work_dir}/iso/${arch}
+    cp ${script_path}/aitab.${arch} ${work_dir}/iso/${arch}/aitab
 }
 
 # Build all filesystem images specified in aitab (.fs.sfs .sfs)
 make_prepare() {
     cp -a -f ${work_dir}/${arch}/root-image ${work_dir}
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" pkglist
-    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" prepare
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}" -D "${arch}" pkglist
+    setarch ${arch} mkarchiso ${verbose} -w "${work_dir}" -D "${arch}" prepare
     rm -rf ${work_dir}/root-image
     # rm -rf ${work_dir}/${arch}/root-image (if low space, this helps)
 }
 
 # Build ISO
 make_iso() {
-    mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" checksum
-    mkarchiso ${verbose} -w "${work_dir}" -D "${install_dir}" -L "${iso_label}" -o "${out_dir}" iso "${iso_name}-${iso_version}-${arch}.iso"
+    mkarchiso ${verbose} -w "${work_dir}" -D "${arch}" checksum
+    mkarchiso ${verbose} -w "${work_dir}" -D "${arch}" -L "${iso_label}" -o "${out_dir}" iso "${iso_name}-${iso_version}-${arch}.iso"
 }
 
 if [[ ${EUID} -ne 0 ]]; then

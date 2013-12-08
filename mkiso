@@ -37,6 +37,7 @@ CURRENTHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum"
 OLDHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum.old"
 CURRENTNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name"
 OLDNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name.old"
+
 ISO_DIR="${ARCHLIVE}mooOS/out"   # iso
 WORK_DIR="${ARCHLIVE}mooOS/work" # work
 
@@ -236,48 +237,50 @@ delete_package_caches() {
 rsync_iso_remote() {
 	## sync .iso to remote server
 	ARCH_ISO=$1
+	PWD=$(pwd)
 	## create initial old hash
 	if [ ! -f "$OLDHASH_${ARCH_ISO}" ]; then
 		su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > $OLDHASH_${ARCH_ISO}"
 	fi
 
-	echo "generating md5sums... please wait a moment"
+	echo "generating ${ARCH_ISO} md5sum... please wait a moment"
 	# md5sums of current and old .iso
-	MD5HASH=$(md5sum $ISO_DIR/-${ARCH_ISO}*.iso | cut -d " " -f 1)
+	MD5HASH=$(md5sum $ISO_DIR/*-${ARCH_ISO}*.iso | cut -d " " -f 1)
 
 	## create initial current hash
 	if [ ! -f "$CURRENTHASH_${ARCH_ISO}" ]; then
-		su -l $MOO_USER -c "echo $MD5HASH_${ARCH_ISO} > $CURRENTHASH_${ARCH_ISO}"
+		su -l $MOO_USER -c "echo $MD5HASH > $CURRENTHASH_${ARCH_ISO}"
 	fi
 
 	CURMD5HASH=$(cat $CURRENTHASH_${ARCH_ISO})
 	OLDMD5HASH=$(cat $OLDHASH_${ARCH_ISO})
 	NEW=0
 	## if new iso create hashes
-	if [ "$CURMD5HASH" != "$MD5HASH_${ARCH_ISO}" ]; then
+	if [ "$CURMD5HASH" != "$MD5HASH" ]; then
 		su -l $MOO_USER -c "echo $CURMD5HASH > $OLDHASH_${ARCH_ISO}"
-		su -l $MOO_USER -c "echo $MD5HASH_${ARCH_ISO} > $CURRENTHASH_${ARCH_ISO}"
+		su -l $MOO_USER -c "echo $MD5HASH > $CURRENTHASH_${ARCH_ISO}"
 		NEW=1
 	fi
 
 	OLDMD5HASH=$(cat $OLDHASH_${ARCH_ISO})
 
-	echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH_${ARCH_ISO}"
+	echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH"
 
 	## replace old hash with new hash in info.php on local web server
-	su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH_${ARCH_ISO}/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+	su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 
 	## create initial old name
 	if [ ! -f "$OLDNAME_${ARCH_ISO}" ]; then
 		su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > $OLDNAME_${ARCH_ISO}"
 	fi
 
+	cd $ISO_DIR
 	## create initial current name
 	if [ ! -f "$CURRENTNAME_${ARCH_ISO}" ]; then
-		su -l $MOO_USER -c "ls $ISO_DIR > $CURRENTNAME_${ARCH_ISO}"
+		su -l $MOO_USER -c "ls *${ARCH_ISO}* > $CURRENTNAME_${ARCH_ISO}"
 	fi
 
-	NEW_NAME_LIST=$(ls $ISO_DIR)
+	NEW_NAME_LIST=$(ls *${ARCH_ISO}*)
 	CURRELNAME=$(cat $CURRENTNAME_${ARCH_ISO})
 	OLDRELNAME=$(cat $OLDNAME_${ARCH_ISO})
 
@@ -302,10 +305,9 @@ rsync_iso_remote() {
 		echo "
 ================syncing iso to local storage repos===================
 "
-		su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}-old.iso"
-		su -l $MOO_USER -c "cp -fv $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}-old.iso"
-		su -l $MOO_USER -c "rm $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso"
-		su -l $MOO_USER -c "cp -fv $ISO_DIR/*.iso $ISO_STORAGE/$ISO_NAME-beta-_${ARCH_ISO}.iso"
+		su -l $MOO_USER -c "rm $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso"
+		su -l $MOO_USER -c "mv -fv $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso"
+		su -l $MOO_USER -c "cp -fv $ISO_DIR/*-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso"
 
 		## Mount server filesystem to localhost
 		# path to remote repo credentials file
@@ -315,6 +317,9 @@ rsync_iso_remote() {
 		## if remote web server exists
 		if [ "$REPO_CREDS" ] ; then
 			. $REPO_CREDS
+
+			## override credentials file
+			_iso_sync[2]="$ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso"
 
 			## rsync .iso using vars defined in credentials, e.g.:
 			port=$(eval echo $(echo '${'_iso_sync[1]'}'))
@@ -334,6 +339,7 @@ rsync_iso_remote() {
 	fi
 
 	echo "${ARCH_ISO} synced!"
+	cd $PWD
 }
 
 umount_work_env() {

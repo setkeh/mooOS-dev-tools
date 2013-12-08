@@ -466,11 +466,11 @@ initial_install() {
         mkdir -vp /mnt/etc/modules-load.d
         cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
 
-        # mkdir -vp /mnt/etc/grub.d
-        # cp -vr /etc/grub.d/* /mnt/etc/grub.d/
+        mkdir -vp /mnt/etc/grub.d
+        cp -vr /etc/grub.d/* /mnt/etc/grub.d/
 
-        # mkdir -vp /mnt/etc/default
-        # cp -vr /etc/default/* /mnt/etc/default/
+        mkdir -vp /mnt/etc/default
+        cp -vr /etc/default/* /mnt/etc/default/
 
         mkdir -vp /mnt/usr/share/nano
         cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc

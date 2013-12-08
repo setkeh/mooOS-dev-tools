@@ -703,7 +703,7 @@ if [ $(id -u) -eq 0 ]; then
                 touch /var/log/polipo.log
                 chown -R polipo:polipo /var/log/polipo.log /var/cache/polipo
 
-                sh -c "echo '.include /usr/lib/systemd/system/polipo.service
+                sh -c "echo .include /usr/lib/systemd/system/polipo.service
 [Service]
 User=polipo  > /etc/systemd/system/polipo.service"
 
