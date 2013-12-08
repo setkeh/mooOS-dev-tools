@@ -411,11 +411,13 @@ initial_install() {
     else
         basepkgs="/home/moo/Github/mooOS-dev-tools/packages-server.both"
     fi
+
+    extrapkgs="/home/moo/Github/mooOS-dev-tools/packages.extra"
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
     sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /etc/$pacman_conf
-    sed -i "s/\/media\/truecrypt3\/mooOS\/$arch\//\/var\/cache\/pacman\/pkg\//g" /etc/$pacman_conf
+    sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
     cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
     cp -v /etc/$pacman_conf /etc/pacman.conf
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
@@ -425,7 +427,7 @@ initial_install() {
     #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
     # fi
     
-    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs)
+    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
 
     dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
     if [ $? = 0 ] ; then
