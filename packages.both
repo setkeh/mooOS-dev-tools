@@ -121,7 +121,6 @@ kde-servicemenus-meld-menu-extended
 kdebase-dolphin
 kdebase-kdialog
 kdebase-konsole
-kdelibs
 kdemultimedia-ffmpegthumbs
 kdenlive
 kdesdk-dolphin-plugins
@@ -158,6 +157,7 @@ mcomix-libre
 md5deep
 mediadownloader
 mediainfo
+megahal
 meld
 memcached
 memtest86+
