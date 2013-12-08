@@ -429,16 +429,17 @@ initial_install() {
     
     pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
 
-    dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
-    if [ $? = 0 ] ; then
+    #dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
+    #if [ $? = 0 ] ; then
 
         PWD=$(pwd)
 
         rm -rf /mnt/etc/skel
         cp -vr /etc/skel /mnt/etc/
+        rm /mnt/etc/skel/.local/applications/install_mooOS.desktop
         cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
         sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
-        sed -i "s/\/media\/truecrypt3\/mooOS\/$arch\//\/var\/cache\/pacman\/pkg\//g" /mnt/etc/$pacman_conf
+        sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
 
         cp -v /etc/psd.conf /mnt/etc/psd.conf
         #cp -v /etc/issue /mnt/etc/issue
@@ -492,7 +493,7 @@ initial_install() {
         # copy over custom .desktop files
         mkdir -vp /mnt/usr/share/applications
         cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
-        
+
         ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
         echo "Updating Sublime Text 3 icons"
         cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
@@ -556,9 +557,9 @@ initial_install() {
         gzip -f /mnt/usr/local/man/man1/mooOS.1
 
         current_selection 6
-    else 
-        current_selection 5
-    fi
+#    else 
+#        current_selection 5
+#    fi
 }
 
 chroot_configuration() {
