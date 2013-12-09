@@ -482,12 +482,13 @@ create_build_env() {
 		cp -v ${MOO_HOME}github/mooOS-dev-tools/misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
 		cp -v ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
 		cp -v ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
-			cp -v ${MOO_HOME}.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc 
+		cp -v ${MOO_HOME}.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc 
 		cp -vr ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
 		cp -vr ${MOO_HOME}.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 		cp -v ${MOO_HOME}.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 		cp -v ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
 		cp -v ${MOO_HOME}.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc
+		cp -v ${MOO_HOME}.kde4/share/config/kcmdisplayrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kcmdisplayrc
 		cp -v ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc-2.0
 		
 		## copy over ~/.gnupg
@@ -599,6 +600,19 @@ create_build_env() {
 			rm $EWW_FILE
 		done
 		cd $PWD
+
+		PWD=$(pwd)
+		## terminology
+		cp -vr ${MOO_HOME}.config/terminology/config/standard/base.cfg ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/base.cfg
+		## patch config files for username
+		cd  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/
+		eet -d base.cfg config base.src
+		sed -i "s/$MOO_USER/moo/g" base.src
+		rm base.cfg
+		eet -e base.cfg config base.src 1
+		rm base.src
+		cd $PWD
+
 
 		## clean up files content
 		sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
