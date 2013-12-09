@@ -538,6 +538,7 @@ initial_install() {
         # create ~/Github and all repos
         rm -rf /mnt/etc/skel/Github
         mkdir -vp /mnt/etc/skel/Github
+        cp -v /etc/skel/Github/Github.* /mnt/etc/skel/Github/
         cd /mnt/etc/skel/Github
         git clone git://github.com/idk/pdq.git
         git clone git://github.com/idk/bin.git
