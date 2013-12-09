@@ -811,7 +811,7 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 				#2>&1 >> ${MOO_HOME}output.txt
 			fi
 
-			echo "${bldcyan}$moo iso built${txtrst}"
+			echo "${bldcyan}$moo iso build complete${txtrst}"
 			umount_work_env $moo
 		done
 
