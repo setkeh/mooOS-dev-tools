@@ -385,6 +385,12 @@ initial_install() {
         return 0 
     fi
 
+    PWD=$(pwd)
+    cd /home/moo/Github/
+    rm -r mooOS-dev-tools/
+    git clone git://github.com/idk/mooOS-dev-tools.git
+    cd "$PWD"
+
     if [ "$archtype" = "x86_64" ]; then
         pacman_conf="pacman-x86_64.conf"
         mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
@@ -550,7 +556,7 @@ initial_install() {
         git clone git://github.com/idk/eggdrop-scripts.git
         git clone git://github.com/idk/gh.git
         git clone git://github.com/idk/vb-pdq.git
-        git clone git://github.com/idk/mooOS-dev-tools.git
+        #git clone git://github.com/idk/mooOS-dev-tools.git
         git clone git://github.com/idk/mooOS-wallpapers.git
         cd "$PWD"
 
@@ -572,10 +578,10 @@ chroot_configuration() {
      
     #if [ ! -f /mnt/chroot-install_mooOS ]; then
     #wget https://raw.github.com/idk/pdq/master/chroot-install_mooOS -O chroot-install_mooOS
-
-    cd /home/moo/Github/
-    rm -r mooOS-dev-tools/
-    git clone git://github.com/idk/mooOS-dev-tools.git
+    # cd /home/moo/Github/
+    # rm -r mooOS-dev-tools/
+    # git clone git://github.com/idk/mooOS-dev-tools.git
+    
     mkdir -vp /mnt/etc/skel/Github/mooOS-dev-tools/installer
     cp /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
     chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
