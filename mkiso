@@ -24,7 +24,7 @@ ABS_BASE_DIR="${MOO_HOME}abs/"
 ARCHLIVE=/media/truecrypt3/
 ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down" ## directroy where iso is cp to rsync from
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
-REPO_BASE_DIR="${MOO_HOME}abs"
+#REPO_BASE_DIR="${MOO_HOME}abs"
 
 ## (no need to change these)
 REPO_LOG_TEMP="/tmp/repo_renew"
