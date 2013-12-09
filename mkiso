@@ -232,7 +232,7 @@ create_custom_packages() {
 
 delete_package_caches() {
 	echo "${bldgreen}Deleting old packages cache...${txtrst}"
-	sudo pkgcacheclean -v 1
+	#sudo pkgcacheclean -v 1
 	schroot -p -- sudo pkgcacheclean -v 1
 	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1
 	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1
