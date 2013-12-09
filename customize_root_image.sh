@@ -16,7 +16,7 @@ if [ "$archtype" = "x86_64" ]; then
 fi
 
 sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/repos.mooos.org/g" /etc/pacman.conf
-sed -i "s/CacheDir/#CacheDir/g" /etc/pacman_conf
+sed -i "s/CacheDir/#CacheDir/g" /etc/pacman.conf
 
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
