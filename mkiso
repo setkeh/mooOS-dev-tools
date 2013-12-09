@@ -802,10 +802,14 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 		## change to build directory and build iso
 		for moo in ${ISO_ARCH}
 		do
-			echo "${bldcyan}Building $moo iso now...${txtrst}"
-			cd ${ARCHLIVE}archlive/releng
-			 ./build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
-			#2>&1 >> ${MOO_HOME}output.txt
+
+			question="${bldyellow}You wish to make ${ISO_ARCH} iso (Y/N)?\n${txtrst}"
+			if ask_something; then
+				echo "${bldcyan}Building $moo iso now...${txtrst}"
+				cd ${ARCHLIVE}archlive/releng
+				 ./build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+				#2>&1 >> ${MOO_HOME}output.txt
+			fi
 
 			echo "${bldcyan}$moo iso built${txtrst}"
 			umount_work_env $moo
