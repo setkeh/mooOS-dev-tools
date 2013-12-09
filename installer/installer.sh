@@ -385,11 +385,11 @@ initial_install() {
         return 0 
     fi
 
-    PWD=$(pwd)
-    cd /home/moo/Github/
-    rm -r mooOS-dev-tools/
-    git clone git://github.com/idk/mooOS-dev-tools.git
-    cd "$PWD"
+    # PWD=$(pwd)
+    # cd /home/moo/Github/
+    # rm -r mooOS-dev-tools/
+    # git clone git://github.com/idk/mooOS-dev-tools.git
+    # cd "$PWD"
 
     if [ "$archtype" = "x86_64" ]; then
         pacman_conf="pacman-x86_64.conf"
@@ -556,7 +556,7 @@ initial_install() {
         git clone git://github.com/idk/eggdrop-scripts.git
         git clone git://github.com/idk/gh.git
         git clone git://github.com/idk/vb-pdq.git
-        #git clone git://github.com/idk/mooOS-dev-tools.git
+        git clone git://github.com/idk/mooOS-dev-tools.git
         git clone git://github.com/idk/mooOS-wallpapers.git
         cd "$PWD"
 
