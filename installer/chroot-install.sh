@@ -350,7 +350,7 @@ if [ $(id -u) -eq 0 ]; then
         sed -i "s/moo/$puser/g" /etc/psd.conf
         sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
 
-        su -l $puser -c "pacaur -S packer --noconfirm --noedit" #
+        su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
         ## copy this script to user home directory
         # if [ ! -f /home/$puser/install_mooOS_user ]; then
