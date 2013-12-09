@@ -10,7 +10,13 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 ## figure out architecture type
 archtype="$(uname -m)"
+if [ "$archtype" = "x86_64" ]; then
+	rm /etc/pacman.conf /etc/pacman-i686.conf
+	mv /etc/pacman-x86_64.conf /etc/pacman.conf
+fi
+
 sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/repos.mooos.org/g" /etc/pacman.conf
+sed -i "s/CacheDir/#CacheDir/g" /etc/pacman_conf
 
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc

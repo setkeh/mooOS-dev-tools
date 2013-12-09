@@ -392,12 +392,14 @@ initial_install() {
     # cd "$PWD"
 
     if [ "$archtype" = "x86_64" ]; then
-        pacman_conf="pacman-x86_64.conf"
+        #pacman_conf="pacman-x86_64.conf"
         mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
     else
-        pacman_conf="pacman-i686.conf"
+        #pacman_conf="pacman-i686.conf"
         mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.i686"
     fi
+
+    pacman_conf="pacman.conf"
 
     pacstrap -C /etc/pacman.conf /mnt base base-devel
     
@@ -422,10 +424,10 @@ initial_install() {
     
     mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
     mkdir -vp /mnt/etc/pacman.d
-    sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /etc/$pacman_conf
-    sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
+    #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /etc/$pacman_conf
+    #sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
     cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
-    cp -v /etc/$pacman_conf /etc/pacman.conf
+    #cp -v /etc/$pacman_conf /etc/pacman.conf
     cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
 
     # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
@@ -444,8 +446,8 @@ initial_install() {
         cp -vr /etc/skel /mnt/etc/
         rm /mnt/etc/skel/.local/applications/install_mooOS.desktop
         cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-        sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
-        sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
+        #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
+        #sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
 
         cp -v /etc/psd.conf /mnt/etc/psd.conf
         #cp -v /etc/issue /mnt/etc/issue
