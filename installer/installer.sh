@@ -572,6 +572,10 @@ chroot_configuration() {
      
     #if [ ! -f /mnt/chroot-install_mooOS ]; then
     #wget https://raw.github.com/idk/pdq/master/chroot-install_mooOS -O chroot-install_mooOS
+
+    cd /home/moo/Github/
+    rm -r mooOS-dev-tools/
+    git clone git://github.com/idk/mooOS-dev-tools.git
     mkdir -vp /mnt/etc/skel/Github/mooOS-dev-tools/installer
     cp /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
     chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
