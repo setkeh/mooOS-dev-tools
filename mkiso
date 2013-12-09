@@ -810,7 +810,7 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 		for moo in ${ISO_ARCH}
 		do
 
-			question="${bldyellow}You wish to make ${ISO_ARCH} iso (Y/N)?\n${txtrst}"
+			question="${bldyellow}You wish to make $moo iso (Y/N)?\n${txtrst}"
 			if ask_something; then
 				echo "${bldcyan}Building $moo iso now...${txtrst}"
 				cd ${ARCHLIVE}archlive/releng
