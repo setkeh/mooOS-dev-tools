@@ -506,6 +506,9 @@ create_build_env() {
 		
 		## copy lxtask config
 		cp -v ${MOO_HOME}.config/lxtask.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/lxtask.conf
+
+		## copy Trolltech config
+		cp -v ${MOO_HOME}.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/Trolltech.conf
 		
 		## copy pavucontrol config
 		cp -v ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini

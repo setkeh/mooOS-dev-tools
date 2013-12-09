@@ -350,6 +350,9 @@ if [ $(id -u) -eq 0 ]; then
         sed -i "s/moo/$puser/g" /etc/psd.conf
         sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
 
+        pacman -Syu --noconfirm
+        pacman -Rs sublime-text-dev --noconfirm
+
         su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
         ## copy this script to user home directory
