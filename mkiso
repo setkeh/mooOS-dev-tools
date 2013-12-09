@@ -175,8 +175,8 @@ create_custom_packages() {
 		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
 		rm -fr ${MOO_HOME}abs/lsb-release
 		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
-		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/PKGBUILD ${MOO_HOME}abs/lsb-release/
-		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/lsb-release.install ${MOO_HOME}abs/lsb-release/
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/lsb-release/PKGBUILD ${MOO_HOME}abs/lsb-release/
+		cp -vf ${MOO_HOME}github/mooOS-dev-tools/lsb-release/lsb-release.install ${MOO_HOME}abs/lsb-release/
 		cd ${MOO_HOME}abs/lsb-release
 		makepkg -sf
 		schroot -p -- makepkg -sf
