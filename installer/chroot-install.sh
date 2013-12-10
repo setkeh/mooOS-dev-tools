@@ -441,6 +441,10 @@ if [ $(id -u) -eq 0 ]; then
             pacman -S --noconfirm --needed syslinux
             syslinux-install_update -i -a -m
             dialog --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
+            
+            pout=$1
+            sed -i "s,/dev/sda3,$pout,g" /boot/syslinux/syslinux.cfg
+            sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg
             dialog --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --defaultno --yesno "Edit/view syslinux.cfg?" 10 30
             if [ $? = 0 ] ; then
                 nano /boot/syslinux/syslinux.cfg

@@ -701,7 +701,7 @@ chroot_configuration() {
         rm -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop
     fi
 
-    export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
+    export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh $pout"
 
     if [ -f /mnt/boot/grub/grub.cfg ]; then
         sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
@@ -739,7 +739,7 @@ finishup() {
         return 0 
     fi
     
-    dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nSee ya!" 30 60
+    dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: install_mooOS\n\nSee ya!" 30 60
 
     umount /mnt/* 2>/dev/null
     umount /mnt 2>/dev/null
