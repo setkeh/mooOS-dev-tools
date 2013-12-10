@@ -389,6 +389,7 @@ initial_install() {
     fi
 
     if [ mountpoint -q /mnt ]; then
+        
          update-mirrorlist
     else
         dialog --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70

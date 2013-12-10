@@ -1176,7 +1176,7 @@ User=polipo  > /etc/systemd/system/polipo.service"
             7 $clr"View/confirm generated data" \
             8 $clr"View/edit files [optional]" \
             9 $clr"Set up Network [mandatory]" \
-            10 $clr"Install extras" \
+            10 $clr"Tidy up Install" \
             11 $clr"Return to Installer" 2>$_TEMP
 
         if [ $? = 1 ] || [ $? = 255 ] ; then
@@ -1199,7 +1199,7 @@ User=polipo  > /etc/systemd/system/polipo.service"
             11) exiting;;
         esac
     }
-    
+
     if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
         dialog --clear --backtitle "$upper_title" --title "[ Return to Installer ]" --msgbox "Missing expected installed packages...returning to Installer, (Re-installation needed)." 10 30
         exiting
