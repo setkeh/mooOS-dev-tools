@@ -182,47 +182,49 @@ make_filesystems() {
         return 0 
     fi
 
-    # choose home partition
-    dialog --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2!" 10 70 2> $TMP/plout
-    if [ $? = 1 ] || [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
-    
-    plout=$(cat $TMP/plout)
-
-    dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
+    dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --defaultyes --yesno "Create the home partition?" 20 70
     if [ $? = 0 ] ; then
-        dialog --clear --backtitle "$upper_title" --title "FORMAT HOME PARTITION" --radiolist "Now you can choose the filesystem for your home partition.\n\next4 is the recommended filesystem." 20 70 30 \
-        "1" "ext2" off \
-        "2" "ext3" off \
-        "3" "ext4" on \
-        2> $TMP/plart
+        # choose home partition
+        dialog --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2!" 10 70 2> $TMP/plout
         if [ $? = 1 ] || [ $? = 255 ] ; then
             installer_menu
             return 0 
         fi
+        
+        plout=$(cat $TMP/plout)
 
-        plart=$(cat $TMP/plart)
-        fs_type=
+        dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
+        if [ $? = 0 ] ; then
+            dialog --clear --backtitle "$upper_title" --title "FORMAT HOME PARTITION" --radiolist "Now you can choose the filesystem for your home partition.\n\next4 is the recommended filesystem." 20 70 30 \
+            "1" "ext2" off \
+            "2" "ext3" off \
+            "3" "ext4" on \
+            2> $TMP/plart
+            if [ $? = 1 ] || [ $? = 255 ] ; then
+                installer_menu
+                return 0 
+            fi
 
-        if [ "$plart" == "2" ] ; then
-            fs_type="ext3"
-        elif [ "$plart" == "3" ] ; then
-            fs_type="ext4"
-        else
-            fs_type="ext2"
+            plart=$(cat $TMP/plart)
+            fs_type=
+
+            if [ "$plart" == "2" ] ; then
+                fs_type="ext3"
+            elif [ "$plart" == "3" ] ; then
+                fs_type="ext4"
+            else
+                fs_type="ext2"
+            fi
+
+            mkdir -vp /mnt/home
+            mkfs -t $fs_type $plout
+            typefs=" as $fs_type"
         fi
 
-        mkdir -vp /mnt/home
-        mkfs -t $fs_type $plout
-        typefs=" as $fs_type"
+        mount $plout /mnt/home
+
+        dialog --clear --backtitle "$upper_title" --title "HOME PARTITION MOUNTED" --msgbox "Your $plout partition has been mounted at /mnt/home$typefs" 10 70
     fi
-
-    mount $plout /mnt/home
-
-    dialog --clear --backtitle "$upper_title" --title "HOME PARTITION MOUNTED" --msgbox "Your $plout partition has been mounted at /mnt/home$typefs" 10 70
-
 
     dialog --clear --backtitle "$upper_title" --title "BOOT  PARTITION" --defaultno --yesno "Create the boot filesystem?" 20 70
     if [ $? = 0 ] ; then
