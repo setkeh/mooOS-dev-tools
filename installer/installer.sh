@@ -107,7 +107,7 @@ list_partitions() {
 
     current_selection 2
 
-    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n${df_out} \n\n Hit enter to return to menu" 15 40
+    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n${df_out} \n\n Hit enter to return to menu" 25 100
 }
 
 partition_editor() {
