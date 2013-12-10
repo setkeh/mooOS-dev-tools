@@ -5,12 +5,12 @@
 boot_part=$1
 upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta 9:48-CST-12-10-2013"
 
-if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
-    echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
-    sleep 3s
-    exit 0
-    exit 0 
-fi
+# if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
+#     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
+#     sleep 3s
+#     exit 0
+#     exit 0 
+# fi
 
 ## only allow root to run script
 if [ $(id -u) -eq 0 ]; then
