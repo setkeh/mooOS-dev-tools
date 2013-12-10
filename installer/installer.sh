@@ -417,46 +417,54 @@ initial_install() {
 
     pacman_conf="pacman.conf"
 
-    pacstrap -C /etc/pacman.conf /mnt base base-devel
-    
-    echo "" > $TMP/ppkgs
-    dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
-    ppkgs=" $(cat $TMP/ppkgs)"
-
-
-    dialog --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (Minimal)" --yesno "Installation type?" 20 70
+    dialog --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        dialog --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?" 20 70
-        if [ $? = 0 ] ; then
-            basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both /home/moo/Github/mooOS-dev-tools/packages-server.both"
-        else
-            basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both"
-        fi
-    else
-        basepkgs="/home/moo/Github/mooOS-dev-tools/packages-server.both"
+        pacstrap -C /etc/pacman.conf /mnt base base-devel
     fi
-
-    extrapkgs="/home/moo/Github/mooOS-dev-tools/packages.extra"
     
-    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
-    mkdir -vp /mnt/etc/pacman.d
-    #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /etc/$pacman_conf
-    #sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
-    cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
-    #cp -v /etc/$pacman_conf /etc/pacman.conf
-    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+    dialog --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
+    if [ $? = 0 ] ; then    
+        echo "" > $TMP/ppkgs
+        dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
+        ppkgs=" $(cat $TMP/ppkgs)"
 
-    # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
-    # if [ $? = 0 ] ; then
-    #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
-    # fi
 
-    update-mirrorlist
-    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+        dialog --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
+        if [ $? = 0 ] ; then
+            dialog --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?" 20 70
+            if [ $? = 0 ] ; then
+                basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both /home/moo/Github/mooOS-dev-tools/packages-server.both"
+            else
+                basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both"
+            fi
+        else
+            basepkgs="/home/moo/Github/mooOS-dev-tools/packages-server.both"
+        fi
+
+        extrapkgs="/home/moo/Github/mooOS-dev-tools/packages.extra"
+        
+        mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
+        mkdir -vp /mnt/etc/pacman.d
+        #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /etc/$pacman_conf
+        #sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
+        cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
+        #cp -v /etc/$pacman_conf /etc/pacman.conf
+        cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+
+        # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
+        # if [ $? = 0 ] ; then
+        #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
+        # fi
+
+        update-mirrorlist
+        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+    fi
 
     #dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
     #if [ $? = 0 ] ; then
 
+    dialog --clear --backtitle "$upper_title" --title "Copy over configuration files" --yesno "Copy over required configuration files for mooOS? [Select No to skip]" 20 70
+    if [ $? = 0 ] ; then
         PWD=$(pwd)
 
         rm -rf /mnt/etc/skel
@@ -581,6 +589,7 @@ initial_install() {
 
         install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
         gzip -f /mnt/usr/local/man/man1/mooOS.1
+    fi
 
         current_selection 6
 #    else 
