@@ -4,6 +4,13 @@
 
 upper_title="[ mooOS environment configuration ] (chroot) - beta 9:48-CST-12-10-2013"
 
+if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
+    echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
+    sleep 3s
+    exit 0
+    exit 0 
+fi
+
 ## only allow root to run script
 if [ $(id -u) -eq 0 ]; then
 
@@ -1199,12 +1206,6 @@ User=polipo  > /etc/systemd/system/polipo.service"
             11) exiting;;
         esac
     }
-
-    if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
-        dialog --clear --backtitle "$upper_title" --title "[ Return to Installer ]" --msgbox "Missing expected installed packages...returning to Installer, (Re-installation needed)." 10 30
-        exiting
-        return 0 
-    fi
 
     # utility execution
     while true
