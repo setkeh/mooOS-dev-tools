@@ -450,7 +450,8 @@ initial_install() {
     # if [ $? = 0 ] ; then
     #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
     # fi
-    
+
+    update-mirrorlist
     pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
 
     #dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
@@ -575,7 +576,7 @@ initial_install() {
         git clone git://github.com/idk/gh.git
         git clone git://github.com/idk/vb-pdq.git
         git clone git://github.com/idk/mooOS-dev-tools.git
-        git clone git://github.com/idk/mooOS-wallpapers.git
+        #git clone git://github.com/idk/mooOS-wallpapers.git
         cd "$PWD"
 
         install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
