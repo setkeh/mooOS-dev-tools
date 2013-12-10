@@ -341,7 +341,7 @@ rsync_iso_remote() {
 			su -l $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
 			echo "================syncing iso to remote server==================="
 			echo "This may take a while..."
-			su -l $MOO_USER -c "rsync -avzcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
+			su -l $MOO_USER -c "rsync -avcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
 
 			rm "$REPO_CREDS"
 		fi

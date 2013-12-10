@@ -2,7 +2,7 @@
 ## chroot-install.sh sub-script for chroot fo mooOS =)
 ## 08-27-2013 pdq
 
-upper_title="[ mooOS environment configuration ] (chroot)"
+upper_title="[ mooOS environment configuration ] (chroot) - beta 9:48-CST-12-10-2013"
 
 ## only allow root to run script
 if [ $(id -u) -eq 0 ]; then

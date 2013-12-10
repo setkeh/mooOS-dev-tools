@@ -30,7 +30,7 @@ if [ $? = 0 ] ; then
         archtype=$not_archtype
 fi
 
-upper_title="mooOS Installer $archtype"
+upper_title="mooOS Installer $archtype - beta 9:48-CST-12-10-2013"
 setterm -blank 0
 
 ## root script
