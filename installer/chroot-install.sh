@@ -41,6 +41,7 @@ if [ $(id -u) -eq 0 ]; then
     #pacman -S --noconfirm --needed dialog
 
     ## functions
+
     exiting() {
         clear
         rm -f $_TEMP
@@ -50,8 +51,8 @@ if [ $(id -u) -eq 0 ]; then
     }
 
     current_selection() {
-    echo "$1" > $_CCURRENT
-}
+        echo "$1" > $_CCURRENT
+    }
 
     gen_tz() {
         dialog --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Generate timezone/localtime" 10 40
@@ -1198,6 +1199,12 @@ User=polipo  > /etc/systemd/system/polipo.service"
             11) exiting;;
         esac
     }
+    
+    if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
+        dialog --clear --backtitle "$upper_title" --title "[ Return to Installer ]" --msgbox "Missing expected installed packages...returning to Installer, (Re-installation needed)." 10 30
+        exiting
+        return 0 
+    fi
 
     # utility execution
     while true
