@@ -388,7 +388,9 @@ initial_install() {
         return 0 
     fi
 
-    if [ ! mountpoint -q /mnt ]; then
+    if [ mountpoint -q /mnt ]; then
+         update-mirrorlist
+    else
         dialog --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
         current_selection 3
         installer_menu
@@ -400,8 +402,6 @@ initial_install() {
     # rm -r mooOS-dev-tools/
     # git clone git://github.com/idk/mooOS-dev-tools.git
     # cd "$PWD"
-
-    update-mirrorlist
     
     if [ "$archtype" = "x86_64" ]; then
         #pacman_conf="pacman-x86_64.conf"
