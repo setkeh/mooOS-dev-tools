@@ -107,7 +107,7 @@ list_partitions() {
 
     current_selection 2
 
-    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n${df_out} \n\n Hit enter to return to menu" 25 100
+    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n\n${df_out} \n\n Hit enter to return to menu" 25 100
 }
 
 partition_editor() {
@@ -391,8 +391,8 @@ initial_install() {
         return 0 
     fi
 
-    if [ mountpoint -q /mnt ]; then
-
+    is_mounted=$(mountpoint -q /mnt && echo 1 || echo 0)
+    if [ $is_mounted ]; then
          update-mirrorlist
     else
         dialog --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
