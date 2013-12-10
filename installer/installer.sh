@@ -102,9 +102,12 @@ list_partitions() {
         partition_list="It appears you have no linux partitions yet."
     fi
 
+    df -aTh | grep /mnt > $TMP/df_out 2>/dev/null
+    df_out=$(cat $TMP/df_out)
+
     current_selection 2
 
-    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "$partition_list \n\n Hit enter to return to menu" 15 40
+    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n${df_out} \n\n Hit enter to return to menu" 15 40
 }
 
 partition_editor() {
@@ -389,7 +392,7 @@ initial_install() {
     fi
 
     if [ mountpoint -q /mnt ]; then
-        
+
          update-mirrorlist
     else
         dialog --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
