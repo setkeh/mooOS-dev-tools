@@ -610,19 +610,30 @@ chroot_configuration() {
     #cp -v /etc/arch-release /mnt/etc/arch-release
 
     # fix missing icons in .desktop files
-
-    sed -i "/<Filename>install_mooOS.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
-    sed -i "s/install_mooOS/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
-
-    sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
+    if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
+        sed -i "/<Filename>install_mooOS.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+    fi
+    if [ -f /mnt/etc/skel/.e/e/applications/bar/default/.order ]; then
+        sed -i "s/install_mooOS/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
+    fi
+    if [ -f /mnt/usr/share/applications/mediadownloader.desktop ]; then
+        sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
+    fi
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
     #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
-    sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
-    sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /mnt/usr/share/applications/kde4/krandrtray.desktop
-    sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /mnt/usr/share/applications/kde4/kinfocenter.desktop
-    sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /mnt/usr/share/applications/johnny.desktop
-
+    if [ -f /mnt/usr/share/applications/gparted.desktop ]; then
+        sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
+    fi
+    if [ -f /mnt/usr/share/applications/kde4/krandrtray.desktop ]; then
+        sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /mnt/usr/share/applications/kde4/krandrtray.desktop
+    fi
+    if [ -f /mnt/usr/share/applications/kde4/kinfocenter.desktop ]; then
+        sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /mnt/usr/share/applications/kde4/kinfocenter.desktop
+    fi
+    if [ -f /mnt/usr/share/applications/johnny.desktop ]; then
+        sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /mnt/usr/share/applications/johnny.desktop
+    fi
     if [ -f /mnt/usr/share/applications/kde4/nepomukcleaner.desktop ]; then
         rm /mnt/usr/share/applications/kde4/nepomukcleaner.desktop
     fi
@@ -681,8 +692,9 @@ chroot_configuration() {
 
     export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh"
 
-    sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
-    
+    if [ -f /mnt/boot/grub/grub.cfg ]; then
+        sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
+    fi
     # vb "https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver" &
     # dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
     # if [ $? = 0 ] ; then
