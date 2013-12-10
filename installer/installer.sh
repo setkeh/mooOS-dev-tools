@@ -701,7 +701,13 @@ chroot_configuration() {
         rm -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop
     fi
 
-    export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh $pout"
+    if [ "$pbout" != "" ]; then
+        boot_part_arg=$pbout
+    else
+        boot_part_arg=$pout
+
+    fi
+    export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh $boot_part_arg"
 
     if [ -f /mnt/boot/grub/grub.cfg ]; then
         sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg

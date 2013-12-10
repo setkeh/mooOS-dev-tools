@@ -2,7 +2,8 @@
 ## chroot-install.sh sub-script for chroot fo mooOS =)
 ## 08-27-2013 pdq
 
-upper_title="[ mooOS environment configuration ] (chroot) - beta 9:48-CST-12-10-2013"
+boot_part=$1
+upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta 9:48-CST-12-10-2013"
 
 if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
@@ -441,9 +442,8 @@ if [ $(id -u) -eq 0 ]; then
             pacman -S --noconfirm --needed syslinux
             syslinux-install_update -i -a -m
             dialog --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
-            
-            pout=$1
-            sed -i "s,/dev/sda3,$pout,g" /boot/syslinux/syslinux.cfg
+           
+            sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
             sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg
             dialog --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --defaultno --yesno "Edit/view syslinux.cfg?" 10 30
             if [ $? = 0 ] ; then
