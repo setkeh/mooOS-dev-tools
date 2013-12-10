@@ -116,7 +116,8 @@ partition_editor() {
 
     dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 8GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
     if [ $? = 0 ] ; then
-        umount /mnt/* 2>/dev/null
+        mountpoint -q /mnt/home || mountpoint -q /mnt/boot && umount /mnt/* 2>/dev/null
+        mountpoint -q /mnt && umount /mnt 2>/dev/null
         cfdisk
     fi
 
@@ -124,6 +125,8 @@ partition_editor() {
 }
 
 make_filesystems() {
+    mountpoint -q /mnt/home || mountpoint -q /mnt/boot && umount /mnt/* 2>/dev/null
+    mountpoint -q /mnt && umount /mnt 2>/dev/null
     fdisk -l | grep Linux | sed -e '/swap/d' | cut -b 1-9 > $TMP/pout 2>/dev/null
 
     dialog --clear --backtitle "$upper_title" --title "ROOT PARTITION DETECTED" --exit-label OK --msgbox "Installer has detected\n\n `cat /tmp/tmp/pout` \n\n as your linux partition(s).\n\nIn the next box you can choose the linux filesystem for your root partition or choose the partition if you have more linux partitions!" 20 70
@@ -385,12 +388,21 @@ initial_install() {
         return 0 
     fi
 
+    if [ ! mountpoint -q /mnt ]; then
+        dialog --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
+        current_selection 3
+        installer_menu
+        return 0 
+    fi
+
     # PWD=$(pwd)
     # cd /home/moo/Github/
     # rm -r mooOS-dev-tools/
     # git clone git://github.com/idk/mooOS-dev-tools.git
     # cd "$PWD"
 
+    update-mirrorlist
+    
     if [ "$archtype" = "x86_64" ]; then
         #pacman_conf="pacman-x86_64.conf"
         mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
