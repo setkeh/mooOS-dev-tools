@@ -141,8 +141,7 @@ create_custom_packages() {
 		# schroot -p -- makepkg -sf
 
 		## github wrapper
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/gh*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/gh*
+		delete_custom_package_caches "gh"
 		rm -fr ${MOO_HOME}abs/gh
 		mkdir -p ${MOO_HOME}abs/gh
 		cd ${MOO_HOME}abs/gh
@@ -164,8 +163,7 @@ create_custom_packages() {
 		## make custom branded packages
 
 		## FILESYSTEM
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/filesystem*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/filesystem*
+		delete_custom_package_caches "filesystem"
 		rm -fr ${MOO_HOME}abs/filesystem
 		cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
 		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
@@ -179,8 +177,7 @@ create_custom_packages() {
 		schroot -p -- makepkg -sf
 
 		## LSB-RELEASE
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/lsb-release*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/lsb-release*
+		delete_custom_package_caches "lsb-release"
 		rm -fr ${MOO_HOME}abs/lsb-release
 		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
 		cp -vf ${MOO_HOME}github/mooOS-dev-tools/lsb-release/PKGBUILD ${MOO_HOME}abs/lsb-release/
@@ -190,8 +187,7 @@ create_custom_packages() {
 		schroot -p -- makepkg -sf
 
 		## GRUB
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/grub*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/grub*
+		delete_custom_package_caches "grub"
 		rm -fr ${MOO_HOME}abs/grubtesting
 		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
 		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
@@ -206,8 +202,7 @@ create_custom_packages() {
 		schroot -p -- makepkg -sf
 
 		## SYSLINUX
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/syslinux*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/syslinux*
+		delete_custom_package_caches "syslinux"
 		rm -fr ${MOO_HOME}abs/syslinux
 		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
 		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
@@ -218,8 +213,7 @@ create_custom_packages() {
 		schroot -p -- makepkg -sf
 
 		## HARDINFO
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/hardinfo*
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/hardinfo*
+		delete_custom_package_caches "hardinfo"
 		rm -fr ${MOO_HOME}abs/hardinfo
 		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
 		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
@@ -241,6 +235,13 @@ delete_package_caches() {
 	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1
 	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/i686 1
 	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/x86_64 1
+}
+
+delete_custom_package_caches() {
+	sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/$1-*
+	sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/$1-*
+	sudo rm -v ${MOO_HOME}abs/i686/$1-*
+	sudo rm -v ${MOO_HOME}abs/x86_64/$1-*
 }
 
 rsync_iso_remote() {
