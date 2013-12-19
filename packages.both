@@ -20,7 +20,7 @@ baobab
 binutils
 bison
 bitcoin-qt
-bitlbee-libre
+bitlbee-libre-nonprism
 blender-libre
 brutaldoom
 bsd-games
@@ -68,6 +68,7 @@ fakeroot
 feh
 ffmpeg
 filezilla
+flashplugin
 flex
 fontconfig
 fortune-mod
