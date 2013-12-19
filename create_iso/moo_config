@@ -23,7 +23,6 @@ REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
 #REPO_BASE_DIR="${MOO_HOME}abs"
 
 ## (no need to change these)
-REPO_LOG="/tmp/repo"
 REPO_LOG_TEMP="/tmp/repo_renew"
 MOO_LOG="${ABS_BASE_DIR}update.log"
 # CURRENTHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum"
