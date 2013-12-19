@@ -17,7 +17,7 @@ MOO_HOME="/home/$MOO_USER/"
 ISO_ARCH="i686 x86_64"
 ISO_NAME=mooOS
 ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
-ISO_VERSION="$(date +%Y.%m.%d)-beta-0.988" ## change me!
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.989" ## change me!
 
 ## (you should change these paths)
 ABS_BASE_DIR="${MOO_HOME}abs/"
@@ -142,7 +142,6 @@ create_custom_packages() {
 
 		## github wrapper
 		delete_custom_package_caches "gh"
-		rm -fr ${MOO_HOME}abs/gh
 		mkdir -p ${MOO_HOME}abs/gh
 		cd ${MOO_HOME}abs/gh
 		wget https://raw.github.com/idk/gh/master/PKGBUILD
@@ -150,9 +149,7 @@ create_custom_packages() {
 		schroot -p -- makepkg -sf
 
 		## vimb web browser and tabbed, patched!
-		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/vb-pdq*
-		# rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/vb-pdq*
-		# rm -fr ${MOO_HOME}abs/vb-pdq
+		# delete_custom_package_caches "vb-pdq"
 		# mkdir -p ${MOO_HOME}abs/vb-pdq
 		# cd ${MOO_HOME}abs/vb-pdq
 		# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
@@ -164,7 +161,6 @@ create_custom_packages() {
 
 		## FILESYSTEM
 		delete_custom_package_caches "filesystem"
-		rm -fr ${MOO_HOME}abs/filesystem
 		cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
 		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/issue ${MOO_HOME}abs/filesystem/
 		cp -vf ${MOO_HOME}github/mooOS-dev-tools/filesystem/os-release ${MOO_HOME}abs/filesystem/
@@ -178,7 +174,6 @@ create_custom_packages() {
 
 		## LSB-RELEASE
 		delete_custom_package_caches "lsb-release"
-		rm -fr ${MOO_HOME}abs/lsb-release
 		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
 		cp -vf ${MOO_HOME}github/mooOS-dev-tools/lsb-release/PKGBUILD ${MOO_HOME}abs/lsb-release/
 		cp -vf ${MOO_HOME}github/mooOS-dev-tools/lsb-release/lsb-release.install ${MOO_HOME}abs/lsb-release/
@@ -188,22 +183,20 @@ create_custom_packages() {
 
 		## GRUB
 		delete_custom_package_caches "grub"
-		rm -fr ${MOO_HOME}abs/grubtesting
-		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grubtesting
-		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grubtesting/grub.default
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grubtesting/grub.cfg
-		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grubtesting/grub.default | awk '{print $1}')
-		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grubtesting/grub.cfg | awk '{print $1}')
-		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
-		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grubtesting/PKGBUILD
+		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grub
+		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
+		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
+		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
+		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
+		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
+		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
 
-		cd ${MOO_HOME}abs/grubtesting
+		cd ${MOO_HOME}abs/grub
 		makepkg -sf
 		schroot -p -- makepkg -sf
 
 		## SYSLINUX
 		delete_custom_package_caches "syslinux"
-		rm -fr ${MOO_HOME}abs/syslinux
 		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
 		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
 		SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
@@ -214,7 +207,6 @@ create_custom_packages() {
 
 		## HARDINFO
 		delete_custom_package_caches "hardinfo"
-		rm -fr ${MOO_HOME}abs/hardinfo
 		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
 		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
 		HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
@@ -238,10 +230,13 @@ delete_package_caches() {
 }
 
 delete_custom_package_caches() {
-	sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/$1-*
-	sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/$1-*
-	sudo rm -v ${MOO_HOME}abs/i686/$1-*
-	sudo rm -v ${MOO_HOME}abs/x86_64/$1-*
+	if [ "$1" != "" ]; then
+		sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/$1-*
+		sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/$1-*
+		sudo rm -v ${MOO_HOME}abs/i686/$1-*
+		sudo rm -v ${MOO_HOME}abs/x86_64/$1-*
+		rm -fr ${MOO_HOME}abs/$1
+	fi
 }
 
 rsync_iso_remote() {
