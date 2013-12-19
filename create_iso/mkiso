@@ -1,0 +1,87 @@
+#!/usr/bin/bash
+## Part of mooOS-dev-tools - https://github.com/idk/mooOS-dev-tools
+## pdq 08-13-2013 - PRESENT
+## License: GPL3
+
+## This script is run as $USER then following that as root
+## This script creates the mooOS livecd ISO image file from current OS
+
+
+## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
+
+######### START CONFIGURATION #########
+. moo_config
+
+######### START FUNCTIONS #########
+. moo_functions
+
+## EXECUTE SCRIPT START
+if [ $(id -u) -eq 0 ]; then ## as $ROOT
+	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## cleanup work/build env
+		for m in ${ISO_ARCH}
+		do
+			umount_work_env $m
+		done
+
+		create_packages_list
+
+		## create the build env
+		create_build_env
+
+		## change to build directory and build iso
+		for moo in ${ISO_ARCH}
+		do
+
+			question="${bldyellow}You wish to make $moo iso (Y/N)?\n${txtrst}"
+			if ask_something; then
+				echo "${bldcyan}Building $moo iso now...${txtrst}"
+				cd ${ARCHLIVE}archlive/releng
+				 ./build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+				#2>&1 >> ${MOO_HOME}output.txt
+			fi
+
+			echo "${bldcyan}$moo iso build complete${txtrst}"
+			umount_work_env $moo
+		done
+
+		## sync .isos to local directory and remote server
+		for mooos in ${ISO_ARCH}
+		do
+			question="${bldyellow}Do you wish to rysnc this $mooos .iso to remote server (Y/N)?\n${txtrst}"
+			if ask_something; then
+				rsync_iso_remote $mooos
+			fi
+		done
+	fi
+else ## as $USER
+
+	## create the build environment and preparation
+	do_system_updates
+
+	## moved to root portion of script
+	## push latest code to github
+	#github_sync
+	
+	## add branding and custom packages
+	create_custom_packages
+
+	## delete useless package caches
+	delete_package_caches
+
+	## create and sync local repos
+	create_mooos_repos
+
+	## sync remote repos
+	sync_mooos_repos
+
+	notify-send "User portion of script complete"
+
+	echo "${bldred}Re-running this script as root!${txtrst}"
+
+	## re-run script as root
+ 	sudo $0
+fi
+
+exit 0

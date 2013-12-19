@@ -1,0 +1,82 @@
+#!/usr/bin/bash
+## Part of mooOS-dev-tools - https://github.com/idk/mooOS-dev-tools
+## pdq 08-13-2013 - PRESENT
+## License: GPL3
+
+## This script contains the mooOS-dev-tools script variables
+
+## (you could change these)
+MOO_USER=pdq
+MOO_HOME="/home/$MOO_USER/"
+
+# Build settings (you could change these)
+ISO_ARCH="i686 x86_64"
+ISO_NAME=mooOS
+ISO_LABEL="$ISO_NAME_$(date +%Y%m)"
+ISO_VERSION="$(date +%Y.%m.%d)-beta-0.989" ## change me!
+
+## (you should change these paths)
+ABS_BASE_DIR="${MOO_HOME}abs/"
+ARCHLIVE=/media/truecrypt3/
+ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down" ## directroy where iso is cp to rsync from
+REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
+#REPO_BASE_DIR="${MOO_HOME}abs"
+
+## (no need to change these)
+REPO_LOG_TEMP="/tmp/repo_renew"
+MOO_LOG="${ABS_BASE_DIR}update.log"
+# CURRENTHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum"
+# OLDHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum.old"
+# CURRENTNAME_i686="${ABS_BASE_DIR}mooOS_i686.name"
+# OLDNAME_i686="${ABS_BASE_DIR}mooOS_i686.name.old"
+
+# CURRENTHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum"
+# OLDHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum.old"
+# CURRENTNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name"
+# OLDNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name.old"
+
+ISO_DIR="${ARCHLIVE}mooOS/out"   # iso
+WORK_DIR="${ARCHLIVE}mooOS/work" # work
+
+## gpg key used to sign the repos/packages
+GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ##  you must put key in this file
+
+
+# path to remote repo credentials file - (you should change this path)
+REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
+## BEGIN EXAMPLE of repo_creds
+#  #!/bin/sh
+
+# _remote_count=2
+# _now=$(date +"%m_%d_%Y")
+
+# #32-local -> 32-remote
+# _remote1[1]=22 # port
+# _remote1[2]="/home/pdq/abs/mooOS-pkgs-32"
+# _remote1[3]="example@127.0.0.1:/path/to/mooOS/public_html/repos"
+# _remote1[4]="--delete --stats"
+
+# #64-local -> 64-remote
+# _remote2[1]=22 # port
+# _remote2[2]="/home/pdq/abs/mooOS-pkgs-64"
+# _remote2[3]="example@127.0.0.1:/path/to/mooOS/public_html/repos"
+# _remote2[4]="--delete --stats"
+
+# #iso-local -> iso-remote
+# _iso_sync[1]=22
+# _iso_sync[2]="${ARCHLIVE}mooOS/out/${_iso_label}*.iso"
+# _iso_sync[3]="example@127.0.0.1:/var/www/mooOS"
+# _iso_sync[4]="--stats"
+
+## End remote rsyncs
+## END EXAMPLE of repo_creds
+
+# Text color variables (there is no need change these)
+txtbld=$(tput bold)                 # bold
+bldred=${txtbld}$(tput setaf 1)     # red
+bldgreen=${txtbld}$(tput setaf 2)   # green
+bldyellow=${txtbld}$(tput setaf 3)  # yellow
+bldblue=${txtbld}$(tput setaf 4)    # blue
+bldmagenta=${txtbld}$(tput setaf 5) # magenta
+bldcyan=${txtbld}$(tput setaf 6)    # cyan
+txtrst=$(tput sgr0)                 # reset
