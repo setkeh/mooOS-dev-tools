@@ -182,7 +182,7 @@ make_filesystems() {
         return 0 
     fi
 
-    dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --defaultyes --yesno "Create the home partition?" 20 70
+    dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the home partition?" 20 70
     if [ $? = 0 ] ; then
         # choose home partition
         dialog --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2!" 10 70 2> $TMP/plout
