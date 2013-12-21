@@ -186,6 +186,7 @@ omg-suite
 openssh
 p7zip-libre
 pacaur
+package-query
 pacmatic
 pacserve
 patch
