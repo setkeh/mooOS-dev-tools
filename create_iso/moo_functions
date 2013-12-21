@@ -711,24 +711,27 @@ create_mooos_repos() {
 			cd "$PWD"
 		done
 
+		rm -vf ${MOO_HOME}abs/i686/*-git*
+		rm -vf ${MOO_HOME}abs/x86_64/*-git*
+
 		## make RMS happy :D
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
+		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
 		cp -v ${MOO_HOME}abs/i686/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any*
+		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any*
 		cp -v ${MOO_HOME}abs/i686/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/unar-*
+		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/unar-*
 		cp -v ${MOO_HOME}abs/i686/unar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/unar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-*
+		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-*
 		cp -v ${MOO_HOME}abs/i686/opencollada-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/opencollada-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-*
+		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-*
 		cp -v ${MOO_HOME}abs/i686/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
