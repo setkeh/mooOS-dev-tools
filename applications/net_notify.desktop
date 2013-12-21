@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Network Notification
+Comment=Desktop file for network notify mooOS
+Exec=network_notify
+Icon=network
+Terminal=false
+Type=Application
+Categories=Other;

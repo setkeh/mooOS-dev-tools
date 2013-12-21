@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Name=Startup Hint
-Comment=Deskop file for startup hint- mooOS
+Comment=Desktop file for startup hint- mooOS
 Exec=startup_hint
 Icon=info
 Terminal=false
