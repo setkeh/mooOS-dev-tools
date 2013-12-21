@@ -121,7 +121,15 @@ partition_editor() {
     if [ $? = 0 ] ; then
         mountpoint -q /mnt/home || mountpoint -q /mnt/boot && umount /mnt/* 2>/dev/null
         mountpoint -q /mnt && umount /mnt 2>/dev/null
-        cfdisk
+
+        dialog --clear --backtitle "$upper_title" --title "CHOOSE DEVICE" --inputbox "Please choose device to launch with partitioning utility (cfdisk):\n\nexample: /dev/hda" 10 70 2> $TMP/ch_part
+        if [ $? = 1 ] || [ $? = 255 ] ; then
+            installer_menu
+            return 0 
+        fi
+        
+        ch_part=$(cat $TMP/ch_part)
+        cfdisk $ch_part
     fi
 
     current_selection 3
