@@ -684,25 +684,25 @@ create_mooos_repos() {
 		for mm in $arches
 		do
 			cd ${MOO_HOME}abs/mooOS-pkgs-$mm/
-			mv $(ls | grep "efl-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "efl-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "elementary-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "elementary-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "elementary_test-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "enlightenment17-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "enlightenment17-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "evas_generic_loaders-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "pyradio-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "sqlmap-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "terminology-git-debug-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			rm ${MOO_HOME}abs/*-git*
-			mv ${MOO_HOME}abs/staging_$mm/ ${MOO_HOME}abs/mooOS-pkgs-$mm/
+			mv -v $(ls | grep "efl-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "efl-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "elementary-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "elementary-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "elementary_test-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "enlightenment17-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "enlightenment17-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "evas_generic_loaders-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "pyradio-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "sqlmap-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "terminology-git-debug-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv -v $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			rm -v ${MOO_HOME}abs/*-git*
+			mv -v ${MOO_HOME}abs/staging_$mm/ ${MOO_HOME}abs/mooOS-pkgs-$mm/
 		done
 		cd "$PWD"
 
