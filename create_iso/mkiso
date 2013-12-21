@@ -4,20 +4,47 @@
 ## License: GPL3
 
 ## This script is run as $USER then following that as root
-## This script creates the mooOS livecd ISO image file from current OS
+## This script creates the mooOS livecd ISO image files from current OS
 
 
 ## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
 
-######### START CONFIGURATION #########
+######### START CONFIGURATION ##########
 . moo_config
 
-######### START FUNCTIONS #########
+######### START FUNCTIONS ##############
 . moo_functions
 
-## EXECUTE SCRIPT START
-if [ $(id -u) -eq 0 ]; then ## as $ROOT
-	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
+######### EXECUTE SCRIPT START #########
+if [ $(id -u) -ne 0 ]; then ## as $USER
+
+	## check repos are up
+	check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
+	check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
+
+	## create the build environment, preparation and update HOST system
+	do_system_updates
+	
+	## add branding and custom packages
+	create_custom_packages
+
+	## delete useless package caches
+	delete_package_caches
+
+	## create and sync local repos
+	create_mooos_repos
+
+	## sync local to remote repos
+	sync_mooos_repos
+
+	notify-send "User portion of script complete"
+
+	echo "${bldred}Re-running this script as root!${txtrst}"
+	## re-run script as root
+ 	sudo $0
+
+else ## as $ROOT
+	question="${bldyellow}Have you ran this script as USER 1st? You wish to make iso (Y/N)?\n${txtrst}"
 	if ask_something; then
 		## cleanup work/build env
 		for m in ${ISO_ARCH}
@@ -25,7 +52,7 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 			umount_work_env $m
 		done
 
-		## CHECK REPOS ARE UP ##
+		## check repos are up
 		check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
 		check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
 
@@ -59,33 +86,6 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 			fi
 		done
 	fi
-else ## as $USER
-
-	## CHECK REPOS ARE UP ##
-	check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
-	check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
-
-	## create the build environment and preparation
-	do_system_updates
-	
-	## add branding and custom packages
-	create_custom_packages
-
-	## delete useless package caches
-	delete_package_caches
-
-	## create and sync local repos
-	create_mooos_repos
-
-	## sync remote repos
-	sync_mooos_repos
-
-	notify-send "User portion of script complete"
-
-	echo "${bldred}Re-running this script as root!${txtrst}"
-
-	## re-run script as root
- 	sudo $0
 fi
 
 exit 0
