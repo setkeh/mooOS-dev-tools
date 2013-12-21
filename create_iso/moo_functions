@@ -672,11 +672,39 @@ create_mooos_repos() {
 	question="${bldyellow}Create and cleanup mooOS repos? (Y/N)?\n${txtrst}"
 	if ask_something; then
 		echo "${bldgreen}Rrecreating repos now...${txtrst}"
-		cd "$PWD"
+		#cd "$PWD"
 		## remove existing repos
 		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
 		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
 		#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
+
+		## hackity hack hack - clean up old git package caches
+		arches="32 64"
+		PWD=$(pwd)
+		for mm in $arches
+		do
+			cd ${MOO_HOME}abs/mooOS-pkgs-$mm/
+			mv $(ls | grep "efl-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "efl-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary_test-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "enlightenment17-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "enlightenment17-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "evas_generic_loaders-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "pyradio-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "sqlmap-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "terminology-git-debug-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			rm ${MOO_HOME}abs/*-git*
+			mv ${MOO_HOME}abs/staging_$mm/ ${MOO_HOME}abs/mooOS-pkgs-$mm/
+		done
+		cd "$PWD"
 
 		## make RMS happy :D
 		rm -v ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
