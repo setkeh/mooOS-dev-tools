@@ -698,7 +698,7 @@ create_mooos_repos() {
 			mv -v $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv -v $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			rm -v ${MOO_HOME}abs/*-git*
-			mv -v ${MOO_HOME}abs/staging_$mm/ ${MOO_HOME}abs/mooOS-pkgs-$mm/
+			mv -v ${MOO_HOME}abs/staging_$mm/* ${MOO_HOME}abs/mooOS-pkgs-$mm/
 		done
 		cd "$PWD"
 
