@@ -19,21 +19,15 @@ ISO_VERSION="$(date +%Y.%m.%d)-beta-0.989" ## change me!
 ABS_BASE_DIR="${MOO_HOME}abs/"
 ARCHLIVE=/media/truecrypt3/
 ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down" ## directroy where iso is cp to rsync from
+
+## change these
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
-#REPO_BASE_DIR="${MOO_HOME}abs"
+REPO_LOCAL="http://repo.mooos.pdq"
+REPO_REMOTE="http://repos.mooos.org"
 
 ## (no need to change these)
 REPO_LOG_TEMP="/tmp/repo_renew"
 MOO_LOG="${ABS_BASE_DIR}update.log"
-# CURRENTHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum"
-# OLDHASH_i686="${ABS_BASE_DIR}mooOS_i686.md5sum.old"
-# CURRENTNAME_i686="${ABS_BASE_DIR}mooOS_i686.name"
-# OLDNAME_i686="${ABS_BASE_DIR}mooOS_i686.name.old"
-
-# CURRENTHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum"
-# OLDHASH_x86_64="${ABS_BASE_DIR}mooOS_x86_64.md5sum.old"
-# CURRENTNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name"
-# OLDNAME_x86_64="${ABS_BASE_DIR}mooOS_x86_64.name.old"
 
 ISO_DIR="${ARCHLIVE}mooOS/out"   # iso
 WORK_DIR="${ARCHLIVE}mooOS/work" # work

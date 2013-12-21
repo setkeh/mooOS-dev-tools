@@ -18,6 +18,29 @@ ask_something() {
 	return $return
 }
 
+check_repos() {
+	while true
+	do
+		if [ $2 -eq 1 ]; then
+			torsocks curl -s -o "/dev/null" "$1"
+		else
+			curl -s -o "/dev/null" "$1"
+		fi
+
+		if [ $? -ne 0 ] ; then
+			echo "Error occurred getting URL $1: rechecking in 10 seconds"
+		elif [ $? -eq 6 ]; then
+			echo "Unable to resolve host: rechecking in 10 seconds"
+		elif [ $? -eq 7 ]; then
+			echo "Unable to connect to host: rechecking in 10 seconds"
+		else
+			echo "$1 is UP! :D proceeding..."
+			break
+		fi
+		sleep 10s
+	done
+}
+
 create_packages_list() {
 	question="${bldyellow}Run github sync? (Y/N)?\n${txtrst}"
 	if ask_something; then
@@ -685,8 +708,8 @@ create_mooos_repos() {
 		## clean up stable repos
 		## re-create repos local and remoteed 
 		echo "================syncing to local repos==================="
-		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
-		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
+		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-32/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date
+		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/mooOS-pkgs-64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
 		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
 	fi
