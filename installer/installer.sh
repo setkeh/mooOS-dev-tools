@@ -94,6 +94,13 @@ installer_menu() {
     esac
 }
 
+clean_return() {
+    if [ $? = 255 ] ; then
+        installer_menu
+        return 0            
+    fi
+}
+
 list_partitions() {
     #partition_list=`blkid | grep -i 'TYPE="ext[234]"' | cut -d ' ' -f 1 | grep -i '^/dev/' | grep -v '/dev/loop' | grep -v '/dev/mapper' | sed "s/://g"`
     fdisk -l | grep Linux | cut -b 1-9 > $TMP/pout 2>/dev/null
@@ -112,10 +119,7 @@ list_partitions() {
 
 partition_editor() {
     dialog --clear --backtitle "$upper_title" --title "Partition editor" --cancel-label "Cancel" --msgbox "pdq is not responsible for loss of data or anything else. When in doubt, cancel and read the code.\n\nIf you accept this, you can start cfdisk now!\n\nYou can return to the main menu at any time by hitting <ESC> key." 20 70
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0            
-    fi
+    clean_return
 
     dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 8GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
     if [ $? = 0 ] ; then
@@ -141,10 +145,7 @@ make_filesystems() {
     fdisk -l | grep Linux | sed -e '/swap/d' | cut -b 1-9 > $TMP/pout 2>/dev/null
 
     dialog --clear --backtitle "$upper_title" --title "ROOT PARTITION DETECTED" --exit-label OK --msgbox "Installer has detected\n\n `cat /tmp/tmp/pout` \n\n as your linux partition(s).\n\nIn the next box you can choose the linux filesystem for your root partition or choose the partition if you have more linux partitions!" 20 70
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
 
     # choose root partition
     dialog --clear --backtitle "$upper_title" --title "CHOOSE ROOT PARTITION" --inputbox "Please choose your preferred root partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 1 for /dev/hda1!" 10 70 2> $TMP/pout
@@ -185,10 +186,7 @@ make_filesystems() {
     mount $pout /mnt
 
     dialog --clear --backtitle "$upper_title" --title "ROOT PARTITION MOUNTED" --msgbox "Your $pout partition has been mounted at /mnt$typefs" 10 70
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
 
     dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the home partition?" 20 70
     if [ $? = 0 ] ; then
@@ -293,10 +291,7 @@ make_filesystems() {
 
 make_internet() {
     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Test/configure internet connection" 10 70
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
 
     # dialog --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
     # if [ $? = 0 ] ; then
@@ -396,10 +391,7 @@ make_internet() {
 
 initial_install() {
     dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
 
     is_mounted=$(mountpoint -q /mnt && echo 1 || echo 0)
     if [ $is_mounted ]; then
@@ -609,10 +601,7 @@ initial_install() {
 
 chroot_configuration() {
     dialog --clear --backtitle "$upper_title" --title "Chroot" --msgbox "Chroot into mounted filesystem" 10 30 
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
      
     #if [ ! -f /mnt/chroot-install_mooOS ]; then
     #wget https://raw.github.com/idk/pdq/master/chroot-install_mooOS -O chroot-install_mooOS
@@ -731,10 +720,7 @@ chroot_configuration() {
 
 generate_fstab() {
     dialog --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Generate fstab" 10 30
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
    
     genfstab -U -p /mnt >> /mnt/etc/fstab
     dialog --clear --backtitle "$upper_title" --title "fstab configuration" --yesno "Do you wish to view/edit this file?" 10 30
@@ -748,10 +734,7 @@ generate_fstab() {
 
 finishup() {
     dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install and reboot" 10 30
-    if [ $? = 255 ] ; then
-        installer_menu
-        return 0 
-    fi
+    clean_return
     
     dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: install_mooOS\n\nSee ya!" 30 60
 
