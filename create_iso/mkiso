@@ -15,10 +15,6 @@
 ######### START FUNCTIONS #########
 . moo_functions
 
-## CHECK REPOS ARE UP ##
-check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
-check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
-
 ## EXECUTE SCRIPT START
 if [ $(id -u) -eq 0 ]; then ## as $ROOT
 	question="${bldyellow}Have you ran this script as USER 1st? You wish to  make iso (Y/N)?\n${txtrst}"
@@ -28,6 +24,10 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 		do
 			umount_work_env $m
 		done
+
+		## CHECK REPOS ARE UP ##
+		check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
+		check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
 
 		create_packages_list
 
@@ -60,6 +60,10 @@ if [ $(id -u) -eq 0 ]; then ## as $ROOT
 		done
 	fi
 else ## as $USER
+
+	## CHECK REPOS ARE UP ##
+	check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
+	check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
 
 	## create the build environment and preparation
 	do_system_updates
