@@ -58,10 +58,10 @@ do_system_updates() {
 		fi
 
 		echo "${bldgreen}Applying i686 updates...${txtrst}"
-		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel
+		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel --noedit --rebuild
 
 		echo "${bldgreen}Applying x86_64 updates...${txtrst}"
-		sudo pacman -Syu && pacaur -Syua$devel
+		sudo pacman -Syu && pacaur -Syua$devel --noedit --rebuild
 	fi
 }
 
