@@ -55,10 +55,6 @@ do_system_updates() {
 		question="${bldyellow}with --devel? (Y/N)?\n${txtrst}"
 		if ask_something; then
 			devel=" --devel"
-			sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/*-git-*
-			sudo rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/*-git-*
-			sudo rm -v ${MOO_HOME}abs/i686/*-git-*
-			sudo rm -v ${MOO_HOME}abs/x86_64/*-git-*
 		fi
 
 		echo "${bldgreen}Applying i686 updates...${txtrst}"
