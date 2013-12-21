@@ -421,7 +421,7 @@ initial_install() {
 
     dialog --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        pacstrap -C /etc/pacman.conf /mnt base base-devel
+        pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/moo/.log
     fi
     
     dialog --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
@@ -459,7 +459,7 @@ initial_install() {
         # fi
 
         update-mirrorlist
-        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/moo/.log
     fi
 
     #dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
