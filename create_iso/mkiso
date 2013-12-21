@@ -67,10 +67,6 @@ else ## as $USER
 
 	## create the build environment and preparation
 	do_system_updates
-
-	## moved to root portion of script
-	## push latest code to github
-	#github_sync
 	
 	## add branding and custom packages
 	create_custom_packages
