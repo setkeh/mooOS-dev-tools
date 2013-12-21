@@ -15,6 +15,9 @@
 ######### START FUNCTIONS ##############
 . moo_functions
 
+## store current working directory 
+PWD=$(pwd)
+
 ######### EXECUTE SCRIPT START #########
 if [ $(id -u) -ne 0 ]; then ## as $USER
 
@@ -37,9 +40,9 @@ if [ $(id -u) -ne 0 ]; then ## as $USER
 	## sync local to remote repos
 	sync_mooos_repos
 
-	notify-send "User portion of script complete"
-
+	notify-send "User script complete" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
 	echo "${bldred}Re-running this script as root!${txtrst}"
+	
 	## re-run script as root
  	sudo $0
 
@@ -71,6 +74,7 @@ else ## as $ROOT
 				cd ${ARCHLIVE}archlive/releng
 				 ./build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
 				#2>&1 >> ${MOO_HOME}output.txt
+				cd "$PWD"
 			fi
 
 			echo "${bldcyan}$moo iso build complete${txtrst}"
