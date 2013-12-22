@@ -253,6 +253,35 @@ rsync_iso_remote() {
 		## replace old release name with new release name in info.php on local web server
 		su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 
+		## create initial old filesize
+		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old" ]; then
+			su -l $MOO_USER -c "echo 1.8G > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old"
+		fi
+
+		cd $ISO_DIR
+		## create initial current filesize
+		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize" ]; then
+			su -l $MOO_USER -c "du -h \"$CURRELNAME\" | awk '{print $1;}' > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize"
+		fi
+
+		NEW_FILESIZE_LIST=$(du -h "$CURRELNAME" | awk '{print $1;}')
+		CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize)
+		OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old)
+
+		cd "$PWD"
+		## if new iso create release filesize
+		if [ "$CURRELFILESIZE" != "$NEW_FILESIZE_LIST" ]; then
+			su -l $MOO_USER -c "echo $CURRELFILESIZE > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old"
+			su -l $MOO_USER -c "echo $NEW_FILESIZE_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize"
+		fi
+
+		CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize)
+		OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old)
+
+		echo "The old ${ARCH_ISO} release filesize was $OLDRELFILESIZE the new ${ARCH_ISO} release filesize is $CURRELFILESIZE"
+		## replace old release filesize with new release filesize in info.php on local web server
+		su -l $MOO_USER -c "sed -i \"s/$OLDRELFILESIZE/$CURRELFILESIZE/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+
 		## Mount server filesystem to localhost
 		# path to remote repo credentials file
 		su -l $MOO_USER -c "cat /mnt/linux-pdq/media/truecrypt1/private/repo_creds > /tmp/repo_creds"
