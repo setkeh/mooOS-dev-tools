@@ -40,6 +40,9 @@ if [ $(id -u) -ne 0 ]; then ## as $USER
 	## sync local to remote repos
 	sync_mooos_repos
 
+	## bump the version number
+	moo_version
+
 	notify-send "User script complete" -i "$MOO_ICON"
 	echo "${bldred}Re-running this script as root!${txtrst}"
 
