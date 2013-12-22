@@ -5,7 +5,7 @@
 boot_part=$1
 upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta 9:48-CST-12-10-2013"
 
-if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/Xdialog ] || [ ! -f /usr/bin/eet ]; then
+if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
     sleep 3s
     exit 0
