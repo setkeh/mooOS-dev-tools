@@ -193,7 +193,7 @@ rsync_iso_remote() {
 	## sync .iso to remote server
 	ARCH_ISO=$1
 
-	question="${bldyellow}Sync md5sums and new names to website? (Y/N)?\n${txtrst}"
+	question="${bldyellow}Sync ${ARCH_ISO} md5sums/Names to website? (Y/N)?\n${txtrst}"
 	if ask_something; then
 		## create initial old hash
 		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old" ]; then
@@ -211,17 +211,15 @@ rsync_iso_remote() {
 
 		CURMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum)
 		OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
-		NEW=0
 		## if new iso create hashes
 		if [ "$CURMD5HASH" != "$MD5HASH" ]; then
 			su -l $MOO_USER -c "echo $CURMD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old"
 			su -l $MOO_USER -c "echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum"
-			NEW=1
 		fi
 
 		OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
 
-		echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH"
+		echo "The old ${ARCH_ISO} md5sum was $OLDMD5HASH the new ${ARCH_ISO} md5sum is $MD5HASH"
 
 		## replace old hash with new hash in info.php on local web server
 		su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
@@ -253,7 +251,7 @@ rsync_iso_remote() {
 		CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
 		OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
 
-		echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
+		echo "The old ${ARCH_ISO} release name was $OLDRELNAME the new ${ARCH_ISO} release name is $CURRELNAME"
 		## replace old release name with new release name in info.php on local web server
 		if [ $NEW_NAME -eq 1 ]; then
 			su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
@@ -276,13 +274,13 @@ rsync_iso_remote() {
 			rm "$REPO_CREDS"
 		fi
 
-		notify-send "Release info done." -i "$MOO_ICON"
+		notify-send "${ARCH_ISO} release info done." -i "$MOO_ICON"
 	fi
 
 	question="${bldyellow}Do you wish to rysnc this ${ARCH_ISO} iso to local/remote servers (Y/N)?\n${txtrst}"
 	if ask_something; then
 		echo "
-================syncing iso to local storage repos===================
+================syncing ${ARCH_ISO} iso to local storage repos===================
 "
 		su -l $MOO_USER -c "rm $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso"
 		su -l $MOO_USER -c "mv -fv $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso"
@@ -312,7 +310,7 @@ rsync_iso_remote() {
 
 			rm "$REPO_CREDS"
 		fi
-		
+
 		echo "${ARCH_ISO} synced"
 		notify-send "${ARCH_ISO} synced" -i "$MOO_ICON"
 	fi
