@@ -240,12 +240,10 @@ rsync_iso_remote() {
 		OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
 
 		cd "$PWD"
-		NEW_NAME=0
 		## if new iso create release name
 		if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
 			su -l $MOO_USER -c "echo $CURRELNAME > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old"
 			su -l $MOO_USER -c "echo $NEW_NAME_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name"
-			NEW_NAME=1
 		fi
 
 		CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
@@ -253,9 +251,7 @@ rsync_iso_remote() {
 
 		echo "The old ${ARCH_ISO} release name was $OLDRELNAME the new ${ARCH_ISO} release name is $CURRELNAME"
 		## replace old release name with new release name in info.php on local web server
-		if [ $NEW_NAME -eq 1 ]; then
-			su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
-		fi
+		su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 
 		## Mount server filesystem to localhost
 		# path to remote repo credentials file
