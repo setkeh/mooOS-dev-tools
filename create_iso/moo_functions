@@ -35,7 +35,7 @@ check_repos() {
 			echo "Unable to connect to host: rechecking in 10 seconds"
 		else
 			echo "$1 is UP! :D proceeding..."
-			notify-send "$1 is UP! :D proceeding..." -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+			notify-send "$1 is UP! :D proceeding..." -i "$MOO_ICON"
 
 			break
 		fi
@@ -61,10 +61,10 @@ do_system_updates() {
 
 		echo "${bldgreen}Applying i686 updates...${txtrst}"
 		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel --noedit --rebuild
-		notify-send "Applied i686 updates" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+		notify-send "Applied i686 updates" -i "$MOO_ICON"
 		echo "${bldgreen}Applying x86_64 updates...${txtrst}"
 		sudo pacman -Syu && pacaur -Syua$devel --noedit --rebuild
-		notify-send "Applied x86_64 updates" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+		notify-send "Applied x86_64 updates" -i "$MOO_ICON"
 	fi
 }
 
@@ -163,7 +163,7 @@ create_custom_packages() {
 		#TODO
 		#schroot -p -- makepkg -sf
 		cd "$PWD"
-		notify-send "Rebranded packages" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+		notify-send "Rebranded packages" -i "$MOO_ICON"
 	fi
 }
 
@@ -192,73 +192,95 @@ delete_custom_package_caches() {
 rsync_iso_remote() {
 	## sync .iso to remote server
 	ARCH_ISO=$1
-	PWD=$(pwd)
 
-	## create initial old hash
-	if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old" ]; then
-		su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old"
+	question="${bldyellow}Sync md5sums and new names to website? (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## create initial old hash
+		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old" ]; then
+			su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old"
+		fi
+
+		echo "generating ${ARCH_ISO} md5sum... please wait a moment"
+		# md5sums of current and old .iso
+		MD5HASH=$(md5sum $ISO_DIR/*-${ARCH_ISO}*.iso | cut -d " " -f 1)
+
+		## create initial current hash
+		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum" ]; then
+			su -l $MOO_USER -c "echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum"
+		fi
+
+		CURMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum)
+		OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
+		NEW=0
+		## if new iso create hashes
+		if [ "$CURMD5HASH" != "$MD5HASH" ]; then
+			su -l $MOO_USER -c "echo $CURMD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old"
+			su -l $MOO_USER -c "echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum"
+			NEW=1
+		fi
+
+		OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
+
+		echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH"
+
+		## replace old hash with new hash in info.php on local web server
+		su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+
+		## create initial old name
+		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old" ]; then
+			su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old"
+		fi
+
+		cd $ISO_DIR
+		## create initial current name
+		if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name" ]; then
+			su -l $MOO_USER -c "ls *${ARCH_ISO}* > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name"
+		fi
+
+		NEW_NAME_LIST=$(ls *${ARCH_ISO}*)
+		CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
+		OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
+
+		cd "$PWD"
+		NEW_NAME=0
+		## if new iso create release name
+		if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
+			su -l $MOO_USER -c "echo $CURRELNAME > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old"
+			su -l $MOO_USER -c "echo $NEW_NAME_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name"
+			NEW_NAME=1
+		fi
+
+		CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
+		OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
+
+		echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
+		## replace old release name with new release name in info.php on local web server
+		if [ $NEW_NAME -eq 1 ]; then
+			su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+		fi
+
+		## Mount server filesystem to localhost
+		# path to remote repo credentials file
+		su -l $MOO_USER -c "cat /mnt/linux-pdq/media/truecrypt1/private/repo_creds > /tmp/repo_creds"
+		REPO_CREDS=/tmp/repo_creds
+
+		## if remote web server exists
+		if [ "$REPO_CREDS" ] ; then
+			. $REPO_CREDS
+
+			dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
+
+			## copy info.php with new hash to remote web server
+			echo "================syncing info.php to remote web server==================="
+			su -l $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
+			rm "$REPO_CREDS"
+		fi
+
+		notify-send "Release info done." -i "$MOO_ICON"
 	fi
 
-	echo "generating ${ARCH_ISO} md5sum... please wait a moment"
-	# md5sums of current and old .iso
-	MD5HASH=$(md5sum $ISO_DIR/*-${ARCH_ISO}*.iso | cut -d " " -f 1)
-
-	## create initial current hash
-	if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum" ]; then
-		su -l $MOO_USER -c "echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum"
-	fi
-
-	CURMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum)
-	OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
-	NEW=0
-	## if new iso create hashes
-	if [ "$CURMD5HASH" != "$MD5HASH" ]; then
-		su -l $MOO_USER -c "echo $CURMD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old"
-		su -l $MOO_USER -c "echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum"
-		NEW=1
-	fi
-
-	OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
-
-	echo "The old md5sum was $OLDMD5HASH the new md5sum is $MD5HASH"
-
-	## replace old hash with new hash in info.php on local web server
-	su -l $MOO_USER -c "sed -i \"s/$OLDMD5HASH/$MD5HASH/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
-
-	## create initial old name
-	if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old" ]; then
-		su -l $MOO_USER -c "echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old"
-	fi
-
-	cd $ISO_DIR
-	## create initial current name
-	if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name" ]; then
-		su -l $MOO_USER -c "ls *${ARCH_ISO}* > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name"
-	fi
-
-	NEW_NAME_LIST=$(ls *${ARCH_ISO}*)
-	CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
-	OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
-
-	cd "$PWD"
-	NEW_NAME=0
-	## if new iso create release name
-	if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
-		su -l $MOO_USER -c "echo $CURRELNAME > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old"
-		su -l $MOO_USER -c "echo $NEW_NAME_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name"
-		NEW_NAME=1
-	fi
-
-	CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
-	OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
-
-	echo "The old release name was $OLDRELNAME the new release name is $CURRELNAME"
-	## replace old release name with new release name in info.php on local web server
-	if [ $NEW_NAME -eq 1 ]; then
-		su -l $MOO_USER -c "sed -i \"s/$OLDRELNAME/$CURRELNAME/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
-	fi
-
-	if [ $NEW -eq 1 ]; then
+	question="${bldyellow}Do you wish to rysnc this ${ARCH_ISO} iso to local/remote servers (Y/N)?\n${txtrst}"
+	if ask_something; then
 		echo "
 ================syncing iso to local storage repos===================
 "
@@ -284,19 +306,16 @@ rsync_iso_remote() {
 			src=$(eval echo $(echo '${'_iso_sync[2]'}'))
 			dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
 
-			## copy info.php with new hash to remote web server
-			echo "================syncing info.php to remote web server==================="
-			su -l $MOO_USER -c "torsocks scp /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php $dest/public_html/"
 			echo "================syncing iso to remote server==================="
 			echo "This may take a while..."
 			su -l $MOO_USER -c "rsync -avcPh $flags -e 'ssh -p $port' $src $dest" # -n, --dry-run perform a trial run with no changes made
 
 			rm "$REPO_CREDS"
 		fi
+		
+		echo "${ARCH_ISO} synced"
+		notify-send "${ARCH_ISO} synced" -i "$MOO_ICON"
 	fi
-
-	echo "${ARCH_ISO} synced!"
-	notify-send "${ARCH_ISO} synced!" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
 }
 
 umount_work_env() {
@@ -671,7 +690,7 @@ create_build_env() {
 		convert ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.jpg
 		#cp -v /etc/arch-release ${ARCHLIVE}archlive/releng/root-image/etc/arch-release
 	fi
-		notify-send "Files copied!" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+		notify-send "Files copied!" -i "$MOO_ICON"
 
 }
 
@@ -747,7 +766,7 @@ create_mooos_repos() {
 		echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
 		sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $REPO_LOG_TEMP >> $MOO_LOG
 
-		notify-send "Repos created!" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+		notify-send "Repos created!" -i "$MOO_ICON"
 
 		## clean up stable repos
 		## re-create repos local and remoteed 
@@ -756,7 +775,7 @@ create_mooos_repos() {
 		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date
 		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686
 		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64
-		notify-send "Repos synced to local server!" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+		notify-send "Repos synced to local server!" -i "$MOO_ICON"
 
 	fi
 }
@@ -779,7 +798,7 @@ sync_mooos_repos() {
 				dest=$(eval echo $(echo '${'_remote$i[3]'}'))
 				torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest # -n, --dry-run perform a trial run with no changes made
 			done
-			notify-send "Repos synced to remote server!" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+			notify-send "Repos synced to remote server!" -i "$MOO_ICON"
 		fi
 	fi
 }

@@ -40,9 +40,9 @@ if [ $(id -u) -ne 0 ]; then ## as $USER
 	## sync local to remote repos
 	sync_mooos_repos
 
-	notify-send "User script complete" -i "/usr/share/icons/oxygen/48x48/apps/mooOS.png"
+	notify-send "User script complete" -i "$MOO_ICON"
 	echo "${bldred}Re-running this script as root!${txtrst}"
-	
+
 	## re-run script as root
  	sudo $0
 
@@ -84,10 +84,7 @@ else ## as $ROOT
 		## sync .isos to local directory and remote server
 		for mooos in ${ISO_ARCH}
 		do
-			question="${bldyellow}Do you wish to rysnc this $mooos .iso to remote server (Y/N)?\n${txtrst}"
-			if ask_something; then
-				rsync_iso_remote $mooos
-			fi
+			rsync_iso_remote $mooos
 		done
 	fi
 fi

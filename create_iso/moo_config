@@ -8,6 +8,7 @@
 ## (you could change these)
 MOO_USER=pdq
 MOO_HOME="/home/$MOO_USER/"
+MOO_ICON="/usr/share/icons/oxygen/48x48/apps/mooOS.png"
 
 # Build settings (you could change these)
 ISO_ARCH="i686 x86_64"
