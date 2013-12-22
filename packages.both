@@ -11,7 +11,6 @@ archiso
 aria2
 atop
 audio-convert-libre
-audiothumbs
 autoconf
 autocutsel
 automake
@@ -121,8 +120,11 @@ kde-servicemenus-meld-menu-extended
 kdebase-dolphin
 kdebase-kdialog
 kdebase-konsole
+kdebase-workspace
 kdemultimedia-ffmpegthumbs
 kdenlive
+kdepim-runtime
+kdepimlibs
 kdesdk-dolphin-plugins
 kdesdk-thumbnailers
 kdesudo
@@ -132,6 +134,9 @@ key-mon
 keychain
 libavc1394
 libisoburn
+libkfbapi
+libkgapi
+libkolab
 libmodplug
 libpng12
 libpulse
