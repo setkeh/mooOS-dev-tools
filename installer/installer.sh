@@ -10,12 +10,12 @@
 archtype="$(uname -m)"
 
 
-dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
-if [ $? = 0 ] ; then
-    DIALOG=${DIALOG=dialog}
-else
-    DIALOG=${DIALOG=Xdialog}
-fi
+# dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
+# if [ $? = 0 ] ; then
+      DIALOG=${DIALOG=dialog}
+# else
+#     DIALOG=${DIALOG=Xdialog}
+# fi
 
 if [ "$archtype" = "x86_64" ]; then
     $DIALOG --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...\nproceeding (press ESC to exit)" 20 70

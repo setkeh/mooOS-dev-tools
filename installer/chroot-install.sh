@@ -12,12 +12,12 @@ if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/Xdialog ] || [ ! -f /usr/bin/eet 
     exit 0 
 fi
 
-dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
-if [ $? = 0 ] ; then
-    DIALOG=${DIALOG=dialog}
-else
-    DIALOG=${DIALOG=Xdialog}
-fi
+# dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
+# if [ $? = 0 ] ; then
+      DIALOG=${DIALOG=dialog}
+# else
+#     DIALOG=${DIALOG=Xdialog}
+# fi
 
 ## only allow root to run script
 if [ $(id -u) -eq 0 ]; then
