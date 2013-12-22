@@ -433,7 +433,7 @@ initial_install() {
 
         dialog --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
         if [ $? = 0 ] ; then
-            dialog --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?" 20 70
+            dialog --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
             if [ $? = 0 ] ; then
                 basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both /home/moo/Github/mooOS-dev-tools/packages-server.both"
             else

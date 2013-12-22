@@ -5,8 +5,8 @@
 
 ## This script contains the mooOS-dev-tools script variables
 
-## (NEVER EDIT THIS - handled via the coe monkeys)
-MOO_VERSION=989
+## (NEVER EDIT THIS - handled via the code monkeys)
+MOO_VERSION=990
 
 ## (you could change these)
 MOO_USER=pdq
