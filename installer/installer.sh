@@ -9,12 +9,20 @@
 ## figure out architecture type
 archtype="$(uname -m)"
 
+
+dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
+if [ $? = 0 ] ; then
+    DIALOG=${DIALOG=dialog}
+else
+    DIALOG=${DIALOG=Xdialog}
+fi
+
 if [ "$archtype" = "x86_64" ]; then
-    dialog --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...\nproceeding (press ESC to exit)" 20 70
+    $DIALOG --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...\nproceeding (press ESC to exit)" 20 70
     archtype="x86_64"
     not_archtype="i686"
 else
-    dialog --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is i686, this installer assumes you are using the i686 livecd option... proceeding\n(press ESC to exit)" 20 70
+    $DIALOG --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is i686, this installer assumes you are using the i686 livecd option... proceeding\n(press ESC to exit)" 20 70
     archtype="i686"
     not_archtype="x86_64"
 fi
@@ -23,7 +31,7 @@ if [ $? = 255 ] ; then
     exit 0
 fi
 
-dialog --clear --backtitle "$upper_title" --title "Architecture type" --yes-label "$archtype" --no-label "$not_archtype" --yesno "Double check. [Select Arch type]" 20 70
+$DIALOG --clear --backtitle "$upper_title" --title "Architecture type" --yes-label "$archtype" --no-label "$not_archtype" --yesno "Double check. [Select Arch type]" 20 70
 if [ $? = 0 ] ; then
         archtype=$archtype
     else
@@ -51,7 +59,7 @@ _CURRENT=/tmp/current
 exiting_installer() {
     clear
     rm -f $_TEMP
-    dialog --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: install_mooOS to re-run" 10 40
+    $DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: install_mooOS to re-run" 10 40
     exit 0
 }
 
@@ -62,7 +70,7 @@ current_selection() {
 installer_menu() {
 
     CUR=$(cat $_CURRENT)
-    dialog \
+    $DIALOG \
         --default-item "$CUR" --colors --backtitle "$upper_title" --title "$upper_title" \
         --menu "Select action: (Do them in order)" 20 60 9 \
         1 $clr"List linux partitions" \
@@ -114,19 +122,19 @@ list_partitions() {
 
     current_selection 2
 
-    dialog --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n\n${df_out} \n\n Hit enter to return to menu" 25 100
+    $DIALOG --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n\n${df_out} \n\n Hit enter to return to menu" 25 100
 }
 
 partition_editor() {
-    dialog --clear --backtitle "$upper_title" --title "Partition editor" --cancel-label "Cancel" --msgbox "pdq is not responsible for loss of data or anything else. When in doubt, cancel and read the code.\n\nIf you accept this, you can start cfdisk now!\n\nYou can return to the main menu at any time by hitting <ESC> key." 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Partition editor" --cancel-label "Cancel" --msgbox "pdq is not responsible for loss of data or anything else. When in doubt, cancel and read the code.\n\nIf you accept this, you can start cfdisk now!\n\nYou can return to the main menu at any time by hitting <ESC> key." 20 70
     clean_return
 
-    dialog --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 8GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Partition editor" --yesno "Create a / (primary, bootable* and recommended minimum 8GB in size) and a /home (primary and remaining size) partition.\n\n* Optionally create a /swap (primary and recommended twice the size of your onboard RAM) and /boot (primary, bootable and recommended minimum 1GB in size) partition.\n\nJust follow the menu, store your changes and quit cfdisk to go on!\n\nIMPORTANT: Read the instructions and the output of cfdisk carefully.\n\nProceed?" 20 70
     if [ $? = 0 ] ; then
         mountpoint -q /mnt/home || mountpoint -q /mnt/boot && umount /mnt/* 2>/dev/null
         mountpoint -q /mnt && umount /mnt 2>/dev/null
 
-        dialog --clear --backtitle "$upper_title" --title "CHOOSE DEVICE" --inputbox "Please choose device to launch with partitioning utility (cfdisk):\n\nexample: /dev/hda" 10 70 2> $TMP/ch_part
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE DEVICE" --inputbox "Please choose device to launch with partitioning utility (cfdisk):\n\nexample: /dev/hda" 10 70 2> $TMP/ch_part
         if [ $? = 1 ] || [ $? = 255 ] ; then
             installer_menu
             return 0 
@@ -144,11 +152,11 @@ make_filesystems() {
     mountpoint -q /mnt && umount /mnt 2>/dev/null
     fdisk -l | grep Linux | sed -e '/swap/d' | cut -b 1-9 > $TMP/pout 2>/dev/null
 
-    dialog --clear --backtitle "$upper_title" --title "ROOT PARTITION DETECTED" --exit-label OK --msgbox "Installer has detected\n\n `cat /tmp/tmp/pout` \n\n as your linux partition(s).\n\nIn the next box you can choose the linux filesystem for your root partition or choose the partition if you have more linux partitions!" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "ROOT PARTITION DETECTED" --exit-label OK --msgbox "Installer has detected\n\n `cat /tmp/tmp/pout` \n\n as your linux partition(s).\n\nIn the next box you can choose the linux filesystem for your root partition or choose the partition if you have more linux partitions!" 20 70
     clean_return
 
     # choose root partition
-    dialog --clear --backtitle "$upper_title" --title "CHOOSE ROOT PARTITION" --inputbox "Please choose your preferred root partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 1 for /dev/hda1!" 10 70 2> $TMP/pout
+    $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE ROOT PARTITION" --inputbox "Please choose your preferred root partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 1 for /dev/hda1!" 10 70 2> $TMP/pout
     if [ $? = 1 ] || [ $? = 255 ] ; then
         installer_menu
         return 0 
@@ -156,9 +164,9 @@ make_filesystems() {
 
     pout=$(cat $TMP/pout)
 
-    dialog --clear --backtitle "$upper_title" --title "ROOT  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "ROOT  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
     if [ $? = 0 ] ; then
-        dialog --clear --backtitle "$upper_title" --title "FORMAT ROOT PARTITION" --radiolist "Now you can choose the filesystem for your root partition.\n\next4 is the recommended filesystem." 20 70 30 \
+        $DIALOG --clear --backtitle "$upper_title" --title "FORMAT ROOT PARTITION" --radiolist "Now you can choose the filesystem for your root partition.\n\next4 is the recommended filesystem." 20 70 30 \
         "1" "ext2" off \
         "2" "ext3" off \
         "3" "ext4" on \
@@ -185,13 +193,13 @@ make_filesystems() {
 
     mount $pout /mnt
 
-    dialog --clear --backtitle "$upper_title" --title "ROOT PARTITION MOUNTED" --msgbox "Your $pout partition has been mounted at /mnt$typefs" 10 70
+    $DIALOG --clear --backtitle "$upper_title" --title "ROOT PARTITION MOUNTED" --msgbox "Your $pout partition has been mounted at /mnt$typefs" 10 70
     clean_return
 
-    dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the home partition?" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the home partition?" 20 70
     if [ $? = 0 ] ; then
         # choose home partition
-        dialog --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2!" 10 70 2> $TMP/plout
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2!" 10 70 2> $TMP/plout
         if [ $? = 1 ] || [ $? = 255 ] ; then
             installer_menu
             return 0 
@@ -199,9 +207,9 @@ make_filesystems() {
         
         plout=$(cat $TMP/plout)
 
-        dialog --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
+        $DIALOG --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
         if [ $? = 0 ] ; then
-            dialog --clear --backtitle "$upper_title" --title "FORMAT HOME PARTITION" --radiolist "Now you can choose the filesystem for your home partition.\n\next4 is the recommended filesystem." 20 70 30 \
+            $DIALOG --clear --backtitle "$upper_title" --title "FORMAT HOME PARTITION" --radiolist "Now you can choose the filesystem for your home partition.\n\next4 is the recommended filesystem." 20 70 30 \
             "1" "ext2" off \
             "2" "ext3" off \
             "3" "ext4" on \
@@ -229,13 +237,13 @@ make_filesystems() {
 
         mount $plout /mnt/home
 
-        dialog --clear --backtitle "$upper_title" --title "HOME PARTITION MOUNTED" --msgbox "Your $plout partition has been mounted at /mnt/home$typefs" 10 70
+        $DIALOG --clear --backtitle "$upper_title" --title "HOME PARTITION MOUNTED" --msgbox "Your $plout partition has been mounted at /mnt/home$typefs" 10 70
     fi
 
-    dialog --clear --backtitle "$upper_title" --title "BOOT  PARTITION" --defaultno --yesno "Create the boot filesystem?" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "BOOT  PARTITION" --defaultno --yesno "Create the boot filesystem?" 20 70
     if [ $? = 0 ] ; then
         # choose boot partition
-        dialog --clear --backtitle "$upper_title" --title "CHOOSE BOOT PARTITION" --inputbox "Please choose your preferred boot partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 3 for /dev/hda3!" 10 70 2> $TMP/pbout
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE BOOT PARTITION" --inputbox "Please choose your preferred boot partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 3 for /dev/hda3!" 10 70 2> $TMP/pbout
         if [ $? = 1 ] || [ $? = 255 ] ; then
             installer_menu
             return 0 
@@ -243,9 +251,9 @@ make_filesystems() {
         
         pbout=$(cat $TMP/pbout)
 
-        dialog --clear --backtitle "$upper_title" --title "BOOT PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
+        $DIALOG --clear --backtitle "$upper_title" --title "BOOT PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
         if [ $? = 0 ] ; then
-            dialog --clear --backtitle "$upper_title" --title "FORMAT BOOT PARTITION" --radiolist "Now you can choose the filesystem for your boot partition.\n\next4 is the recommended filesystem." 20 70 30 \
+            $DIALOG --clear --backtitle "$upper_title" --title "FORMAT BOOT PARTITION" --radiolist "Now you can choose the filesystem for your boot partition.\n\next4 is the recommended filesystem." 20 70 30 \
             "1" "ext2" off \
             "2" "ext3" off \
             "3" "ext4" on \
@@ -273,34 +281,34 @@ make_filesystems() {
         mount $pbout /mnt/boot
         ##mount $pbout /mnt/etc
 
-        dialog --clear --backtitle "$upper_title" --title "BOOT PARTITION MOUNTED" --msgbox "Your $pbout partition has been mounted at /mnt/boot$typefs" 10 70
+        $DIALOG --clear --backtitle "$upper_title" --title "BOOT PARTITION MOUNTED" --msgbox "Your $pbout partition has been mounted at /mnt/boot$typefs" 10 70
     fi
 
-    dialog --clear --backtitle "$upper_title" --title "SWAP PARTITION" --defaultno --yesno "Create the swap filesystem?" 10 70
+    $DIALOG --clear --backtitle "$upper_title" --title "SWAP PARTITION" --defaultno --yesno "Create the swap filesystem?" 10 70
     if [ $? = 0 ] ; then
         # choose home partition
-        dialog --clear --backtitle "$upper_title" --title "CHOOSE SWAP PARTITION" --inputbox "Please choose your preferred swap partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 4 for /dev/hda4!" 10 70 2> $TMP/psout
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE SWAP PARTITION" --inputbox "Please choose your preferred swap partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 4 for /dev/hda4!" 10 70 2> $TMP/psout
         psout=$(cat $TMP/psout)
         mkswap $psout
         swapon $psout
-        dialog --clear --backtitle "$upper_title" --title "SWAP SETUP" --msgbox "Ran: mkswap $psout and swapon $psout" 10 70
+        $DIALOG --clear --backtitle "$upper_title" --title "SWAP SETUP" --msgbox "Ran: mkswap $psout and swapon $psout" 10 70
     fi
 
     current_selection 4
 }
 
 make_internet() {
-    dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Test/configure internet connection" 10 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Test/configure internet connection" 10 70
     clean_return
 
-    # dialog --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
+    # $DIALOG --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
     # if [ $? = 0 ] ; then
     #     local net_list mynet
     #     for mynet in $(ip link show | awk '/: / {print $2}' | tr -d :) ; do
     #         net_list+="${mynet} - "
     #     done
 
-    #     my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
+    #     my_networks=$($DIALOG --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
     #     --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
 
     #     if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
@@ -325,12 +333,12 @@ make_internet() {
     #             dhcpcd $my_networks
     #         fi
 
-    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using netctl (enabled/started)" 10 30
+    #         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using netctl (enabled/started)" 10 30
     #     else
-    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
+    #         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
     #     fi
     # else
-    #     dialog --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
+    #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
     #     "1" "wifi-menu" on \
     #     "2" "wpa_supplicant" off \
     #     2> $TMP/pwifi
@@ -344,7 +352,7 @@ make_internet() {
     #         net_list+="${mynet} - "
     #     done
 
-    #     my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
+    #     my_networks=$($DIALOG --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
     #     --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
 
     #     if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
@@ -354,9 +362,9 @@ make_internet() {
 
     #     if [ "$my_networks" ] ; then # some better check should be here / placeholder
     #         dhcpcd $my_networks
-    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
+    #         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
     #     else
-    #         dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
+    #         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
     #     fi
 
     #     pwifi=$(cat $TMP/pwifi)
@@ -367,10 +375,10 @@ make_internet() {
     #             dhcpcd $my_networks
     #         fi
     #     else
-    #         dialog --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
+    #         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
     #         pssid=$(cat $TMP/pssid)
 
-    #         dialog --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
+    #         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
     #         ppassphrase=$(cat $TMP/ppassphrase)
     #         wpa_passphrase "$pssid" "$ppassphrase" >> /etc/wpa_supplicant.conf
     #         wpa_supplicant -B -Dwext -i $my_networks -c /etc/wpa_supplicant.conf & >/dev/null
@@ -379,25 +387,25 @@ make_internet() {
     #     #dhcpcd $my_networks
     #     # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
     #     # if [ ! -s /tmp/index.google ] ; then
-    #     #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
+    #     #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
     #     # else
-    #     #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
+    #     #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
     #     # fi
     # fi
 
-    # dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
+    # $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
     current_selection 5
 }
 
 initial_install() {
-    dialog --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
     clean_return
 
     is_mounted=$(mountpoint -q /mnt && echo 1 || echo 0)
     if [ $is_mounted ]; then
          update-mirrorlist
     else
-        dialog --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
+        $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
         current_selection 3
         installer_menu
         return 0 
@@ -419,21 +427,21 @@ initial_install() {
 
     pacman_conf="pacman.conf"
 
-    dialog --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
         pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/moo/.log
     fi
     
-    dialog --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then    
         echo "" > $TMP/ppkgs
-        dialog --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
+        $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
         ppkgs=" $(cat $TMP/ppkgs)"
 
 
-        dialog --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
+        $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
         if [ $? = 0 ] ; then
-            dialog --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
+            $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
             if [ $? = 0 ] ; then
                 basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both /home/moo/Github/mooOS-dev-tools/packages-server.both"
             else
@@ -453,19 +461,19 @@ initial_install() {
         #cp -v /etc/$pacman_conf /etc/pacman.conf
         cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
 
-        # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
+        # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
         # if [ $? = 0 ] ; then
         #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
         # fi
 
         update-mirrorlist
-        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/moo/.log
+        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/moo/.log
     fi
 
-    #dialog --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
+    #$DIALOG --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
     #if [ $? = 0 ] ; then
 
-    dialog --clear --backtitle "$upper_title" --title "Copy over configuration files" --yesno "Copy over required configuration files for mooOS? [Select No to skip]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Copy over configuration files" --yesno "Copy over required configuration files for mooOS? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
         PWD=$(pwd)
 
@@ -600,7 +608,7 @@ initial_install() {
 }
 
 chroot_configuration() {
-    dialog --clear --backtitle "$upper_title" --title "Chroot" --msgbox "Chroot into mounted filesystem" 10 30 
+    $DIALOG --clear --backtitle "$upper_title" --title "Chroot" --msgbox "Chroot into mounted filesystem" 10 30 
     clean_return
      
     #if [ ! -f /mnt/chroot-install_mooOS ]; then
@@ -710,7 +718,7 @@ chroot_configuration() {
         sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
     fi
     # vb "https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver" &
-    # dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
+    # $DIALOG --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
     # if [ $? = 0 ] ; then
     #     su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
     # fi
@@ -719,31 +727,31 @@ chroot_configuration() {
 }
 
 generate_fstab() {
-    dialog --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Generate fstab" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Generate fstab" 10 30
     clean_return
    
     genfstab -U -p /mnt >> /mnt/etc/fstab
-    dialog --clear --backtitle "$upper_title" --title "fstab configuration" --yesno "Do you wish to view/edit this file?" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "fstab configuration" --yesno "Do you wish to view/edit this file?" 10 30
     if [ $? = 0 ] ; then
         nano /mnt/etc/fstab
     fi
     
-    dialog --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Hit enter to return to menu" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "fstab configuration" --msgbox "Hit enter to return to menu" 10 30
     current_selection 7
 }
 
 finishup() {
-    dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install and reboot" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install and reboot" 10 30
     clean_return
     
-    dialog --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: install_mooOS\n\nSee ya!" 30 60
+    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: install_mooOS\n\nSee ya!" 30 60
 
     umount /mnt/* 2>/dev/null
     umount /mnt 2>/dev/null
     reboot
 }
 
-dialog --clear --backtitle "$upper_title" --title "Logs" --yesno "Do you wish to view the system log while installation proceeds? (This maybe helpful)" 10 30
+$DIALOG --clear --backtitle "$upper_title" --title "Logs" --yesno "Do you wish to view the system log while installation proceeds? (This maybe helpful)" 10 30
 if [ $? = 0 ] ; then
     su moo -c "urxvtc -name 'Logs' -title 'System Log' -e sudo journalctl -f"
 fi

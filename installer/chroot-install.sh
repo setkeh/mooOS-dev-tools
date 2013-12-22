@@ -5,11 +5,18 @@
 boot_part=$1
 upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta 9:48-CST-12-10-2013"
 
-if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
+if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/Xdialog ] || [ ! -f /usr/bin/eet ]; then
     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
     sleep 3s
     exit 0
     exit 0 
+fi
+
+dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
+if [ $? = 0 ] ; then
+    DIALOG=${DIALOG=dialog}
+else
+    DIALOG=${DIALOG=Xdialog}
 fi
 
 ## only allow root to run script
@@ -53,7 +60,7 @@ if [ $(id -u) -eq 0 ]; then
     exiting() {
         clear
         rm -f $_TEMP
-        dialog --clear --backtitle "$upper_title" --title "[ Return to Installer ]" --msgbox "Proceed." 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ Return to Installer ]" --msgbox "Proceed." 10 30
         exit 0
         exit 0
     }
@@ -63,7 +70,7 @@ if [ $(id -u) -eq 0 ]; then
     }
 
     gen_tz() {
-        dialog --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Generate timezone/localtime" 10 40
+        $DIALOG --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Generate timezone/localtime" 10 40
         if [ $? = 255 ] ; then
             chroot_menu
             return 0
@@ -74,7 +81,7 @@ if [ $(id -u) -eq 0 ]; then
             tz_list+="${tz} - "
         done
 
-        GEN_TIMEZONE=$(dialog --stdout --backtitle "${upper_title}" --title '[ TIMEZONE ]' --cancel-label "Go Back" \
+        GEN_TIMEZONE=$($DIALOG --stdout --backtitle "${upper_title}" --title '[ TIMEZONE ]' --cancel-label "Go Back" \
            --default-item "${GEN_TIMEZONE}" --menu "Choose timezone or <Go Back> to return" 16 40 23 ${tz_list} "null" "-" || echo "${GEN_TIMEZONE}")
 
         if [ "$GEN_TIMEZONE" = "" ] ; then
@@ -84,21 +91,21 @@ if [ $(id -u) -eq 0 ]; then
 
         if [ -f "/usr/share/zoneinfo/$GEN_TIMEZONE" ] ; then
             ln -s /usr/share/zoneinfo/$GEN_TIMEZONE /etc/localtime
-            dialog --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Set timezone to $GEN_TIMEZONE" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Set timezone to $GEN_TIMEZONE" 10 30
         else
-            dialog --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Failed to set timezone...timezone does not exist?" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ TIMEZONE ]" --msgbox "Failed to set timezone...timezone does not exist?" 10 30
         fi
         current_selection 3
     }
 
     gen_hostname() {
-        dialog --clear --backtitle "$upper_title" --title "[ HOSTNAME ]" --msgbox "Generate hostname" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ HOSTNAME ]" --msgbox "Generate hostname" 10 30
         if [ $? = 255 ] ; then
             chroot_menu
             return 0
         fi
 
-        GEN_HOSTNAME=$(dialog --stdout --backtitle "${upper_title}" --title '[ HOSTNAME ]' --cancel-label "Go Back" \
+        GEN_HOSTNAME=$($DIALOG --stdout --backtitle "${upper_title}" --title '[ HOSTNAME ]' --cancel-label "Go Back" \
            --inputbox "Enter desired hostname or <Go Back> to return" 9 40 "${GEN_HOSTNAME}" || echo "${GEN_HOSTNAME}")
       
         if [ "$GEN_HOSTNAME" = "" ] ; then
@@ -107,19 +114,19 @@ if [ $(id -u) -eq 0 ]; then
         fi
 
         echo $GEN_HOSTNAME > /etc/hostname
-        dialog --clear --backtitle "$upper_title" --title "[ HOSTNAME ]" --msgbox "Set hostname to $GEN_HOSTNAME" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ HOSTNAME ]" --msgbox "Set hostname to $GEN_HOSTNAME" 10 30
         current_selection 2
     }
 
     gen_locale() {
-        dialog --clear --backtitle "$upper_title" --title "[ LOCALES ]" --msgbox "Generate locale" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ LOCALES ]" --msgbox "Generate locale" 10 30
         
         if [ $? = 255 ] ; then
             chroot_menu
             return 0
         fi
 
-        GEN_LANG=$(dialog --stdout --backtitle "${upper_title}" --title '[ LOCALES ]' --cancel-label "Go Back" --default-item "${GEN_LANG}" \
+        GEN_LANG=$($DIALOG --stdout --backtitle "${upper_title}" --title '[ LOCALES ]' --cancel-label "Go Back" --default-item "${GEN_LANG}" \
            --menu "Choose a locale or <Go Back> to return" 16 40 23 \
             en_US.UTF-8 - \
             en_AU.UTF-8 - \
@@ -286,12 +293,12 @@ if [ $(id -u) -eq 0 ]; then
         echo "LANG=${GEN_LANG}" > "/etc/locale.conf"
         export "LANG=${GEN_LANG}"
         locale-gen 1>/dev/null || echo "Unable to setup the locales to" "${GEN_LANG}"
-        dialog --clear --backtitle "$upper_title" --title "[ LOCALES ]" --msgbox "Set locale to ${GEN_LANG}" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ LOCALES ]" --msgbox "Set locale to ${GEN_LANG}" 10 30
         current_selection 4
     }
 
     set_root_pass() {
-        dialog --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "Set root password" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "Set root password" 10 30
         
         if [ $? = 255 ] ; then
             chroot_menu
@@ -300,27 +307,27 @@ if [ $(id -u) -eq 0 ]; then
 
         passwd
         echo "set" > $TMP/rootpasswd
-        dialog --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "root password set!" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "root password set!" 10 30
         current_selection 5
     }
 
     add_user() {
-        dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Create user and add to sudoers" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Create user and add to sudoers" 10 30
         
         if [ $? = 255 ] ; then
             chroot_menu
             return 0
         fi
 
-        dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --inputbox "Please choose your username:\n\n" 10 70 2> $TMP/puser
+        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --inputbox "Please choose your username:\n\n" 10 70 2> $TMP/puser
         puser=$(cat $TMP/puser)
 
         useradd -m -g users -s /usr/bin/zsh $puser
-        dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Next step is to add password for $puser" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Next step is to add password for $puser" 10 30
         passwd $puser
         cp /etc/sudoers /etc/sudoers.bak
 
-        dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --yesno "Require no password for sudo? [suggested: Yes]" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --yesno "Require no password for sudo? [suggested: Yes]" 10 30
         if [ $? = 0 ] ; then
             sh -c "echo '$puser ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
             npasswd="no password required"
@@ -329,7 +336,7 @@ if [ $(id -u) -eq 0 ]; then
             npasswd="password required"
         fi
 
-        dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --defaultno --yesno "Confirm/view sudoers?" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --defaultno --yesno "Confirm/view sudoers?" 10 30
         if [ $? = 0 ] ; then
             EDITOR=nano visudo
         fi
@@ -371,18 +378,18 @@ if [ $(id -u) -eq 0 ]; then
         #     chmod +x /home/$puser/install_mooOS_user
         # fi
 
-        dialog --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
         current_selection 6
     }
 
     install_bootloader() {
-        dialog --clear --backtitle "$upper_title" --title "[ BOOTLOADER ]" --msgbox "Install Bootloader" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ BOOTLOADER ]" --msgbox "Install Bootloader" 10 30
         if [ $? = 255 ] ; then
             chroot_menu
             return 0
         fi
         
-        dialog --clear --backtitle "$upper_title" --title "[ BOOTLOADER ]" --radiolist "Select bootloader" 20 70 30 \
+        $DIALOG --clear --backtitle "$upper_title" --title "[ BOOTLOADER ]" --radiolist "Select bootloader" 20 70 30 \
         "1" "grub 2" on \
         "2" "syslinux" off \
         2> $TMP/pbootloader
@@ -393,7 +400,7 @@ if [ $(id -u) -eq 0 ]; then
 
         pbootloader=$(cat $TMP/pbootloader)
         if [ "$pbootloader" == "1" ] ; then
-            dialog --clear --backtitle "$upper_title" --title "[ GRUB 2]" --radiolist "Select grub type" 20 70 30 \
+            $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB 2]" --radiolist "Select grub type" 20 70 30 \
             "1" "grub-bios" on \
             "2" "grub-efi" off \
             2> $TMP/pgrub
@@ -410,7 +417,7 @@ if [ $(id -u) -eq 0 ]; then
             fi
 
             # choose boot/root drive
-            dialog --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --inputbox "Please choose the disk to install grub to.\n\n This should be the same drive your boot or root partition is on:\n\nUsually /dev/sda. Be careful!" 10 70 2> $TMP/bout
+            $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --inputbox "Please choose the disk to install grub to.\n\n This should be the same drive your boot or root partition is on:\n\nUsually /dev/sda. Be careful!" 10 70 2> $TMP/bout
             if [ $? = 1 ] || [ $? = 255 ] ; then
                 chroot_menu
                 return 0
@@ -419,12 +426,12 @@ if [ $(id -u) -eq 0 ]; then
             bout=$(cat $TMP/bout)
             bootmsg="grub-install --target=i386-pc --recheck $bout"
            
-            dialog --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --yesno "Is this correct?\n\n grub-install --target=i386-pc --recheck $bout" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --yesno "Is this correct?\n\n grub-install --target=i386-pc --recheck $bout" 10 30
             if [ $? = 0 ] ; then
                 grub-install --target=i386-pc --recheck $bout
-                dialog --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --msgbox "Grub installed" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --msgbox "Grub installed" 10 30
     
-                dialog --clear --backtitle "$upper_title" --title "[ GRUB CONFIGURE ]" --msgbox "Configure Grub" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB CONFIGURE ]" --msgbox "Configure Grub" 10 30
                 if [ $? = 1 ] ; then
                     chroot_menu
                     return 0
@@ -433,19 +440,19 @@ if [ $(id -u) -eq 0 ]; then
                 ## TODO
                 cp -v /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
                 grub-mkconfig -o /boot/grub/grub.cfg
-                dialog --clear --backtitle "$upper_title" --title "[ GRUB CONFIGURE ]" --msgbox "Grub configured" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB CONFIGURE ]" --msgbox "Grub configured" 10 30
 
             else
-                dialog --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --msgbox "Grub not installed..." 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB 2 ]" --msgbox "Grub not installed..." 10 30
             fi
         else
             pacman -S --noconfirm --needed syslinux
             syslinux-install_update -i -a -m
-            dialog --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
            
             sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
             sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg
-            dialog --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --defaultno --yesno "Edit/view syslinux.cfg?" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --defaultno --yesno "Edit/view syslinux.cfg?" 10 30
             if [ $? = 0 ] ; then
                 nano /boot/syslinux/syslinux.cfg
             fi
@@ -463,18 +470,18 @@ if [ $(id -u) -eq 0 ]; then
         echo "BOOTLOADER: $bootmsg"
         echo "Returning to menu in 5 seconds..."
         sleep 5s
-        dialog --clear --backtitle "$upper_title" --title "[ VIEW CONFIGURATION ]" --msgbox "Return" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ VIEW CONFIGURATION ]" --msgbox "Return" 10 30
         current_selection 8
     }
 
     edit_file() {
-        dialog --clear --backtitle "$upper_title" --title "[ Edit files ]" --msgbox "Please choose a file to open with nano.\n\nUse the <tab>, <spacebar> and arrow keys to navigate and select file." 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ Edit files ]" --msgbox "Please choose a file to open with nano.\n\nUse the <tab>, <spacebar> and arrow keys to navigate and select file." 10 30
 
-        file_edit=$(dialog --stdout --backtitle "$upper_title" --title "Please select file." --fselect /etc/ 0 0)
+        file_edit=$($DIALOG --stdout --backtitle "$upper_title" --title "Please select file." --fselect /etc/ 0 0)
 
         if [ $? = 0 ] ; then
             nano "$file_edit"
-            dialog --clear --backtitle "$upper_title" --title "[ Edit files ]" --defaultno --yesno "Edit/view another file?" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ Edit files ]" --defaultno --yesno "Edit/view another file?" 10 30
             if [ $? = 0 ] ; then
                 edit_file
             else
@@ -489,20 +496,20 @@ if [ $(id -u) -eq 0 ]; then
     }
 
   make_internet() {
-        dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Test/configure internet connection" 10 70
+        $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Test/configure internet connection" 10 70
         if [ $? = 255 ] ; then
             chroot_menu
             return 0 
         fi
 
-        dialog --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
+        $DIALOG --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
         if [ $? = 0 ] ; then
             local net_list mynet
             for mynet in $(ip link show | awk '/: / {print $2}' | tr -d :) ; do
                 net_list+="${mynet} - "
             done
 
-            my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
+            my_networks=$($DIALOG --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
             --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
 
             if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
@@ -530,20 +537,20 @@ if [ $(id -u) -eq 0 ]; then
                 #     dhcpcd $my_networks
                 # fi
 
-                dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using dhcpcd (enabled/started)" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks using dhcpcd (enabled/started)" 10 30
             else
-                dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
             fi
 
             # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
 
             # if [ ! -s /tmp/index.google ] ; then
-            #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 10 40
+            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 10 40
             # else
-            #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
+            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
             # fi
         else
-            dialog --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
+            $DIALOG --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
             "1" "wifi-menu" on \
             "2" "wpa_supplicant" off \
             2> $TMP/pwifi
@@ -557,7 +564,7 @@ if [ $(id -u) -eq 0 ]; then
                 net_list+="${mynet} - "
             done
 
-            my_networks=$(dialog --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
+            my_networks=$($DIALOG --stdout --backtitle "$upper_title" --title 'Internet' --cancel-label "Go Back" \
             --default-item "${my_networks}" --menu "Choose network or <Go Back> to return" 16 45 23 ${net_list} "Exit" "-" || echo "${my_networks}")
 
             if [ "$my_networks" = "" ] || [ $? = 255 ] || [ "$my_networks" = "Exit" ] ; then
@@ -567,9 +574,9 @@ if [ $(id -u) -eq 0 ]; then
 
             if [ "$my_networks" ] ; then # some better check should be here / placeholder
                 dhcpcd $my_networks
-                dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
             else
-                dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
             fi
 
             pwifi=$(cat $TMP/pwifi)
@@ -580,10 +587,10 @@ if [ $(id -u) -eq 0 ]; then
                     dhcpcd $my_networks
                 fi
             else
-                dialog --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
                 pssid=$(cat $TMP/pssid)
 
-                dialog --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
                 ppassphrase=$(cat $TMP/ppassphrase)
                 wpa_passphrase "$pssid" "$ppassphrase" >> /etc/wpa_supplicant.conf
                 wpa_supplicant -B -Dwext -i $my_networks -c /etc/wpa_supplicant.conf & >/dev/null
@@ -592,13 +599,13 @@ if [ $(id -u) -eq 0 ]; then
             #dhcpcd $my_networks
             # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
             # if [ ! -s /tmp/index.google ] ; then
-            #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
+            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
             # else
-            #     dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
+            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
             # fi
         fi
 
-        dialog --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
         current_selection 10
     }
 
@@ -638,7 +645,7 @@ if [ $(id -u) -eq 0 ]; then
 #             fi
 
             # if [ ! -f /usr/bin/pacaur ]; then
-            #     #dialog --title "$upper_title" --msgbox "Installing pacaur" 20 70
+            #     #$DIALOG --title "$upper_title" --msgbox "Installing pacaur" 20 70
             #     pacman -S --noconfirm --needed yajl
             #     pacman -S --noconfirm --needed jshon
             #     pacman -S --noconfirm --needed jansson
@@ -647,14 +654,14 @@ if [ $(id -u) -eq 0 ]; then
             # fi
 
             # if [ ! -f /usr/bin/powerpill ]; then
-            #     #dialog --title "$upper_title" --msgbox "Installing powerpill" 20 70
+            #     #$DIALOG --title "$upper_title" --msgbox "Installing powerpill" 20 70
             #     pacman -S --noconfirm --needed python3
             #     su $puser -c "packer -S --noconfirm powerpill"
             # fi
 
            ## sleep 3s
             #if [ ! -d "${dev_directory}pdq" ]; then
-           #     dialog --backtitle "$upper_title" --title "Initial clone" --msgbox "Cloning initial repo to ${dev_directory}mooOS-dev-tools/" 10 30
+           #     $DIALOG --backtitle "$upper_title" --title "Initial clone" --msgbox "Cloning initial repo to ${dev_directory}mooOS-dev-tools/" 10 30
                 # cd ${dev_directory}
                 # su $puser -c "git clone git://github.com/idk/mooOS-dev-tools.git"
                 # #su $puser -c "git clone idk/etc"
@@ -667,7 +674,7 @@ if [ $(id -u) -eq 0 ]; then
         #         pacman -S --noconfirm rsync
         #     fi
 
-        #     dialog --clear --backtitle "$upper_title" --title "Extra" --yesno "Is this a VirtualBox install?" 10 30
+        #     $DIALOG --clear --backtitle "$upper_title" --title "Extra" --yesno "Is this a VirtualBox install?" 10 30
         #     if [ $? = 0 ] ; then
         #         su $puser -c "powerpill -S --noconfirm --needed virtualbox-guest-utils"
         #         sh -c "echo 'vboxguest
@@ -677,12 +684,12 @@ if [ $(id -u) -eq 0 ]; then
 
         #     ## sanity checks
         #     if [ ! -f /usr/bin/rsync ] || [ ! -f /usr/bin/pacaur ] || [ ! -f /usr/bin/pacman ] || [ ! -f /usr/bin/powerpill ]; then
-        #         dialog --backtitle "$upper_title" --title "$upper_title" --msgbox "Hmmm. An ERROR has occured...\n\nPackage depends not met, this installer failed to install one of the following:\nrsync, git, hub, packer, pacaur, pacman or powerpill.\n\nExiting..." 30 70
+        #         $DIALOG --backtitle "$upper_title" --title "$upper_title" --msgbox "Hmmm. An ERROR has occured...\n\nPackage depends not met, this installer failed to install one of the following:\nrsync, git, hub, packer, pacaur, pacman or powerpill.\n\nExiting..." 30 70
         #     fi
 
-            # dialog --clear --backtitle "$upper_title" --title "Packages" --yesno "Install main packages?" 10 30
+            # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Install main packages?" 10 30
             # if [ $? = 0 ] ; then
-            #     dialog --backtitle "$upper_title" --title "$upper_title" --msgbox "When it askes if install 1) phonon-gstreamer or 2) phonon-vlc\nchose 2\n\nWhen it asks if replace foo with bar chose y for everyone" 20 70
+            #     $DIALOG --backtitle "$upper_title" --title "$upper_title" --msgbox "When it askes if install 1) phonon-gstreamer or 2) phonon-vlc\nchose 2\n\nWhen it asks if replace foo with bar chose y for everyone" 20 70
             #     su $puser -c "powerpill -Syy"
 
             #     if [ "$archtype" = "x86_64" ]; then
@@ -698,10 +705,10 @@ if [ $(id -u) -eq 0 ]; then
             #     pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
             # fi
 
-  #          dialog --clear --backtitle "$upper_title" --title "Configuration files" --yesno "Install all repos?" 10 30
+  #          $DIALOG --clear --backtitle "$upper_title" --title "Configuration files" --yesno "Install all repos?" 10 30
   #          if [ $? = 0 ] ; then
                  
-                #dialog --clear --title "$upper_title" --msgbox "Backing up and copying root configs" 10 30
+                #$DIALOG --clear --title "$upper_title" --msgbox "Backing up and copying root configs" 10 30
                 #cp -v ${dev_directory}etc/custom.conf /etc/X11/xorg.conf.d/custom.conf
 
 
@@ -737,13 +744,13 @@ User=polipo  > /etc/systemd/system/polipo.service"
                 systemctl enable cronie.service
                 systemctl enable dhcpcd.service
 
-                dialog --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
 
                 if [ $? = 0 ] ; then
 
                     HOSTNAME="$(cat /etc/hostname)"
 
-                    # #dialog --clear --title "$upper_title" --msgbox "Installing Apache/MySQL/PHP/PHPMyAdmin configuration files" 10 30
+                    # #$DIALOG --clear --title "$upper_title" --msgbox "Installing Apache/MySQL/PHP/PHPMyAdmin configuration files" 10 30
                     # mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
                     # cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
                     # cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
@@ -1037,7 +1044,7 @@ User=polipo  > /etc/systemd/system/polipo.service"
                     # # End of file' > /etc/hosts"
 
                     # #TODO
-                    # # dialog --clear --backtitle "$upper_title" --title "Extra" --msgbox "Creating self-signed certificate" 10 30
+                    # # $DIALOG --clear --backtitle "$upper_title" --title "Extra" --msgbox "Creating self-signed certificate" 10 30
                     # cd /etc/httpd/conf
                     # openssl genrsa -des3 -out server.key 1024
                     # openssl req -new -key server.key -out server.csr
@@ -1080,20 +1087,20 @@ User=polipo  > /etc/systemd/system/polipo.service"
                 #     systemctl start httpd
                 #     systemctl start mysqld
                 #     sleep 1s
-                #     dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Ok... starting MySQL and setting a root password for MySQL...." 10 30
+                #     $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Ok... starting MySQL and setting a root password for MySQL...." 10 30
                 #     rand=$RANDOM
                 #     mysqladmin -u root password $puser-$rand
-                #     dialog --backtitle "$upper_title" --title "Extra" --msgbox "You're mysql root password is $puser-$rand\nWrite this down before proceeding..." 10 30
-                #     dialog --backtitle "$upper_title" --title "Extra" --msgbox "If you want to change/update the above root password (AT A LATER TIME), then you need to use the following command:\n$ mysqladmin -u root -p'$puser-$rand' password newpasswordhere\nFor example, you can set the new password to 123456, enter:\n$ mysqladmin -u root -p'$puser-$rand' password '123456'" 20 40
+                #     $DIALOG --backtitle "$upper_title" --title "Extra" --msgbox "You're mysql root password is $puser-$rand\nWrite this down before proceeding..." 10 30
+                #     $DIALOG --backtitle "$upper_title" --title "Extra" --msgbox "If you want to change/update the above root password (AT A LATER TIME), then you need to use the following command:\n$ mysqladmin -u root -p'$puser-$rand' password newpasswordhere\nFor example, you can set the new password to 123456, enter:\n$ mysqladmin -u root -p'$puser-$rand' password '123456'" 20 40
                 #     ln -s /usr/share/webapps/phpMyAdmin /srv/http/phpmyadmin.$puser.c0m
                 #     ln -s /srv/http ${my_home}localhost
                 #     chown -R $puser /srv/http
 
-                #     dialog --clear --backtitle "$upper_title" --title "Extra" --msgbox "Your LAMP setup is set to be started manually via the Awesome menu->Services-> LAMP On/Off" 10 30
+                #     $DIALOG --clear --backtitle "$upper_title" --title "Extra" --msgbox "Your LAMP setup is set to be started manually via the Awesome menu->Services-> LAMP On/Off" 10 30
 
-                #     dialog --clear --backtitle "$upper_title" --title "Extra" --msgbox "If you want LAMP to start at boot, run these commands ay any time as root user:\n\nsystemctl enable httpd.service\nsystemctl enable mysqld.service\nsystemctl enable memcached.service" 10 40
+                #     $DIALOG --clear --backtitle "$upper_title" --title "Extra" --msgbox "If you want LAMP to start at boot, run these commands ay any time as root user:\n\nsystemctl enable httpd.service\nsystemctl enable mysqld.service\nsystemctl enable memcached.service" 10 40
                     
-                #     dialog --clear --backtitle "$upper_title" --title "Extra" --yesno "Do you want this to be done now? [default=No]?" 10 30
+                #     $DIALOG --clear --backtitle "$upper_title" --title "Extra" --yesno "Do you want this to be done now? [default=No]?" 10 30
                 #     if [ $? = 0 ] ; then
                 #         systemctl enable httpd.service
                 #         systemctl enable mysqld.service
@@ -1139,12 +1146,12 @@ User=polipo  > /etc/systemd/system/polipo.service"
                 su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.gtkrc-2.0"
 
                 # su $puser -c "vb \"https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver\" &"
-                # dialog --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
+                # $DIALOG --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
                 # if [ $? = 0 ] ; then
                 #     su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
                 # fi
 
-                # dialog --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
+                # $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
                 # if [ $? = 0 ] ; then
                 #     systemctl disable getty@tty1
                 #     systemctl enable autologin@tty1
@@ -1152,18 +1159,18 @@ User=polipo  > /etc/systemd/system/polipo.service"
                 # fi
                 
                 # not needed anymore since zsh shell is set via chroot script run previously
-                # dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Ok, setup is complete... the next screen will prompt you for your user password..." 10 40
+                # $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Ok, setup is complete... the next screen will prompt you for your user password..." 10 40
                 # chsh -s $(which zsh)
 
           #       if [ "$archtype" = "x86_64" ]; then
-          #       dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "exiting install script...\n\nIf complete, type: sudo reboot (you may also want to search, chose and install a video driver now.\n\npacaur XXXX\n\nReplacing XXXX with:\n'lib32-ati-dri: for open source ATI driver users'
+          #       $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "exiting install script...\n\nIf complete, type: sudo reboot (you may also want to search, chose and install a video driver now.\n\npacaur XXXX\n\nReplacing XXXX with:\n'lib32-ati-dri: for open source ATI driver users'
           # 'lib32-catalyst-utils: for AMD Catalyst users'
           # 'lib32-intel-dri: for open source Intel driver users'
           # 'lib32-nouveau-dri: for Nouveau users'
           # 'lib32-nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'
           # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
               #  else
-                dialog --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Exiting install script...." 30 70
+                $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Exiting install script...." 30 70
                # fi
             #fi
 
@@ -1175,7 +1182,7 @@ User=polipo  > /etc/systemd/system/polipo.service"
         #echo "make it so"
         rootpasswd=$(cat $TMP/rootpasswd)
         CUR=$(cat $_CCURRENT)
-        dialog \
+        $DIALOG \
             --default-item "$CUR" --colors --backtitle "$upper_title" --title "mooOS Installer (chroot)" \
             --menu "Select action:" 20 60 11 \
             1 $clr"Generate hostname [${GEN_HOSTNAME}]" \
