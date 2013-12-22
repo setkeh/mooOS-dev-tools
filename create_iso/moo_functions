@@ -280,7 +280,7 @@ rsync_iso_remote() {
 
 		echo "The old ${ARCH_ISO} release filesize was $OLDRELFILESIZE the new ${ARCH_ISO} release filesize is $CURRELFILESIZE"
 		## replace old release filesize with new release filesize in info.php on local web server
-		su -l $MOO_USER -c "sed -i \"s/$OLDRELFILESIZE/$CURRELFILESIZE/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
+		su -l $MOO_USER -c "sed -i \"s/$OLDRELFILESIZE (${ARCH_ISO})/$CURRELFILESIZE (${ARCH_ISO})/g\" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php"
 
 		## Mount server filesystem to localhost
 		# path to remote repo credentials file
@@ -824,6 +824,17 @@ sync_mooos_repos() {
 			notify-send "Repos synced to remote server!" -i "$MOO_ICON"
 		fi
 	fi
+}
+
+moo_version() {
+	question="${bldyellow}Increase moo version number? Current: $MOO_VERSION (Y/N)?\n${txtrst}"
+	if ask_something; then
+		MOO_NEW_VERSION=$(( $(echo $MOO_VERSION) + 1 ))
+		sed -i "s/MOO_VERSION=$MOO_VERSION/MOO_VERSION=$MOO_NEW_VERSION/g" ${MOO_HOME}bin/moo_config
+		echo "Old version: 0.$MOO_VERSION"
+		echo "Current version: 0.$MOO_NEW_VERSION"
+	fi
+
 }
 
 # github_sync() {
