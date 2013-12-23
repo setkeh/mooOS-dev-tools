@@ -46,7 +46,7 @@ check_repos() {
 create_packages_list() {
 	question="${bldyellow}Run github sync? (Y/N)?\n${txtrst}"
 	if ask_something; then
-		pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx "$(cat ${MOO_HOME}github/mooOS-dev-tools/backup_exclude_pkgs)" > ${ARCHLIVE}archlive/releng/packages.both
+		pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx "$(cat ${MOO_HOME}github/mooOS-dev-tools/exclude_pkgs)" > ${ARCHLIVE}archlive/releng/packages.both
 		su -l $MOO_USER -c "gh -b"
 	fi
 }
