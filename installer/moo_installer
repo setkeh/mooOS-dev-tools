@@ -10,6 +10,8 @@ MOO_ICON="/usr/share/moo-tools/mooOS.png"
 ## figure out architecture type
 archtype="$(uname -m)"
 
+moo=moo
+
 check_repos() {
     while true
     do
@@ -438,7 +440,7 @@ initial_install() {
     fi
 
     # PWD=$(pwd)
-    # cd /home/moo/Github/
+    # cd /home/$moo/Github/
     # rm -r mooOS-dev-tools/
     # git clone git://github.com/idk/mooOS-dev-tools.git
     # cd "$PWD"
@@ -455,7 +457,7 @@ initial_install() {
 
     $DIALOG --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/moo/.log
+        pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
     fi
     
     $DIALOG --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
@@ -493,7 +495,7 @@ initial_install() {
         # fi
 
         update-mirrorlist
-        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/moo/.log
+        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
     fi
 
     #$DIALOG --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
@@ -639,7 +641,7 @@ chroot_configuration() {
      
     #if [ ! -f /mnt/chroot-install_mooOS ]; then
     #wget https://raw.github.com/idk/pdq/master/chroot-install_mooOS -O chroot-install_mooOS
-    # cd /home/moo/Github/
+    # cd /home/$moo/Github/
     # rm -r mooOS-dev-tools/
     # git clone git://github.com/idk/mooOS-dev-tools.git
     
