@@ -10,10 +10,10 @@
 ## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
 
 ######### START CONFIGURATION ##########
-. moo_config
+. /etc/moo.cfg
 
 ######### START FUNCTIONS ##############
-. moo_functions
+. /usr/share/moo-tools/create_iso/moo_functions
 
 ## store current working directory 
 PWD=$(pwd)
