@@ -649,7 +649,7 @@ create_build_env() {
 	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/mooOS_backups
 	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads
 	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos
-	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox
+	 	#mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox
 	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
 	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music
 	 	mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures
