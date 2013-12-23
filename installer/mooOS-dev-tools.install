@@ -1,0 +1,15 @@
+post_install() {
+    gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor
+    update-desktop-database -q
+    echo "In terminal run 'moo_installer' or MooOS installer from freedesktop compliant menu or launcher.
+
+Good to go!"
+}
+
+post_upgrade() {
+    post_install
+}
+
+post_remove() {
+    post_install
+}

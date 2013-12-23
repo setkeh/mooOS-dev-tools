@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 ## mooOS Installer =)
 ## 08-27-2013 pdq
 ## from mooOS livecd/liveusb
@@ -419,10 +419,10 @@ initial_install() {
     
     if [ "$archtype" = "x86_64" ]; then
         #pacman_conf="pacman-x86_64.conf"
-        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.x86_64"
+        mainpkgs="/usr/share/moo-tools/packages.x86_64"
     else
         #pacman_conf="pacman-i686.conf"
-        mainpkgs="/home/moo/Github/mooOS-dev-tools/packages.i686"
+        mainpkgs="/usr/share/moo-tools/packages.i686"
     fi
 
     pacman_conf="pacman.conf"
@@ -443,15 +443,15 @@ initial_install() {
         if [ $? = 0 ] ; then
             $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
             if [ $? = 0 ] ; then
-                basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both /home/moo/Github/mooOS-dev-tools/packages-server.both"
+                basepkgs="/usr/share/moo-tools/packages.both /usr/share/moo-tools/packages-server.both"
             else
-                basepkgs="/home/moo/Github/mooOS-dev-tools/packages.both"
+                basepkgs="/usr/share/moo-tools/packages.both"
             fi
         else
-            basepkgs="/home/moo/Github/mooOS-dev-tools/packages-server.both"
+            basepkgs="/usr/share/moo-tools/packages-server.both"
         fi
 
-        extrapkgs="/home/moo/Github/mooOS-dev-tools/packages.extra"
+        extrapkgs="/usr/share/moo-tools/packages.extra"
         
         mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
         mkdir -vp /mnt/etc/pacman.d
@@ -559,24 +559,24 @@ initial_install() {
         cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
         ## mooOS icon
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
-        cp -v /home/moo/Github/mooOS-dev-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
+        cp -v /usr/share/moo-tools/images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
         
         # create ~/Github and all repos
         rm -rf /mnt/etc/skel/Github
@@ -593,12 +593,12 @@ initial_install() {
         git clone git://github.com/idk/eggdrop-scripts.git
         git clone git://github.com/idk/gh.git
         git clone git://github.com/idk/vb-pdq.git
-        git clone git://github.com/idk/mooOS-dev-tools.git
+        #git clone git://github.com/idk/mooOS-dev-tools.git
         #git clone git://github.com/idk/mooOS-wallpapers.git
         cd "$PWD"
 
-        install -Dm644 "/mnt/etc/skel/Github/mooOS-dev-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
-        gzip -f /mnt/usr/local/man/man1/mooOS.1
+        #install -Dm644 "/usr/share/moo-tools/misc/man.1" "/mnt/usr/local/man/man1/mooOS.1"
+        #gzip -f /mnt/usr/local/man/man1/mooOS.1
     fi
 
         current_selection 6
@@ -617,9 +617,9 @@ chroot_configuration() {
     # rm -r mooOS-dev-tools/
     # git clone git://github.com/idk/mooOS-dev-tools.git
     
-    mkdir -vp /mnt/etc/skel/Github/mooOS-dev-tools/installer
-    cp /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
-    chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
+    #mkdir -vp /mnt/etc/skel/Github/mooOS-dev-tools/installer
+    #cp /usr/share/mooOS-dev-tools/installer/chroot-install.sh /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
+    #chmod +x /mnt/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh
 
     #cp /etc/resolv.conf /mnt/etc/resolv.conf
     #cp -vr /etc/skel /mnt/etc/
@@ -712,7 +712,13 @@ chroot_configuration() {
         boot_part_arg=$pout
 
     fi
-    export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/etc/skel/Github/mooOS-dev-tools/installer/chroot-install.sh $boot_part_arg"
+
+    if [ -f /mnt/usr/bin/moo_chroot ]; then
+        export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/mnt/usr/bin/moo_chroot $boot_part_arg"
+    else
+        echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that?"
+        exit 0
+    fi
 
     if [ -f /mnt/boot/grub/grub.cfg ]; then
         sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg

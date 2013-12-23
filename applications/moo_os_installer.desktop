@@ -1,0 +1,18 @@
+[Desktop Entry]
+Hidden=false
+Exec=urxvt -name "mooOS installer" -title "mooOS installer" -e sudo moo_installer
+Icon=mooOS.png
+X-DBUS-StartupType=
+X-KDE-Username=
+Path=
+Type=Application
+NoDisplay=false
+Version=1.0
+StartupNotify=false
+X-DBUS-ServiceName=
+StartupWMClass=moo_installer
+GenericName[en_US]=
+Comment=
+Terminal=false
+X-KDE-SubstituteUID=false
+Name=mooOS installer

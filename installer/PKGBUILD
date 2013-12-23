@@ -1,0 +1,45 @@
+# Maintainer: pdq <pdq@localhost>
+pkgname=moo-tools
+pkgver=0.21
+pkgrel=1
+pkgdesc="Installer for mooOS using dialog."
+arch=(any)
+url="https://github.com/idk/mooOS-dev-tools.git"
+license=('GPL3')
+makedepends=('git')
+depends=('dialog' 'rsync' 'arch-install-scripts' 'update-mirrorlist' 'efl-git' 'gtk3' 'hicolor-icon-theme' 'desktop-file-utils')
+#conflicts=('abc' 'xyz')
+#source=("")
+#md5sums=('SKIP')
+
+_gitroot="git://github.com/idk/mooOS-dev-tools.git"
+_gitname="mooOS-dev-tools"
+
+install=$pkgname.install
+
+build() {
+	cd "$srcdir"
+	msg "Connecting to GIT server...."
+
+	if [ -d $_gitname ] ; then
+		cd $_gitname && git pull origin
+		msg "The local files are updated."
+	else
+		git clone $_gitroot $_gitname
+		cd $_gitname
+	fi
+	msg "GIT checkout done or server timeout"
+}
+
+package() {
+	cd "$srcdir/$_gitname/"
+	msg2 "Installing mooOS development tools${pkgver}."
+	mkdir -p "$pkgdir/usr/share/$pkgname"
+	cp -r "$srcdir/$_gitname/" "$pkgdir/usr/share/$pkgname/"
+	msg2 "Installing executables."
+	install -d "$srcdir/$_gitname/installer/installer.sh" "$pkgdir/usr/bin/moo_installer"
+	install -d "$srcdir/$_gitname/installer/chroot-install.sh" "$pkgdir/usr/bin/moo_chroot"
+	install -Dm644 "$srcdir/$_gitname/misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
+	install -Dm644 "$srcdir/$_gitname/applications/moo_os_installer.desktop "$pkgdir/usr/share/applications/moo_os_installer.desktop"
+	gzip -f "$pkgdir/usr/local/man/man1/mooOS.1"
+}
