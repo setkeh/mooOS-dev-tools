@@ -3,12 +3,38 @@
 ## 08-27-2013 pdq
 ## from mooOS livecd/liveusb
 
+MOO_ICON="/usr/share/moo-tools/mooOS.png"
 
 ### Code be `ere yarrr! ###
 
 ## figure out architecture type
 archtype="$(uname -m)"
 
+check_repos() {
+    while true
+    do
+        if [ $2 -eq 1 ]; then
+            torsocks curl -s -o "/dev/null" "$1"
+        else
+            curl -s -o "/dev/null" "$1"
+        fi
+
+        if [ $? -ne 0 ] ; then
+            echo "Error occurred getting URL $1: rechecking in 10 seconds"
+        elif [ $? -eq 6 ]; then
+            echo "Unable to resolve host: rechecking in 10 seconds"
+        elif [ $? -eq 7 ]; then
+            echo "Unable to connect to host: rechecking in 10 seconds"
+        else
+            echo "$1 is UP! :D proceeding..."
+            notify-send "$1 is UP! :D proceeding..." -i "$MOO_ICON"
+            break
+        fi
+        sleep 10s
+    done
+}
+
+check_repos "https://mooos.org" 1
 
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
 # if [ $? = 0 ] ; then
@@ -59,7 +85,7 @@ _CURRENT=/tmp/current
 exiting_installer() {
     clear
     rm -f $_TEMP
-    $DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: install_mooOS to re-run" 10 40
+    $DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: moo_installer to re-run" 10 40
     exit 0
 }
 
@@ -479,7 +505,7 @@ initial_install() {
 
         rm -rf /mnt/etc/skel
         cp -vr /etc/skel /mnt/etc/
-        rm /mnt/etc/skel/.local/applications/install_mooOS.desktop
+        #rm /mnt/etc/skel/.local/applications/install_mooOS.desktop
         cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
         #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
         #sed -i "s/CacheDir/#CacheDir/g" /etc/$pacman_conf
@@ -627,10 +653,10 @@ chroot_configuration() {
 
     # fix missing icons in .desktop files
     if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
-        sed -i "/<Filename>install_mooOS.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+        sed -i "/<Filename>moo_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
     fi
     if [ -f /mnt/etc/skel/.e/e/applications/bar/default/.order ]; then
-        sed -i "s/install_mooOS/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
+        sed -i "s/moo_installer/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
     fi
     if [ -f /mnt/usr/share/applications/mediadownloader.desktop ]; then
         sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
@@ -750,7 +776,7 @@ finishup() {
     $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install and reboot" 10 30
     clean_return
     
-    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: install_mooOS\n\nSee ya!" 30 60
+    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: moo_installer\n\nSee ya!" 30 60
 
     umount /mnt/* 2>/dev/null
     umount /mnt 2>/dev/null

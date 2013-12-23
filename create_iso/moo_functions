@@ -452,7 +452,7 @@ create_build_env() {
 		cp -v ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
 		cp -v ${MOO_HOME}.local/applications/tabbed.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
 		cp -v ${MOO_HOME}.local/applications/URxvt.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
-		cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
+		#cp -v ${MOO_HOME}.local/applications/install_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/install_mooOS.desktop
 		cp -v ${MOO_HOME}.local/applications/man_mooOS.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/man_mooOS.desktop
 		
 		## copy over ~/.* (dotfiles)

@@ -372,10 +372,10 @@ if [ $(id -u) -eq 0 ]; then
         su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
         ## copy this script to user home directory
-        # if [ ! -f /home/$puser/install_mooOS_user ]; then
-        #     wget http://is.gd/mooOS -O /home/$puser/install_mooOS_user
-        #     chown -R $puser /home/$puser/install_mooOS_user
-        #     chmod +x /home/$puser/install_mooOS_user
+        # if [ ! -f /home/$puser/moo_installer ]; then
+        #     wget http://is.gd/mooOS -O /home/$puser/moo_installer
+        #     chown -R $puser /home/$puser/moo_installer
+        #     chmod +x /home/$puser/moo_installer
         # fi
 
         $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
