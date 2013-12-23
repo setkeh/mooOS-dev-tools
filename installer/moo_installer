@@ -39,6 +39,8 @@ check_repos() {
 
 check_repos "$MOO_URL" 1
 
+arg="$1" ## expecting '' or '--debug'
+
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
 # if [ $? = 0 ] ; then
       DIALOG=${DIALOG=dialog}
@@ -452,8 +454,11 @@ initial_install() {
 
     $DIALOG --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        #pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
-        pacstrap -C /etc/pacman.conf /mnt base base-devel
+        if [ "$1" == "--debug" ]; then
+            pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
+        else
+            pacstrap -C /etc/pacman.conf /mnt base base-devel
+        fi
     fi
     
     $DIALOG --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
@@ -491,8 +496,11 @@ initial_install() {
         # fi
 
         update-mirrorlist
-        #pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
-        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+        if [ "$1" == "--debug" ]; then
+            pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
+         else
+            pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+        fi
     fi
 
     #$DIALOG --clear --backtitle "$upper_title" --title "Install continue" --yes-label "Continue?" --no-label "Exit to Menu" --yesno "Install successful?" 20 70
