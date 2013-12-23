@@ -13,7 +13,7 @@ depends=('dialog' 'rsync' 'arch-install-scripts' 'update-mirrorlist' 'efl-git' '
 #md5sums=('SKIP')
 
 _gitroot="git://github.com/idk/mooOS-dev-tools.git"
-_gitname="mooOS-dev-tools"
+_gitname="moo-tools"
 
 install=$pkgname.install
 
@@ -21,25 +21,25 @@ build() {
 	cd "$srcdir"
 	msg "Connecting to GIT server...."
 
-	if [ -d $_gitname ] ; then
-		cd $_gitname && git pull origin
+	if [ -d $pkgname ] ; then
+		cd $pkgname && git pull origin
 		msg "The local files are updated."
 	else
-		git clone $_gitroot $_gitname
-		cd $_gitname
+		git clone $_gitroot $pkgname
+		cd $pkgname
 	fi
 	msg "GIT checkout done or server timeout"
 }
 
 package() {
-	cd "$srcdir/$_gitname/"
+	cd "$srcdir/$pkgname/"
 	msg2 "Installing mooOS development tools ${pkgver}."
-	mkdir -p "$pkgdir/usr/share/$pkgname"
-	cp -r "$srcdir/$_gitname/" "$pkgdir/usr/share/$pkgname/"
+	install -d "${pkgdir}/usr/share/$pkgname"
+    install -m644 "*" "${pkgdir}/usr/share/$pkgname/"
 	msg2 "Installing executables."
-	install -d "$srcdir/$_gitname/installer/moo_installer" "$pkgdir/usr/bin/moo_installer"
-	install -d "$srcdir/$_gitname/installer/moo_chroot" "$pkgdir/usr/bin/moo_chroot"
-	install -Dm644 "$srcdir/$_gitname/misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
-	install -Dm644 "$srcdir/$_gitname/applications/moo_os_installer.desktop" "$pkgdir/usr/share/applications/moo_os_installer.desktop"
+	install -d "installer/moo_installer" "$pkgdir/usr/bin/moo_installer"
+	install -d "installer/moo_chroot" "$pkgdir/usr/bin/moo_chroot"
+	install -Dm644 "misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
+	install -Dm644 "applications/moo_os_installer.desktop" "$pkgdir/usr/share/applications/moo_os_installer.desktop"
 	gzip -f "$pkgdir/usr/local/man/man1/mooOS.1"
 }
