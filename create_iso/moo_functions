@@ -849,7 +849,7 @@ moo_version() {
 	question="${bldyellow}Increase moo version number? Current: $MOO_VERSION (Y/N)?\n${txtrst}"
 	if ask_something; then
 		MOO_NEW_VERSION=$(( $(echo $MOO_VERSION) + 1 ))
-		sed -i "s/MOO_VERSION=$MOO_VERSION/MOO_VERSION=$MOO_NEW_VERSION/g" ${MOO_HOME}bin/moo_config
+		sudo sed -i "s/MOO_VERSION=$MOO_VERSION/MOO_VERSION=$MOO_NEW_VERSION/g" /etc/moo.cfg
 		echo "Old version: 0.$MOO_VERSION"
 		echo "Current version: 0.$MOO_NEW_VERSION"
 	fi
