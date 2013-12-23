@@ -4,6 +4,7 @@
 ## from mooOS livecd/liveusb
 
 MOO_ICON="/usr/share/moo-tools/mooOS.png"
+MOO_URL="http://mooos.org"
 
 ### Code be `ere yarrr! ###
 
@@ -36,7 +37,7 @@ check_repos() {
     done
 }
 
-check_repos "https://mooos.org" 1
+check_repos "$MOO_URL" 1
 
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
 # if [ $? = 0 ] ; then

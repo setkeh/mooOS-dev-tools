@@ -107,8 +107,8 @@ su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
 
 #useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /usr/bin/zsh arch
 
-#pacman -Rs sublime-text-dev --noconfirm
-#su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
+pacman -Rs sublime-text-dev --noconfirm
+su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
 chmod 750 /etc/sudoers.d
 chmod 440 /etc/sudoers.d/g_wheel
