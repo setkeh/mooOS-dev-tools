@@ -68,46 +68,44 @@ do_system_updates() {
 	fi
 }
 
+repackage_this() {
+	package_name="$1"
+	package_repos="$2"
+	package_type="$3"
+	delete_custom_package_caches "$package_name"
+	mkdir -p "${MOO_HOME}abs/$package_name"
+	cd "${MOO_HOME}abs/$package_name"
+	for urls in $package_repos
+	do
+		wget "$urls"
+	done
+	if [ "$package_type" == "x86_64" ] || [ "$package_type" == "any" ]; then
+		makepkg -sf
+	fi
+	if [ "$package_type" == "i686" ] || [ "$package_type" == "any" ]; then
+		schroot -p -- makepkg -sf
+	fi
+	cd "$PWD"
+}
+
 create_custom_packages() {
 	question="${bldyellow}Rebrand packages? (moo-tools/gh/vb-pdq) (Y/N)?\n${txtrst}"
 	if ask_something; then
-		## moo-tools
-		delete_custom_package_caches "moo-tools"
-		mkdir -p ${MOO_HOME}abs/moo-tools
-		cd ${MOO_HOME}abs/moo-tools
-		wget https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD
-		wget https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install
-		makepkg -sf
-		schroot -p -- makepkg -sf
-		cd "$PWD"
-
 		## moo-scripts
 		delete_custom_package_caches "moo-scripts"
-		mkdir -p ${MOO_HOME}abs/moo-scripts
-		cd ${MOO_HOME}abs/moo-scripts
-		wget https://raw.github.com/idk/bin/master/PKGBUILD
-		makepkg -sf
-		schroot -p -- makepkg -sf
-		cd "$PWD"
-
+		repackage_this "moo-scripts" "https://raw.github.com/idk/bin/master/PKGBUILD" "any"
+		
+		## moo-tools
+		delete_custom_package_caches "moo-tools"
+		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any"
+		
 		## github wrapper
 		delete_custom_package_caches "gh"
-		mkdir -p ${MOO_HOME}abs/gh
-		cd ${MOO_HOME}abs/gh
-		wget https://raw.github.com/idk/gh/master/PKGBUILD
-		makepkg -sf
-		schroot -p -- makepkg -sf
-		cd "$PWD"
-
+		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any"
+		
 		## vimb web browser and tabbed, patched!
-		# delete_custom_package_caches "vb-pdq"
-		# mkdir -p ${MOO_HOME}abs/vb-pdq
-		# cd ${MOO_HOME}abs/vb-pdq
-		# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
-		# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
-		# makepkg -sf
-		# schroot -p -- makepkg -sf
-		# cd "$PWD"
+		#delete_custom_package_caches "vb-pdq"
+		#repackage_this "vb-pdq" "https://raw.github.com/idk/vb-pdq/master/PKGBUILD https://raw.github.com/idk/vb-pdq/master/vb-pdq.install" "any"
 	fi
 	question="${bldyellow}Rebrand packages? (filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
 	if ask_something; then
@@ -156,7 +154,6 @@ create_custom_packages() {
 		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
 		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
 		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
-
 		cd ${MOO_HOME}abs/grub
 		makepkg -sf
 		schroot -p -- makepkg -sf
