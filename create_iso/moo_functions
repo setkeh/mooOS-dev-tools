@@ -69,19 +69,8 @@ do_system_updates() {
 }
 
 create_custom_packages() {
-	question="${bldyellow}Rebrand packages? (gh/vb-pdq/filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
+	question="${bldyellow}Rebrand packages? (moo-tools/gh/vb-pdq) (Y/N)?\n${txtrst}"
 	if ask_something; then
-		## sync ABS
-		echo "${bldgreen}Syncing Arch Build System...${txtrst}"
-		sudo abs
-
-		## install custom mooOS packages
-		## wallpapers
-		# cd ${MOO_HOME}github/mooOS-wallpapers
-		# makepkg -sf
-		# schroot -p -- makepkg -sf
-
-
 		## moo-tools
 		delete_custom_package_caches "moo-tools"
 		mkdir -p ${MOO_HOME}abs/moo-tools
@@ -107,6 +96,19 @@ create_custom_packages() {
 		# cd ${MOO_HOME}abs/vb-pdq
 		# wget https://raw.github.com/idk/vb-pdq/master/PKGBUILD
 		# wget https://raw.github.com/idk/vb-pdq/master/vb-pdq.install
+		# makepkg -sf
+		# schroot -p -- makepkg -sf
+		# cd "$PWD"
+	fi
+	question="${bldyellow}Rebrand packages? (filesystem/grub/lsb-release/syslinux/hardinfo) (Y/N)?\n${txtrst}"
+	if ask_something; then
+		## sync ABS
+		echo "${bldgreen}Syncing Arch Build System...${txtrst}"
+		sudo abs
+
+		## install custom mooOS packages
+		## wallpapers
+		# cd ${MOO_HOME}github/mooOS-wallpapers
 		# makepkg -sf
 		# schroot -p -- makepkg -sf
 
