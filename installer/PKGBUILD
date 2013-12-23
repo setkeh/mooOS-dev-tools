@@ -40,6 +40,6 @@ package() {
 	install -d "$srcdir/$_gitname/installer/installer.sh" "$pkgdir/usr/bin/moo_installer"
 	install -d "$srcdir/$_gitname/installer/chroot-install.sh" "$pkgdir/usr/bin/moo_chroot"
 	install -Dm644 "$srcdir/$_gitname/misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
-	install -Dm644 "$srcdir/$_gitname/applications/moo_os_installer.desktop "$pkgdir/usr/share/applications/moo_os_installer.desktop"
+	install -Dm644 "$srcdir/$_gitname/applications/moo_os_installer.desktop" "$pkgdir/usr/share/applications/moo_os_installer.desktop"
 	gzip -f "$pkgdir/usr/local/man/man1/mooOS.1"
 }
