@@ -1,13 +1,13 @@
 # Maintainer: pdq <pdq@localhost>
 pkgname=moo-tools
 pkgver=0.21
-pkgrel=4
+pkgrel=5
 pkgdesc="Installer for mooOS using dialog."
 arch=(any)
 url="https://github.com/idk/mooOS-dev-tools.git"
 license=('GPL3')
 makedepends=('git')
-depends=('dialog' 'rsync' 'arch-install-scripts' 'update-mirrorlist' 'efl-git' 'gtk3' 'hicolor-icon-theme' 'desktop-file-utils')
+depends=('moo-scripts' 'dialog' 'rsync' 'arch-install-scripts' 'update-mirrorlist' 'efl-git' 'gtk3' 'hicolor-icon-theme' 'desktop-file-utils')
 #conflicts=('abc' 'xyz')
 #source=("")
 #md5sums=('SKIP')
