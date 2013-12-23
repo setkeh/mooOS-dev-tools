@@ -1,0 +1,11 @@
+[Desktop Entry]
+Hidden=false
+Exec=urxvtc -name "man mooOS" -e man mooOS
+Icon=gnome-robots
+Type=Application
+Version=1.0
+StartupNotify=false
+GenericName[en_US]=
+Comment=
+Terminal=false
+Name=man mooOS
