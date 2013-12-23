@@ -81,6 +81,15 @@ create_custom_packages() {
 		schroot -p -- makepkg -sf
 		cd "$PWD"
 
+		## moo-scripts
+		delete_custom_package_caches "moo-scripts"
+		mkdir -p ${MOO_HOME}abs/moo-scripts
+		cd ${MOO_HOME}abs/moo-scripts
+		wget https://raw.github.com/idk/bin/master/PKGBUILD
+		makepkg -sf
+		schroot -p -- makepkg -sf
+		cd "$PWD"
+
 		## github wrapper
 		delete_custom_package_caches "gh"
 		mkdir -p ${MOO_HOME}abs/gh
