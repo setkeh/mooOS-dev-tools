@@ -89,10 +89,10 @@ fi
 
 if [ ! -d /home/moo ]; then
 	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
-	ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
-	chmod +x /home/moo/install_mooOS.desktop
-	chmod +x /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh
-	chmod +x /home/moo/Github/mooOS-dev-tools/installer/installer.sh
+	# ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
+	# chmod +x /home/moo/install_mooOS.desktop
+	# chmod +x /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh
+	# chmod +x /home/moo/Github/mooOS-dev-tools/installer/installer.sh
 	#su -l moo -c 'kbuildsycoca4 --noincremental'
 	#chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
@@ -107,10 +107,8 @@ su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
 
 #useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /usr/bin/zsh arch
 
-#pacman -Syu --noconfirm
-pacman -Rs sublime-text-dev --noconfirm
-
-su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
+#pacman -Rs sublime-text-dev --noconfirm
+#su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
 chmod 750 /etc/sudoers.d
 chmod 440 /etc/sudoers.d/g_wheel
