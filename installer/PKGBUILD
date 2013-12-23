@@ -34,10 +34,8 @@ build() {
 package() {
 	cd "$srcdir/$pkgname/"
 	msg2 "Installing mooOS development tools ${pkgver}."
-    install -d "${pkgdir}/usr/share/$pkgname"
-    #cp -r "$srcdir/$pkgname" "${pkgdir}/usr/share/"
+    install -d "${pkgdir}/usr/share"
 	msg2 "Installing executables."
-	install -d "$pkgdir/usr/bin"
 	cp "installer/moo_installer" "$pkgdir/usr/bin/moo_installer"
 	cp "installer/moo_chroot" "$pkgdir/usr/bin/moo_chroot"
 	install -Dm644 "misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
