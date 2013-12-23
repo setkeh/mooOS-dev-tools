@@ -17,7 +17,7 @@ example:
 Remove with
 -----------
 
-    # pacman -Rs moo_installer
+    # pacman -Rs moo-tools
 
 Run with
 --------
@@ -28,7 +28,7 @@ In Terminal run:
 
 With enlightenment everything starter <Alt>+<Esc>:
 
-	moo installer
+	mooOS installer
 
 
 SUPPORT
