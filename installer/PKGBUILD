@@ -34,8 +34,7 @@ build() {
 package() {
 	cd "$srcdir/$pkgname/"
 	msg2 "Installing mooOS development tools ${pkgver}."
-	install -d "${pkgdir}/usr/share/$pkgname"
-    install -m644 "$srcdir/$pkgname/*" "${pkgdir}/usr/share/$pkgname/"
+    install -d "$srcdir/$pkgname/*" "${pkgdir}/usr/share/$pkgname/"
 	msg2 "Installing executables."
 	install -d "installer/moo_installer" "$pkgdir/usr/bin/moo_installer"
 	install -d "installer/moo_chroot" "$pkgdir/usr/bin/moo_chroot"
