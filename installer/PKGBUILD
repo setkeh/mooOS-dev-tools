@@ -35,7 +35,7 @@ package() {
 	cd "$srcdir/$pkgname/"
 	msg2 "Installing mooOS development tools ${pkgver}."
     install -d "${pkgdir}/usr/share/$pkgname"
-    cp -r "$srcdir/$pkgname/" "${pkgdir}/usr/share/$pkgname"
+    #cp -r "$srcdir/$pkgname" "${pkgdir}/usr/share/"
 	msg2 "Installing executables."
 	install -d "$pkgdir/usr/bin"
 	cp "installer/moo_installer" "$pkgdir/usr/bin/moo_installer"
