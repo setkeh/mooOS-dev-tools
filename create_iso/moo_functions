@@ -556,27 +556,6 @@ create_build_env() {
 		cp -vr ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/Theme\ -\ Nil/
 		cp -v ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
 		
-		## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-		echo "Updating Sublime Text 3 icons"
-		# cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
-		# cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
-		# cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
-		# cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
-		# cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/sublime-text.png
-		# cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/sublime-text.png
-		# cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/sublime-text.png
-		# cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/sublime-text.png
-		# cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/sublime-text.png
-		# cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/sublime-text.png
-		# cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/sublime-text.png
-		# cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/sublime-text.png
-		# cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/sublime-text.png
-		# cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png
-		# cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png
-		# cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png
-		# cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png
-		# cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png
-		
 		## mooOS icon
 		cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
 		cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
@@ -673,38 +652,9 @@ create_build_env() {
 	 	cp -v ${MOO_TOOLS_PATH}misc/Dev.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dev/
 	 	cp -v ${MOO_TOOLS_PATH}misc/Downloads.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads/
 	 	cp -v ${MOO_HOME}Videos/Videos.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos/
-	 	#cp -v ${MOO_HOME}Dropbox/Dropbox.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox/
 	 	cp -v ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
 	 	cp -v ${MOO_TOOLS_PATH}misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
 	 	cp -v ${MOO_TOOLS_PATH}misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
-
-		## create ~/Github and all repos
-		#cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
-		#git clone git://github.com/idk/pdq.git
-		#git clone git://github.com/idk/bin.git
-		#git clone git://github.com/idk/awesomewm-X.git
-		#git clone git://github.com/idk/zsh.git
-		#git clone git://github.com/idk/bin.git
-		#git clone git://github.com/idk/php.git
-		#git clone git://github.com/idk/systemd.git
-		#git clone git://github.com/idk/eggdrop-scripts.git
-		#git clone git://github.com/idk/gh.git
-		#git clone git://github.com/idk/vb-pdq.git
-		#git clone git://github.com/idk/mooOS-dev-tools.git
-		#git clone git://github.com/idk/mooOS-wallpapers.git
-		#cd "$PWD"
-
-		## vimb files copied
-		#cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
-		#cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/config_proxy ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
-		#cp -v ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/vb-pdq/style.css ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vimb/
-
-		## preserve wallpapers
-		#mkdir -vp ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
-		#cp -vr /usr/share/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/sources/backgrounds
-
-		#install -Dm644 "${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/mooOS-dev-tools/misc/man.1" "${ARCHLIVE}archlive/releng/root-image/usr/local/man/man1/mooOS.1"
-		#gzip -f ${ARCHLIVE}archlive/releng/root-image/usr/local/man/man1/mooOS.1
 
 		echo "${bldyellow}Removing previous build and work directories...${txtrst}"
 		
@@ -735,10 +685,6 @@ create_build_env() {
 		cp -v ${MOO_TOOLS_PATH}misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/work/pacman-x86_64.conf
 		cp -v ${MOO_TOOLS_PATH}misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/work/pacman-i686.conf
 
-		## packages lists
-		#cp -v ${MOO_TOOLS_PATH}packages.both ${ARCHLIVE}archlive/releng/packages.both
-		#pacman -Qqe  | grep -vx "$(pacman -Qqg base)" | grep -vx "$(cat ${MOO_TOOLS_PATH}backup_exclude_pkgs)" > ${ARCHLIVE}archlive/releng/packages.both
-
 		cp -v ${MOO_TOOLS_PATH}packages.extra ${ARCHLIVE}archlive/releng/packages.extra
 		cp -v ${MOO_TOOLS_PATH}packages-server.both ${ARCHLIVE}archlive/releng/packages-server.both
 		cp -v ${MOO_TOOLS_PATH}packages.i686 ${ARCHLIVE}archlive/releng/packages.i686
@@ -747,7 +693,6 @@ create_build_env() {
 		## copy over boot splash screen and mooOS branding
 		cp -v ${ARCHLIVE}archlive/releng/syslinux/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png
 		convert ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.jpg
-		#cp -v /etc/arch-release ${ARCHLIVE}archlive/releng/root-image/etc/arch-release
 	fi
 		notify-send "Files copied!" -i "$MOO_ICON"
 
@@ -760,7 +705,6 @@ create_mooos_repos() {
 		## remove existing repos
 		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
 		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
-		#rm ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz
 
 		## hackity hack hack - clean up old git package caches
 		arches="32 64"
@@ -818,8 +762,6 @@ create_mooos_repos() {
 		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
 		echo "${bldmagenta}Re-creating x86_64 repository${txtrst}"
 		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
-		#echo "${bldyellow}Re-creating utils repository${txtrst}"
-		#repo-add ${ABS_BASE_DIR}mooOS-utils/mooOS-utils.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz >> $REPO_LOG_TEMP 2>&1
 
 		## format log a little
 		echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
@@ -872,10 +814,3 @@ moo_version() {
 	fi
 
 }
-
-# github_sync() {
-# 	question="${bldyellow}Sync to github? (Y/N)?\n${txtrst}"
-# 	if ask_something; then
-# 		gh -b ## https://github.com/idk/gh
-# 	fi
-# }
