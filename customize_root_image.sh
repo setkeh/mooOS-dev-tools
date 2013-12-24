@@ -20,7 +20,6 @@ sed -i "s/CacheDir/#CacheDir/g" /etc/pacman.conf
 
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
-rm /etc/skel/.zshrc.root
 
 # fix missing icons in .desktop files
 sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
@@ -89,7 +88,7 @@ if [ -f /usr/share/enlightenment/data/themes/qv4l2.desktop ]; then
 fi
 
 if [ ! -d /home/moo ]; then
-	rsync -avp /etc/skel/ /home/moo
+	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
 	# ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
 	# chmod +x /home/moo/install_mooOS.desktop
 	# chmod +x /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh

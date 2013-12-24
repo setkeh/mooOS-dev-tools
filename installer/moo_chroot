@@ -1,13 +1,14 @@
-#!/bin/bash
+#!/usr/bin/bash
 ## chroot-install.sh sub-script for chroot fo mooOS =)
-## 08-27-2013 pdq
+## 2013-2014 pdq
+## for mooOS
 
 boot_part=$1
-upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta 9:48-CST-12-10-2013"
+upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta"
 
 if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
-    sleep 3s
+    sleep 10s
     exit 0
     exit 0 
 fi
@@ -22,19 +23,7 @@ fi
 ## only allow root to run script
 if [ $(id -u) -eq 0 ]; then
 
-    ## sanity default checks
-    # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-    # if [ ! -s /tmp/index.google ] ; then
-    #     systemctl enable dhcpcd@eth0.service
-    # fi
-
-    # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-    # if [ ! -s /tmp/index.google ] ; then
-    #     echo "It appears you have no internet connectivity.\n\nRead: https://wiki.archlinux.org/index.php/Configuring_network"
-    #     echo "This script will exit in 1 minute... or press ctrl-c to exit now."
-    #     sleep 60s
-    #     exit 0
-    # fi
+    ## TODO sanity checks
 
     ## styling
     clr=""
@@ -52,8 +41,6 @@ if [ $(id -u) -eq 0 ]; then
     echo "1" > $_CCURRENT
 
     #setterm -blank 0
-    #pacman -Syy
-    #pacman -S --noconfirm --needed dialog
 
     ## functions
 
@@ -367,16 +354,10 @@ if [ $(id -u) -eq 0 ]; then
         sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
         update-mirrorlist
         pacman -Syyu --noconfirm
+
+        # TODO hack
         pacman -Rs sublime-text-dev --noconfirm
-
         su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
-
-        ## copy this script to user home directory
-        # if [ ! -f /home/$puser/moo_installer ]; then
-        #     wget http://is.gd/mooOS -O /home/$puser/moo_installer
-        #     chown -R $puser /home/$puser/moo_installer
-        #     chmod +x /home/$puser/moo_installer
-        # fi
 
         $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
         current_selection 6
@@ -450,8 +431,10 @@ if [ $(id -u) -eq 0 ]; then
             syslinux-install_update -i -a -m
             $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
            
+            ## TODO hack
             sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
             sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg
+            
             $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --defaultno --yesno "Edit/view syslinux.cfg?" 10 30
             if [ $? = 0 ] ; then
                 nano /boot/syslinux/syslinux.cfg
@@ -542,13 +525,7 @@ if [ $(id -u) -eq 0 ]; then
                 $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
             fi
 
-            # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-
-            # if [ ! -s /tmp/index.google ] ; then
-            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 10 40
-            # else
-            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
-            # fi
+            ## TODO sanity checks
         else
             $DIALOG --clear --backtitle "$upper_title" --title "Internet" --radiolist "Choose your preferred wireless setup tool" 10 70 30 \
             "1" "wifi-menu" on \
@@ -595,14 +572,6 @@ if [ $(id -u) -eq 0 ]; then
                 wpa_passphrase "$pssid" "$ppassphrase" >> /etc/wpa_supplicant.conf
                 wpa_supplicant -B -Dwext -i $my_networks -c /etc/wpa_supplicant.conf & >/dev/null
             fi
-
-            #dhcpcd $my_networks
-            # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-            # if [ ! -s /tmp/index.google ] ; then
-            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have no internet connection, refer to for instructions on loading your required wireless kernel modules.\n\nhttps://wiki.archlinux.org/index.php/Wireless_Setup" 20 30
-            # else
-            #     $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "It appears you have an internet connection, huzzah for small miracles. :p" 10 30
-            # fi
         fi
 
         $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Internet configuration complete.\n\n Hit enter to return to menu" 10 30
@@ -616,473 +585,377 @@ if [ $(id -u) -eq 0 ]; then
             dev_directory="${my_home}Github/"
 
             locale-gen
-            # wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-            # if [ ! -s /tmp/index.google ] ; then
-            #     dhcpcd eth0
-            #     systemctl enable dhcpcd@eth0.service
-            # fi
 
-            #if [ ! -f /usr/bin/hub ]; then
-            #    pacman -S --noconfirm --needed hub
-            #fi
+            # mkdir -p /usr/share/tor/hidden_service1
+            # mkdir -p /usr/share/tor/hidden_service2
+            # mkdir -p /usr/share/tor/hidden_service3
+            # mkdir -p /usr/share/tor/hidden_service4
+            # chown -R tor:tor /usr/share/tor/hidden_service1
+            # chown -R tor:tor /usr/share/tor/hidden_service2
+            # chown -R tor:tor /usr/share/tor/hidden_service3
+            # chown -R tor:tor /usr/share/tor/hidden_service4
 
+            groupadd -r polipo
+            useradd -d /var/cache/polipo -g polipo -r -s /bin/false polipo
+            touch /var/log/polipo.log
+            chown -R polipo:polipo /var/log/polipo.log /var/cache/polipo
 
-            # copy root files
-#            sed -i "s/[mooOS-pkgs/#[mooOS-pkgs/g" /mnt/etc/pacman.conf
-#             sed -i "s/SigLevel = Never/#SigLevel = Never/g" /mnt/etc/pacman.conf
-#             sed -i "s/Server = http:\/\/repo.mooOS/#Server = http:\/\/repo.mooOS/g" /mnt/etc/pacman.conf
-
-#             if [ "$archtype" = "x86_64" ]; then
-#                 echo "
-# [mooOS-pkgs-64]
-# SigLevel = Never
-# Server = http://mooos.biz.tm/repos/mooOS-pkgs-64" >> /etc/pacman.conf
-#             else
-#                 echo "
-# [mooOS-pkgs-32]
-# SigLevel = Never
-# Server = http://mooos.biz.tm/repos/mooOS-pkgs-32" >> /etc/pacman.conf
-#             fi
-
-            # if [ ! -f /usr/bin/pacaur ]; then
-            #     #$DIALOG --title "$upper_title" --msgbox "Installing pacaur" 20 70
-            #     pacman -S --noconfirm --needed yajl
-            #     pacman -S --noconfirm --needed jshon
-            #     pacman -S --noconfirm --needed jansson
-            #     su $puser -c "wget https://aur.archlinux.org/packages/pa/packer/PKGBUILD -O /tmp/PKGBUILD && cd /tmp && makepkg -sf PKGBUILD && pacman -U --noconfirm --needed packer* && cd"
-            #     su $puser -c "packer -S --noconfirm pacaur"
-            # fi
-
-            # if [ ! -f /usr/bin/powerpill ]; then
-            #     #$DIALOG --title "$upper_title" --msgbox "Installing powerpill" 20 70
-            #     pacman -S --noconfirm --needed python3
-            #     su $puser -c "packer -S --noconfirm powerpill"
-            # fi
-
-           ## sleep 3s
-            #if [ ! -d "${dev_directory}pdq" ]; then
-           #     $DIALOG --backtitle "$upper_title" --title "Initial clone" --msgbox "Cloning initial repo to ${dev_directory}mooOS-dev-tools/" 10 30
-                # cd ${dev_directory}
-                # su $puser -c "git clone git://github.com/idk/mooOS-dev-tools.git"
-                # #su $puser -c "git clone idk/etc"
-                # cd /home/$puser
-
-                # pacman -Syy
-            #fi
-
-        #     if [ ! -f /usr/bin/rsync ]; then
-        #         pacman -S --noconfirm rsync
-        #     fi
-
-        #     $DIALOG --clear --backtitle "$upper_title" --title "Extra" --yesno "Is this a VirtualBox install?" 10 30
-        #     if [ $? = 0 ] ; then
-        #         su $puser -c "powerpill -S --noconfirm --needed virtualbox-guest-utils"
-        #         sh -c "echo 'vboxguest
-        # vboxsf
-        # vboxvideo' > /etc/modules-load.d/virtualbox.conf"
-        #     fi
-
-        #     ## sanity checks
-        #     if [ ! -f /usr/bin/rsync ] || [ ! -f /usr/bin/pacaur ] || [ ! -f /usr/bin/pacman ] || [ ! -f /usr/bin/powerpill ]; then
-        #         $DIALOG --backtitle "$upper_title" --title "$upper_title" --msgbox "Hmmm. An ERROR has occured...\n\nPackage depends not met, this installer failed to install one of the following:\nrsync, git, hub, packer, pacaur, pacman or powerpill.\n\nExiting..." 30 70
-        #     fi
-
-            # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Install main packages?" 10 30
-            # if [ $? = 0 ] ; then
-            #     $DIALOG --backtitle "$upper_title" --title "$upper_title" --msgbox "When it askes if install 1) phonon-gstreamer or 2) phonon-vlc\nchose 2\n\nWhen it asks if replace foo with bar chose y for everyone" 20 70
-            #     su $puser -c "powerpill -Syy"
-
-            #     if [ "$archtype" = "x86_64" ]; then
-            #         mainpkgs="packages.x86_64"
-            #     else
-            #         mainpkgs="packages.i686"
-            #     fi
-
-            #     basepkgs="packages.both"
-
-            #     pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$basepkgs)
-
-            #     pacman -S --needed $(cat ${dev_directory}mooOS-dev-tools/$mainpkgs)
-            # fi
-
-  #          $DIALOG --clear --backtitle "$upper_title" --title "Configuration files" --yesno "Install all repos?" 10 30
-  #          if [ $? = 0 ] ; then
-                 
-                #$DIALOG --clear --title "$upper_title" --msgbox "Backing up and copying root configs" 10 30
-                #cp -v ${dev_directory}etc/custom.conf /etc/X11/xorg.conf.d/custom.conf
-
-
-                # mkdir -p /usr/share/tor/hidden_service1
-                # mkdir -p /usr/share/tor/hidden_service2
-                # mkdir -p /usr/share/tor/hidden_service3
-                # mkdir -p /usr/share/tor/hidden_service4
-                # chown -R tor:tor /usr/share/tor/hidden_service1
-                # chown -R tor:tor /usr/share/tor/hidden_service2
-                # chown -R tor:tor /usr/share/tor/hidden_service3
-                # chown -R tor:tor /usr/share/tor/hidden_service4
-                # cp ${dev_directory}bin/lamp.sh /usr/bin/lamp
-
-                groupadd -r polipo
-                useradd -d /var/cache/polipo -g polipo -r -s /bin/false polipo
-                touch /var/log/polipo.log
-                chown -R polipo:polipo /var/log/polipo.log /var/cache/polipo
-
-                sh -c "echo .include /usr/lib/systemd/system/polipo.service
+            sh -c "echo .include /usr/lib/systemd/system/polipo.service
 [Service]
 User=polipo  > /etc/systemd/system/polipo.service"
 
-                #systemctl enable dhcpcd@eth0.service
-                #systemctl enable NetworkManager.service
-                #systemctl enable vnstat.sevice
-                systemctl disable iptables.service cpupower.service
-                systemctl enable multi-user.target pacman-init.service choose-mirror.service
-                systemctl enable ntpd.service
-                systemctl enable tor.service
-                systemctl enable privoxy.service
-                systemctl enable preload.service
-                systemctl enable polipo.service
-                systemctl enable cronie.service
-                systemctl enable dhcpcd.service
+            #systemctl enable dhcpcd@eth0.service
+            #systemctl enable NetworkManager.service
+            #systemctl enable vnstat.sevice
+            systemctl disable iptables.service cpupower.service
+            systemctl enable multi-user.target pacman-init.service choose-mirror.service
+            systemctl enable ntpd.service
+            systemctl enable tor.service
+            systemctl enable privoxy.service
+            systemctl enable preload.service
+            systemctl enable polipo.service
+            systemctl enable cronie.service
+            systemctl enable dhcpcd.service
 
-                $DIALOG --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
+            # $DIALOG --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
 
-                if [ $? = 0 ] ; then
+            # if [ $? = 0 ] ; then
 
-                    HOSTNAME="$(cat /etc/hostname)"
+                HOSTNAME="$(cat /etc/hostname)"
 
-                    # #$DIALOG --clear --title "$upper_title" --msgbox "Installing Apache/MySQL/PHP/PHPMyAdmin configuration files" 10 30
-                    # mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-                    # cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-                    # cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
-                    # mv -v /etc/php/php.ini /etc/php/php.ini.bak
-                    # cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
-                
-                    # sh -c "echo '#
-                    # # /etc/hosts: static lookup table for host names
-                    # #
+                # #$DIALOG --clear --title "$upper_title" --msgbox "Installing Apache/MySQL/PHP/PHPMyAdmin configuration files" 10 30
+                # mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+                # cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+                # cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+                # mv -v /etc/php/php.ini /etc/php/php.ini.bak
+                # cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+            
+                # sh -c "echo '#
+                # # /etc/hosts: static lookup table for host names
+                # #
 
-                    # #<ip-address>  <hostname.domain.org>   <hostname>
-                    # 127.0.0.1   localhost.localdomain   localhost $HOSTNAME
-                    # ::1      localhost.localdomain   localhost
-                    # 127.0.0.1 $puser.c0m www.$puser.c0m
-                    # 127.0.0.1 $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
-                    # 127.0.0.1 phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
-                    # 127.0.0.1 torrent.$puser.c0m www.torrent.$puser.c0m
-                    # 127.0.0.1 admin.$puser.c0m www.admin.$puser.c0m
-                    # 127.0.0.1 stats.$puser.c0m www.stats.$puser.c0m
-                    # 127.0.0.1 mail.$puser.c0m www.mail.$puser.c0m
+                # #<ip-address>  <hostname.domain.org>   <hostname>
+                # 127.0.0.1   localhost.localdomain   localhost $HOSTNAME
+                # ::1      localhost.localdomain   localhost
+                # 127.0.0.1 $puser.c0m www.$puser.c0m
+                # 127.0.0.1 $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
+                # 127.0.0.1 phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
+                # 127.0.0.1 torrent.$puser.c0m www.torrent.$puser.c0m
+                # 127.0.0.1 admin.$puser.c0m www.admin.$puser.c0m
+                # 127.0.0.1 stats.$puser.c0m www.stats.$puser.c0m
+                # 127.0.0.1 mail.$puser.c0m www.mail.$puser.c0m
 
-                    # # End of file' > /etc/hosts"
+                # # End of file' > /etc/hosts"
 
-                    # sh -c "echo 'NameVirtualHost *:80
-                    # NameVirtualHost *:444
+                # sh -c "echo 'NameVirtualHost *:80
+                # NameVirtualHost *:444
 
-                    # #this first virtualhost enables: http://127.0.0.1, or: http://localhost, 
-                    # #to still go to /srv/http/*index.html(otherwise it will 404_error).
-                    # #the reason for this: once you tell httpd.conf to include extra/httpd-vhosts.conf, 
-                    # #ALL vhosts are handled in httpd-vhosts.conf(including the default one),
-                    # # E.G. the default virtualhost in httpd.conf is not used and must be included here, 
-                    # #otherwise, only domainname1.dom & domainname2.dom will be accessible
-                    # #from your web browser and NOT http://127.0.0.1, or: http://localhost, etc.
-                    # #
+                # #this first virtualhost enables: http://127.0.0.1, or: http://localhost, 
+                # #to still go to /srv/http/*index.html(otherwise it will 404_error).
+                # #the reason for this: once you tell httpd.conf to include extra/httpd-vhosts.conf, 
+                # #ALL vhosts are handled in httpd-vhosts.conf(including the default one),
+                # # E.G. the default virtualhost in httpd.conf is not used and must be included here, 
+                # #otherwise, only domainname1.dom & domainname2.dom will be accessible
+                # #from your web browser and NOT http://127.0.0.1, or: http://localhost, etc.
+                # #
 
-                    # <VirtualHost *:80>
-                    # DocumentRoot \"/srv/http/root\"
-                    # ServerAdmin root@localhost
-                    # #ErrorLog \"/var/log/httpd/127.0.0.1-error_log\"
-                    # #CustomLog \"/var/log/httpd/127.0.0.1-access_log\" common
-                    # <Directory /srv/http/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # DocumentRoot \"/srv/http/root\"
+                # ServerAdmin root@localhost
+                # #ErrorLog \"/var/log/httpd/127.0.0.1-error_log\"
+                # #CustomLog \"/var/log/httpd/127.0.0.1-access_log\" common
+                # <Directory /srv/http/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # DocumentRoot \"/srv/http/root\"
-                    # ServerAdmin root@localhost
-                    # #ErrorLog \"/var/log/httpd/127.0.0.1-error_log\"
-                    # #CustomLog \"/var/log/httpd/127.0.0.1-access_log\" common
-                    # <Directory /srv/http/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # DocumentRoot \"/srv/http/root\"
+                # ServerAdmin root@localhost
+                # #ErrorLog \"/var/log/httpd/127.0.0.1-error_log\"
+                # #CustomLog \"/var/log/httpd/127.0.0.1-access_log\" common
+                # <Directory /srv/http/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/$puser.c0m/public_html\"
-                    # ServerName $puser.c0m
-                    # ServerAlias $puser.c0m www.$puser.c0m
-                    # <Directory /srv/http/$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/$puser.c0m/public_html\"
+                # ServerName $puser.c0m
+                # ServerAlias $puser.c0m www.$puser.c0m
+                # <Directory /srv/http/$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/$puser.c0m/public_html\"
-                    # ServerName $puser.c0m
-                    # ServerAlias $puser.c0m www.$puser.c0m
-                    # <Directory /srv/http/$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/$puser.c0m/public_html\"
+                # ServerName $puser.c0m
+                # ServerAlias $puser.c0m www.$puser.c0m
+                # <Directory /srv/http/$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/$puser.$HOSTNAME.c0m/public_html\"
-                    # ServerName $puser.$HOSTNAME.c0m
-                    # ServerAlias $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
-                    # <Directory /srv/http/$puser.$HOSTNAME.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/$puser.$HOSTNAME.c0m/public_html\"
+                # ServerName $puser.$HOSTNAME.c0m
+                # ServerAlias $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
+                # <Directory /srv/http/$puser.$HOSTNAME.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/$puser.$HOSTNAME.c0m/public_html\"
-                    # ServerName $puser.$HOSTNAME.c0m
-                    # ServerAlias $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
-                    # <Directory /srv/http/$puser.$HOSTNAME.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/$puser.$HOSTNAME.c0m/public_html\"
+                # ServerName $puser.$HOSTNAME.c0m
+                # ServerAlias $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
+                # <Directory /srv/http/$puser.$HOSTNAME.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/usr/share/webapps/phpMyAdmin\"
-                    # ServerName phpmyadmin.$puser.c0m
-                    # ServerAlias phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
-                    # <Directory /usr/share/webapps/phpMyAdmin/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/usr/share/webapps/phpMyAdmin\"
+                # ServerName phpmyadmin.$puser.c0m
+                # ServerAlias phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
+                # <Directory /usr/share/webapps/phpMyAdmin/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/usr/share/webapps/phpMyAdmin\"
-                    # ServerName phpmyadmin.$puser.c0m
-                    # ServerAlias phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
-                    # <Directory /usr/share/webapps/phpMyAdmin/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/usr/share/webapps/phpMyAdmin\"
+                # ServerName phpmyadmin.$puser.c0m
+                # ServerAlias phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
+                # <Directory /usr/share/webapps/phpMyAdmin/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/torrent.$puser.c0m/public_html\"
-                    # ServerName torrent.$puser.c0m
-                    # ServerAlias torrent.$puser.c0m www.torrent.$puser.c0m
-                    # <Directory /srv/http/torrent.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/torrent.$puser.c0m/public_html\"
+                # ServerName torrent.$puser.c0m
+                # ServerAlias torrent.$puser.c0m www.torrent.$puser.c0m
+                # <Directory /srv/http/torrent.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/torrent.$puser.c0m/public_html\"
-                    # ServerName torrent.$puser.c0m
-                    # ServerAlias torrent.$puser.c0m www.torrent.$puser.c0m
-                    # <Directory /srv/http/torrent.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/torrent.$puser.c0m/public_html\"
+                # ServerName torrent.$puser.c0m
+                # ServerAlias torrent.$puser.c0m www.torrent.$puser.c0m
+                # <Directory /srv/http/torrent.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/admin.$puser.c0m/public_html\"
-                    # ServerName admin.$puser.c0m
-                    # ServerAlias admin.$puser.c0m www.admin.$puser.c0m
-                    # <Directory /srv/http/admin.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/admin.$puser.c0m/public_html\"
+                # ServerName admin.$puser.c0m
+                # ServerAlias admin.$puser.c0m www.admin.$puser.c0m
+                # <Directory /srv/http/admin.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/admin.$puser.c0m/public_html\"
-                    # ServerName admin.$puser.c0m
-                    # ServerAlias admin.$puser.c0m www.admin.$puser.c0m
-                    # <Directory /srv/http/admin.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/admin.$puser.c0m/public_html\"
+                # ServerName admin.$puser.c0m
+                # ServerAlias admin.$puser.c0m www.admin.$puser.c0m
+                # <Directory /srv/http/admin.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/stats.$puser.c0m/public_html\"
-                    # ServerName stats.$puser.c0m
-                    # ServerAlias stats.$puser.c0m www.stats.$puser.c0m
-                    # <Directory /srv/http/stats.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/stats.$puser.c0m/public_html\"
+                # ServerName stats.$puser.c0m
+                # ServerAlias stats.$puser.c0m www.stats.$puser.c0m
+                # <Directory /srv/http/stats.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/stats.$puser.c0m/public_html\"
-                    # ServerName stats.$puser.c0m
-                    # ServerAlias stats.$puser.c0m www.stats.$puser.c0m
-                    # <Directory /srv/http/stats.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/stats.$puser.c0m/public_html\"
+                # ServerName stats.$puser.c0m
+                # ServerAlias stats.$puser.c0m www.stats.$puser.c0m
+                # <Directory /srv/http/stats.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:80>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/mail.$puser.c0m/public_html\"
-                    # ServerName mail.$puser.c0m
-                    # ServerAlias mail.$puser.c0m www.mail.$puser.c0m
-                    # <Directory /srv/http/mail.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>
+                # <VirtualHost *:80>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/mail.$puser.c0m/public_html\"
+                # ServerName mail.$puser.c0m
+                # ServerAlias mail.$puser.c0m www.mail.$puser.c0m
+                # <Directory /srv/http/mail.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>
 
-                    # <VirtualHost *:444>
-                    # ServerAdmin $puser@$HOSTNAME
-                    # DocumentRoot \"/srv/http/mail.$puser.c0m/public_html\"
-                    # ServerName mail.$puser.c0m
-                    # ServerAlias mail.$puser.c0m www.mail.$puser.c0m
-                    # <Directory /srv/http/mail.$puser.c0m/public_html/>
-                    # DirectoryIndex index.htm index.html
-                    # AddHandler cgi-script .cgi .pl
-                    # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
-                    # AllowOverride None
-                    # Order allow,deny
-                    # allow from all
-                    # </Directory>
-                    # </VirtualHost>' > /etc/httpd/conf/extra/httpd-vhosts.conf"
+                # <VirtualHost *:444>
+                # ServerAdmin $puser@$HOSTNAME
+                # DocumentRoot \"/srv/http/mail.$puser.c0m/public_html\"
+                # ServerName mail.$puser.c0m
+                # ServerAlias mail.$puser.c0m www.mail.$puser.c0m
+                # <Directory /srv/http/mail.$puser.c0m/public_html/>
+                # DirectoryIndex index.htm index.html
+                # AddHandler cgi-script .cgi .pl
+                # Options ExecCGI Indexes FollowSymLinks MultiViews +Includes
+                # AllowOverride None
+                # Order allow,deny
+                # allow from all
+                # </Directory>
+                # </VirtualHost>' > /etc/httpd/conf/extra/httpd-vhosts.conf"
 
-                    # echo sh -c "echo '#
-                    # # /etc/hosts: static lookup table for host names
-                    # #
+                # echo sh -c "echo '#
+                # # /etc/hosts: static lookup table for host names
+                # #
 
-                    # #<ip-address>  <hostname.domain.org>   <hostname>
-                    # 127.0.0.1   localhost.localdomain   localhost $HOSTNAME
-                    # ::1      localhost.localdomain   localhost
-                    # 127.0.0.1 $puser.c0m www.$puser.c0m
-                    # 127.0.0.1 $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
-                    # 127.0.0.1 phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
-                    # 127.0.0.1 torrent.$puser.c0m www.torrent.$puser.c0m
-                    # 127.0.0.1 admin.$puser.c0m www.admin.$puser.c0m
-                    # 127.0.0.1 stats.$puser.c0m www.stats.$puser.c0m
-                    # 127.0.0.1 mail.$puser.c0m www.mail.$puser.c0m
+                # #<ip-address>  <hostname.domain.org>   <hostname>
+                # 127.0.0.1   localhost.localdomain   localhost $HOSTNAME
+                # ::1      localhost.localdomain   localhost
+                # 127.0.0.1 $puser.c0m www.$puser.c0m
+                # 127.0.0.1 $puser.$HOSTNAME.c0m www.$puser.$HOSTNAME.c0m
+                # 127.0.0.1 phpmyadmin.$puser.c0m www.phpmyadmin.$puser.c0m
+                # 127.0.0.1 torrent.$puser.c0m www.torrent.$puser.c0m
+                # 127.0.0.1 admin.$puser.c0m www.admin.$puser.c0m
+                # 127.0.0.1 stats.$puser.c0m www.stats.$puser.c0m
+                # 127.0.0.1 mail.$puser.c0m www.mail.$puser.c0m
 
-                    # # End of file' > /etc/hosts"
+                # # End of file' > /etc/hosts"
 
-                    # #TODO
-                    # # $DIALOG --clear --backtitle "$upper_title" --title "Extra" --msgbox "Creating self-signed certificate" 10 30
-                    # cd /etc/httpd/conf
-                    # openssl genrsa -des3 -out server.key 1024
-                    # openssl req -new -key server.key -out server.csr
-                    # cp -v server.key server.key.org
-                    # openssl rsa -in server.key.org -out server.key
-                    # openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+                # #TODO
+                # # $DIALOG --clear --backtitle "$upper_title" --title "Extra" --msgbox "Creating self-signed certificate" 10 30
+                # cd /etc/httpd/conf
+                # openssl genrsa -des3 -out server.key 1024
+                # openssl req -new -key server.key -out server.csr
+                # cp -v server.key server.key.org
+                # openssl rsa -in server.key.org -out server.key
+                # openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 
-                    # mkdir -p /srv/http/root/public_html
-                    # chmod g+xr-w /srv/http/root
-                    # chmod -R g+xr-w /srv/http/root/public_html
+                # mkdir -p /srv/http/root/public_html
+                # chmod g+xr-w /srv/http/root
+                # chmod -R g+xr-w /srv/http/root/public_html
 
-                    # mkdir -p /srv/http/$puser.c0m/public_html
-                    # chmod g+xr-w /srv/http/$puser.c0m
-                    # chmod -R g+xr-w /srv/http/$puser.c0m/public_html
+                # mkdir -p /srv/http/$puser.c0m/public_html
+                # chmod g+xr-w /srv/http/$puser.c0m
+                # chmod -R g+xr-w /srv/http/$puser.c0m/public_html
 
-                    # mkdir -p /srv/http/$puser.$HOSTNAME.c0m/public_html
-                    # chmod g+xr-w /srv/http/$puser.$HOSTNAME.c0m
-                    # chmod -R g+xr-w /srv/http/$puser.$HOSTNAME.c0m/public_html
+                # mkdir -p /srv/http/$puser.$HOSTNAME.c0m/public_html
+                # chmod g+xr-w /srv/http/$puser.$HOSTNAME.c0m
+                # chmod -R g+xr-w /srv/http/$puser.$HOSTNAME.c0m/public_html
 
-                    # mkdir -p /srv/http/phpmyadmin.$puser.c0m/public_html
-                    # chmod g+xr-w /srv/http/phpmyadmin.$puser.c0m
-                    # chmod -R g+xr-w /srv/http/phpmyadmin.$puser.c0m/public_html
+                # mkdir -p /srv/http/phpmyadmin.$puser.c0m/public_html
+                # chmod g+xr-w /srv/http/phpmyadmin.$puser.c0m
+                # chmod -R g+xr-w /srv/http/phpmyadmin.$puser.c0m/public_html
 
-                    # mkdir -p /srv/http/torrent.$puser.c0m/public_html
-                    # chmod g+xr-w /srv/http/torrent.$puser.c0m
-                    # chmod -R g+xr-w /srv/http/torrent.$puser.c0m/public_html
+                # mkdir -p /srv/http/torrent.$puser.c0m/public_html
+                # chmod g+xr-w /srv/http/torrent.$puser.c0m
+                # chmod -R g+xr-w /srv/http/torrent.$puser.c0m/public_html
 
-                    # mkdir -p /srv/http/admin.$puser.c0m/public_html
-                    # chmod g+xr-w /srv/http/admin.$puser.c0m
-                    # chmod -R g+xr-w /srv/http/admin.$puser.c0m/public_html
+                # mkdir -p /srv/http/admin.$puser.c0m/public_html
+                # chmod g+xr-w /srv/http/admin.$puser.c0m
+                # chmod -R g+xr-w /srv/http/admin.$puser.c0m/public_html
 
-                    # mkdir -p /srv/http/stats.$puser.c0m/public_html
-                    # chmod g+xr-w /srv/http/stats.$puser.c0m
-                    # chmod -R g+xr-w /srv/http/stats.$puser.c0m/public_html
+                # mkdir -p /srv/http/stats.$puser.c0m/public_html
+                # chmod g+xr-w /srv/http/stats.$puser.c0m
+                # chmod -R g+xr-w /srv/http/stats.$puser.c0m/public_html
 
-                    # mkdir -p /srv/http/mail.$puser.c0m/public_html
-                    # chmod g+xr-w /srv/http/mail.$puser.c0m
-                    # chmod -R g+xr-w /srv/http/mail.$puser.c0m/public_html
+                # mkdir -p /srv/http/mail.$puser.c0m/public_html
+                # chmod g+xr-w /srv/http/mail.$puser.c0m
+                # chmod -R g+xr-w /srv/http/mail.$puser.c0m/public_html
 
                 #     systemctl start httpd
                 #     systemctl start mysqld
@@ -1106,9 +979,9 @@ User=polipo  > /etc/systemd/system/polipo.service"
                 #         systemctl enable mysqld.service
                 #         systemctl enable memcached.service
                 #     fi
-                   echo "nothing done, placeholder - ask pdq"
+                   #echo "nothing done, placeholder - ask pdq"
                    #sleep 3s
-                fi
+                #fi
 
                 squid -z &
                 pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
