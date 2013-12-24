@@ -1107,7 +1107,7 @@ User=polipo  > /etc/systemd/system/polipo.service"
                 #         systemctl enable memcached.service
                 #     fi
                    echo "nothing done, placeholder - ask pdq"
-                   sleep 3s
+                   #sleep 3s
                 fi
 
                 squid -z &
