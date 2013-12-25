@@ -600,8 +600,8 @@ create_build_env() {
 		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
 		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
 		rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
-		mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
-		cp -vr /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+		#mkdir -vp ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+		#cp -vr /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
 
 		## patch config files for username
 		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
