@@ -442,7 +442,7 @@ if [ $(id -u) -eq 0 ]; then
             fi
 
             sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
-            sed -i "s/Arch /MooOS GNU\//g" /boot/syslinux/syslinux.cfg
+            sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg
             sed -i "s,#MENU BACKGROUND splash.png,MENU BACKGROUND /usr/share/moo-tools/images/splash.png,g" /boot/syslinux/syslinux.cfg
             sed -i "s/UI menu.c32/#UI menu.c32/g" /boot/syslinux/syslinux.cfg
             sed -i "s/#UI vesamenu.c32/UI vesamenu.c32/g" /boot/syslinux/syslinux.cfg

@@ -157,8 +157,8 @@ create_custom_packages() {
 		## GRUB
 		delete_custom_package_caches "grub"
 		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grub
-		sed -i "s/\"Arch\"/\"MooOS\"/g" ${MOO_HOME}abs/grub/grub.default
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
+		sed -i "s/\"Arch\"/\"mooOS\"/g" ${MOO_HOME}abs/grub/grub.default
+		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
 		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
 		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
 		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
@@ -171,7 +171,7 @@ create_custom_packages() {
 		## SYSLINUX
 		delete_custom_package_caches "syslinux"
 		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
         sed -i "s,#MENU BACKGROUND splash.png,MENU BACKGROUND /usr/share/moo-tools/images/splash.png,g" ${MOO_HOME}abs/syslinux/syslinux.cfg
         sed -i "s/UI menu.c32/#UI menu.c32/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
         sed -i "s/#UI vesamenu.c32/UI vesamenu.c32/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
@@ -186,7 +186,7 @@ create_custom_packages() {
 		## HARDINFO
 		delete_custom_package_caches "hardinfo"
 		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
-		sed -i "s/Arch Linux/MooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
+		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
 		HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
 		sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
 		sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
