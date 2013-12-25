@@ -20,9 +20,7 @@ binutils
 bison
 bitcoin-qt
 bitlbee-libre-nonprism
-blender-libre
 brutaldoom
-bsd-games
 cairo
 canto-curses
 ccache
@@ -59,7 +57,6 @@ elementary-icon-theme
 encfs
 enlightenment17-git
 enlightenment17-git-debug
-etherape
 etrophy
 evas_generic_loaders-git
 evas_generic_loaders-git-debug
@@ -107,7 +104,6 @@ hsetroot
 html2text
 htop
 hub
-hwinfo
 i7z
 iceweasel-libre
 iftop
@@ -121,6 +117,7 @@ kdebase-dolphin
 kdebase-kdialog
 kdebase-konsole
 kdebase-workspace
+kdelibs-libre
 kdemultimedia-ffmpegthumbs
 kdenlive
 kdepim-runtime
@@ -174,7 +171,6 @@ moc
 moo-scripts
 moo-tools
 moo-zsh
-mooOS-wallpapers
 mplayer-libre
 mpv
 mtools
@@ -288,7 +284,6 @@ urxvt-font-size-git
 urxvt-perls
 vb-pdq
 vim
-virtualbox
 vlc
 vorbis-tools
 w3m
