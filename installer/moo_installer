@@ -43,6 +43,8 @@ check_repos() {
 
 check_repos "$MOO_URL" 1
 
+upper_title="mooOS Installer $archtype - beta"
+
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
 # if [ $? = 0 ] ; then
       DIALOG=${DIALOG=dialog}
@@ -50,12 +52,15 @@ check_repos "$MOO_URL" 1
 #     DIALOG=${DIALOG=Xdialog}
 # fi
 
+$DIALOG --clear --backtitle "$upper_title" --title "Information" --msgbox "You can decrease/increase the FONT SIZE with Ctrl+Down/Up arrow keys" 10 70
+
+
 if [ "$archtype" = "x86_64" ]; then
-    $DIALOG --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...\nproceeding (press ESC to exit)" 20 70
+    $DIALOG --backtitle "$upper_title" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...\nproceeding (press ESC to exit)" 20 70
     archtype="x86_64"
     not_archtype="i686"
 else
-    $DIALOG --backtitle "mooOS Installer" --title "Information" --msgbox "Your architecture type is i686, this installer assumes you are using the i686 livecd option... proceeding\n(press ESC to exit)" 20 70
+    $DIALOG --backtitle "$upper_title" --title "Information" --msgbox "Your architecture type is i686, this installer assumes you are using the i686 livecd option... proceeding\n(press ESC to exit)" 20 70
     archtype="i686"
     not_archtype="x86_64"
 fi
@@ -71,7 +76,6 @@ if [ $? = 0 ] ; then
         archtype=$not_archtype
 fi
 
-upper_title="mooOS Installer $archtype - beta"
 setterm -blank 0
 
 ## root script
