@@ -121,6 +121,7 @@ kdebase-dolphin
 kdebase-kdialog
 kdebase-konsole
 kdebase-workspace
+kdelibs-libre
 kdemultimedia-ffmpegthumbs
 kdenlive
 kdepim-runtime
