@@ -12,7 +12,8 @@ out_dir=out
 
 verbose=""
 pacman_conf=${work_dir}/pacman
-script_path=$(readlink -f ${0%/*})
+#script_path=$(readlink -f ${0%/*})
+script_path=/media/truecrypt3/archlive/releng
 
 _usage ()
 {
