@@ -232,8 +232,7 @@ rsync_iso_remote() {
 			su -l $MOO_USER -c "echo 53ef866dd48dcbd620cf402d845c2ec5 > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old"
 		fi
 
-		if [ -f "$ISO_DIR/*-${ARCH_ISO}*.iso" ]; then
-
+		if ls $ISO_DIR/*-${ARCH_ISO}*.iso &> /dev/null; then
 			echo "generating ${ARCH_ISO} md5sum... please wait a moment"
 			# md5sums of current and old .iso
 			MD5HASH=$(md5sum $ISO_DIR/*-${ARCH_ISO}*.iso | cut -d " " -f 1)
@@ -334,6 +333,9 @@ rsync_iso_remote() {
 			fi
 
 			notify-send "${ARCH_ISO} release info done." -i "$MOO_ICON"
+		else
+			echo "$ISO_DIR/*-${ARCH_ISO}*.iso not exist?"
+
 		fi
 	fi
 
