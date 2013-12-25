@@ -705,7 +705,7 @@ chroot_configuration() {
     fi
 
     if [ -f /mnt/usr/bin/moo_chroot ]; then
-        export TERM=xterm-color && arch-chroot /mnt /usr/bin/sh -c "/mnt/usr/bin/moo_chroot $boot_part_arg"
+        export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $boot_part_arg"
     else
         echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that?"
         exit 0
