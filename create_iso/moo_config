@@ -43,8 +43,9 @@ ISO_DIR="${ARCHLIVE}mooOS/out"   # iso
 WORK_DIR="${ARCHLIVE}mooOS/work" # work
 
 ## gpg key used to sign the repos/packages
-GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ##  you must put key in this file
-
+if [ -f "${MOO_HOME}.gnupg/private_key_include" ]; then
+	GPGKEY=$(cat ${MOO_HOME}.gnupg/private_key_include) ##  you must put key in this file
+fi
 # path to remote repo credentials file - (you should change this path)
 REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 ## BEGIN EXAMPLE of repo_creds
