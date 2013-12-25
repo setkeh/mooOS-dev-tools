@@ -10,10 +10,11 @@ iso_version=$(date +%Y.%m.%d)
 work_dir=work
 out_dir=out
 
-verbose=""
-pacman_conf=${work_dir}/pacman
 #script_path=$(readlink -f ${0%/*})
 script_path=/media/truecrypt3/archlive/releng
+
+verbose=""
+pacman_conf=${script_path}/${work_dir}/pacman
 
 _usage ()
 {
