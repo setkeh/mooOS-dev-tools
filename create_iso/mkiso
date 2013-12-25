@@ -76,7 +76,7 @@ else ## as $ROOT
 			question="${bldyellow}You wish to make $moo iso (Y/N)?\n${txtrst}"
 			if ask_something; then
 				echo "${bldcyan}Building $moo iso now...${txtrst}"
-				 ${MOO_PATH}build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+				 ${MOO_TOOLS_PATH}build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
 			fi
 
 			echo "${bldcyan}$moo iso build complete${txtrst}"
