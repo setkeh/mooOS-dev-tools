@@ -114,8 +114,8 @@ create_custom_packages() {
 		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any"
 
 		## install custom mooOS wallpapers
-		delete_custom_package_caches "moo-wallpapers"
-		repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
+		#delete_custom_package_caches "moo-wallpapers"
+		#repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
 		
 		## vimb web browser and tabbed, patched!
 		#delete_custom_package_caches "vb-pdq"
@@ -679,6 +679,11 @@ create_build_env() {
 
 		mkdir -v "${ARCHLIVE}archlive/releng/work"
 		
+		## create customize_root_image.sh
+		cp -v ${MOO_TOOLS_PATH}create_iso/customize_root_image.sh ${ARCHLIVE}archlive/releng/root-image/customize_root_image.sh
+		
+		cp -v ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
+		
 		## create pacman.conf for livecd
 		cp -v ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
 		
@@ -745,6 +750,8 @@ create_mooos_repos() {
 		rm -vf ${MOO_HOME}abs/x86_64/*-git*
 
 		## make RMS happy :D
+		## unzip-libre unar spectrwm-libre sdl-libre rp-pppoe-libre p7zip-libre openexr-libre mplayer-libre mozilla-searchplugins mencoder-libre mcomix-libre mc-libre lirc-libre-utils kdeutils-ark-libre kdelibs-libre kdebase-runtime-libre iceweasel-libre gstreamer0.10-bad-libre-plugins gstreamer0.10-bad-libre gst-plugins-bad-libre ghostscript-libre cpupower-libre cdrkit-libre bitlbee-libre-nonprism audio-convert-libre 
+		
 		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
 		cp -v ${MOO_HOME}abs/i686/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
