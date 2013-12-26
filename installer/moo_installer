@@ -5,7 +5,7 @@
 
 ## root script
 if [ $(id -u) -ne 0 ]; then
-    echo "drun this installer with sudo"
+    echo "run this installer with sudo"
 fi
 
  ## set live user
