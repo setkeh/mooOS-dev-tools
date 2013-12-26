@@ -115,7 +115,7 @@ create_custom_packages() {
 
 		## install custom mooOS wallpapers
 		delete_custom_package_caches "moo-wallpapers"
-		repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD" "http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any" i
+		repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any" i
 		
 		## vimb web browser and tabbed, patched!
 		#delete_custom_package_caches "vb-pdq"
