@@ -3,6 +3,14 @@
 ## 2013-2014 pdq
 ## from mooOS
 
+## root script
+if [ $(id -u) -ne 0 ]; then
+    echo "drun this installer with sudo"
+fi
+
+ ## set live user
+[ $SUDO_USER ] && moo=$SUDO_USER || moo=$(whoami)
+
 ######### START CONFIGURATION ##########
 . /etc/moo.cfg
 
@@ -10,9 +18,6 @@
 
 ## figure out architecture type
 archtype="$(uname -m)"
-
-## live user
-moo=moo
 
 ## moo_installer --debug
 moo_arg=$1
@@ -43,7 +48,7 @@ check_repos() {
 
 check_repos "$MOO_URL" 1
 
-upper_title="mooOS Installer $archtype - beta"
+upper_title="Welcome to mooOS Installer $archtype"
 
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
 # if [ $? = 0 ] ; then
@@ -52,15 +57,15 @@ upper_title="mooOS Installer $archtype - beta"
 #     DIALOG=${DIALOG=Xdialog}
 # fi
 
-$DIALOG --clear --backtitle "$upper_title" --title "Information" --msgbox "You can decrease/increase the FONT SIZE with Ctrl+Down/Up arrow keys" 10 70
+$DIALOG --clear --backtitle "$upper_title" --title "Information" --msgbox "You can decrease/increase the FONT SIZE with Ctrl+Down/Up arrow keys.\n\nFeel free to use gparted or other GNU/Linux tools to manage your partitioning schema before running this installer.\n\nIf manual partitioning IS done then you SHOULD skip right to \"Step 4 Create internet connection\"" 20 70
 
 
 if [ "$archtype" = "x86_64" ]; then
-    $DIALOG --backtitle "$upper_title" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...\nproceeding (press ESC to exit)" 20 70
+    $DIALOG --backtitle "$upper_title" --title "Information" --msgbox "Your architecture type is x86_64, this installer assumes you are using the x86_64 livecd option...proceeding" 20 70
     archtype="x86_64"
     not_archtype="i686"
 else
-    $DIALOG --backtitle "$upper_title" --title "Information" --msgbox "Your architecture type is i686, this installer assumes you are using the i686 livecd option... proceeding\n(press ESC to exit)" 20 70
+    $DIALOG --backtitle "$upper_title" --title "Information" --msgbox "Your architecture type is i686, this installer assumes you are using the i686 livecd option... proceeding" 20 70
     archtype="i686"
     not_archtype="x86_64"
 fi
@@ -78,13 +83,9 @@ fi
 
 setterm -blank 0
 
-## root script
-if [ $(id -u) -ne 0 ]; then
-    echo "run this as root"
-fi
-
 ## styling
-clr=""
+clr="\Zb"
+clr_end="\Zn"
 
 ## temporary files
 _TEMP=/tmp/answer$$
@@ -96,7 +97,7 @@ _CURRENT=/tmp/current
 exiting_installer() {
     clear
     rm -f $_TEMP
-    $DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: moo_installer to re-run" 10 40
+    $DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: sudo moo_installer to re-run" 10 40
     exit 0
 }
 
@@ -110,14 +111,14 @@ installer_menu() {
     $DIALOG \
         --default-item "$CUR" --colors --backtitle "$upper_title" --title "$upper_title" \
         --menu "Select action: (Do them in order)" 20 60 9 \
-        1 $clr"List linux partitions" \
-        2 $clr"Partition editor (cfdisk)" \
-        3 $clr"Format and/or mount filesystems" \
-        4 $clr"Create internet connection" \
-        5 $clr"Initial install" \
-        6 $clr"Generate fstab" \
-        7 $clr"Configure system" \
-        8 $clr"Finish and reboot. (Remove livecd after poweroff)" \
+        1 $clr"List linux partitions"$clr_end \
+        2 $clr"Partition editor (cfdisk)"$clr_end \
+        3 $clr"Format and/or mount filesystems"$clr_end \
+        4 $clr"Create internet connection"$clr_end \
+        5 $clr"Install mooOS"$clr_end \
+        6 $clr"Generate fstab"$clr_end \
+        7 $clr"Configure system"$clr_end \
+        8 $clr"Finish and reboot. (Remove livecd after poweroff)"$clr_end \
         9 $clr"Exit" 2>$_TEMP
 
     if [ $? = 1 ] || [ $? = 255 ] ; then
@@ -193,13 +194,18 @@ make_filesystems() {
     clean_return
 
     # choose root partition
-    $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE ROOT PARTITION" --inputbox "Please choose your preferred root partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 1 for /dev/hda1!" 10 70 2> $TMP/pout
+    $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE ROOT PARTITION" --inputbox "Please choose your preferred root partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 1 for /dev/hda1" 10 70 2> $TMP/pout
     if [ $? = 1 ] || [ $? = 255 ] ; then
         installer_menu
         return 0 
     fi
 
     pout=$(cat $TMP/pout)
+    $DIALOG --clear --backtitle "$upper_title" --title "ROOT  PARTITION" --yesno "Confirm? root=$pout" 20 70
+    if [ $? != 0 ] ; then
+        installer_menu
+        return 0 
+    fi
 
     $DIALOG --clear --backtitle "$upper_title" --title "ROOT  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
     if [ $? = 0 ] ; then
@@ -236,13 +242,18 @@ make_filesystems() {
     $DIALOG --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the home partition?" 20 70
     if [ $? = 0 ] ; then
         # choose home partition
-        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2!" 10 70 2> $TMP/plout
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE HOME PARTITION" --inputbox "Please choose your preferred home partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 2 for /dev/hda2" 10 70 2> $TMP/plout
         if [ $? = 1 ] || [ $? = 255 ] ; then
             installer_menu
             return 0 
         fi
         
         plout=$(cat $TMP/plout)
+        $DIALOG --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Confirm? home=$plout" 20 70
+        if [ $? != 0 ] ; then
+            installer_menu
+            return 0 
+        fi
 
         $DIALOG --clear --backtitle "$upper_title" --title "HOME  PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
         if [ $? = 0 ] ; then
@@ -280,13 +291,18 @@ make_filesystems() {
     $DIALOG --clear --backtitle "$upper_title" --title "BOOT  PARTITION" --defaultno --yesno "Create the boot filesystem?" 20 70
     if [ $? = 0 ] ; then
         # choose boot partition
-        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE BOOT PARTITION" --inputbox "Please choose your preferred boot partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 3 for /dev/hda3!" 10 70 2> $TMP/pbout
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE BOOT PARTITION" --inputbox "Please choose your preferred boot partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 3 for /dev/hda3" 10 70 2> $TMP/pbout
         if [ $? = 1 ] || [ $? = 255 ] ; then
             installer_menu
             return 0 
         fi
         
         pbout=$(cat $TMP/pbout)
+        $DIALOG --clear --backtitle "$upper_title" --title "BOOT  PARTITION" --yesno "Confirm? home=$pbout" 20 70
+        if [ $? != 0 ] ; then
+            installer_menu
+            return 0 
+        fi
 
         $DIALOG --clear --backtitle "$upper_title" --title "BOOT PARTITION" --yesno "Create the filesystem? [Select No to skip to mounting]" 20 70
         if [ $? = 0 ] ; then
@@ -324,8 +340,14 @@ make_filesystems() {
     $DIALOG --clear --backtitle "$upper_title" --title "SWAP PARTITION" --defaultno --yesno "Create the swap filesystem?" 10 70
     if [ $? = 0 ] ; then
         # choose home partition
-        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE SWAP PARTITION" --inputbox "Please choose your preferred swap partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 4 for /dev/hda4!" 10 70 2> $TMP/psout
+        $DIALOG --clear --backtitle "$upper_title" --title "CHOOSE SWAP PARTITION" --inputbox "Please choose your preferred swap partition in this way:\n\n/dev/hdaX --- X = number of the partition, e. g. 4 for /dev/hda4" 10 70 2> $TMP/psout
         psout=$(cat $TMP/psout)
+        $DIALOG --clear --backtitle "$upper_title" --title "SWAP  PARTITION" --yesno "Confirm? swap=$psout" 20 70
+        if [ $? != 0 ] ; then
+            installer_menu
+            return 0 
+        fi
+
         mkswap $psout
         swapon $psout
         $DIALOG --clear --backtitle "$upper_title" --title "SWAP SETUP" --msgbox "Ran: mkswap $psout and swapon $psout" 10 70
@@ -456,7 +478,7 @@ initial_install() {
 
     pacman_conf="pacman.conf"
 
-    $DIALOG --clear --backtitle "$upper_title" --title "Base packages" --yesno "Install base and base-devel? [Select No to skip]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Base packages (mandatory)" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
         if [ "$moo_arg" = "--debug" ]; then
             pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
@@ -465,25 +487,26 @@ initial_install() {
         fi
     fi
     
-    $DIALOG --clear --backtitle "$upper_title" --title "Custom (mooOS) packages" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "mooOS packages (mandatory)" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then    
         echo "" > $TMP/ppkgs
         $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
         ppkgs=" $(cat $TMP/ppkgs)"
 
+        # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
+        # if [ $? = 0 ] ; then
+        #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
+        #     if [ $? = 0 ] ; then
+        #         basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
+        #     else
+        #         basepkgs="${MOO_TOOLS_PATH}packages.both"
+        #     fi
+        # else
+        #     basepkgs="${MOO_TOOLS_PATH}packages-server.both"
+        # fi
 
-        $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
-        if [ $? = 0 ] ; then
-            $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
-            if [ $? = 0 ] ; then
-                basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
-            else
-                basepkgs="${MOO_TOOLS_PATH}packages.both"
-            fi
-        else
-            basepkgs="${MOO_TOOLS_PATH}packages-server.both"
-        fi
-
+        ## TODO
+        basepkgs="${MOO_TOOLS_PATH}packages.both"
         extrapkgs="${MOO_TOOLS_PATH}packages.extra"
         
         mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
@@ -505,7 +528,7 @@ initial_install() {
         fi
     fi
 
-    $DIALOG --clear --backtitle "$upper_title" --title "Copy over configuration files" --yesno "Copy over required configuration files for mooOS? [Select No to skip]" 20 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Copy files (mandatory)" --yesno "Copy over required config files for mooOS? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
         PWD=$(pwd)
 
@@ -616,7 +639,7 @@ initial_install() {
 }
 
 chroot_configuration() {
-    $DIALOG --clear --backtitle "$upper_title" --title "Chroot" --msgbox "Chroot into mounted filesystem" 10 30 
+    $DIALOG --clear --backtitle "$upper_title" --title "Chroot (mandatory)" --msgbox "Chroot into mounted filesystem" 10 30 
     clean_return
      
     # fix missing icons in .desktop files
@@ -711,7 +734,7 @@ chroot_configuration() {
     if [ -f /mnt/usr/bin/moo_chroot ]; then
         export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $boot_part_arg"
     else
-        echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that?"
+        echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!"
         exit 0
     fi
 
@@ -727,7 +750,7 @@ generate_fstab() {
     clean_return
    
     genfstab -U -p /mnt >> /mnt/etc/fstab
-    $DIALOG --clear --backtitle "$upper_title" --title "fstab configuration" --yesno "Do you wish to view/edit this file?" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "fstab configuration" --defaultno --yesno "Do you wish to view/edit this file?" 10 30
     if [ $? = 0 ] ; then
         nano /mnt/etc/fstab
     fi
@@ -737,19 +760,25 @@ generate_fstab() {
 }
 
 finishup() {
-    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install and reboot" 10 30
+    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install - unmount /mnt/* and reboot" 10 30
     clean_return
     
-    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nAfter reboot, to complete install of mooOS:\n\nlogin as your created user.\n\nIf a Graphical Interface fails to load, re-run this Installer with: moo_installer\n\nSee ya!" 30 60
+    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\Reboot, to complete install of mooOS." 30 60
 
-    umount /mnt/* 2>/dev/null
-    umount /mnt 2>/dev/null
-    reboot
+    $DIALOG --clear --backtitle "$upper_title" --title "Unmount" --yesno "Do you wish to unmount /mnt/* ?" 10 30
+    if [ $? = 0 ] ; then
+        umount /mnt/* 2>/dev/null
+        umount /mnt 2>/dev/null
+    fi
+    $DIALOG --clear --backtitle "$upper_title" --title "Reboot" --yesno "Do you wish to reboot the system to complete this installation? (Remember to remove the mooOS Live DVD/USB)" 10 30
+    if [ $? = 0 ] ; then
+        reboot
+    fi
 }
 
-$DIALOG --clear --backtitle "$upper_title" --title "Logs" --yesno "Do you wish to view the system log while installation proceeds? (This maybe helpful)" 10 30
+$DIALOG --clear --backtitle "$upper_title" --title "Logs" --defaultno --yesno "Do you wish to view the system log while installation proceeds? (This maybe helpful)" 10 30
 if [ $? = 0 ] ; then
-    su moo -c "urxvtc -name 'Logs' -title 'System Log' -e sudo journalctl -f"
+    su $moo -c "urxvtc -name 'Logs' -title 'System Log' -e sudo journalctl -f"
 fi
 
 # utility execution

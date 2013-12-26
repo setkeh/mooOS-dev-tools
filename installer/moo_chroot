@@ -26,7 +26,9 @@ if [ $(id -u) -eq 0 ]; then
     ## TODO sanity checks
 
     ## styling
-    clr=""
+    ## styling
+    clr="\Zb"
+    clr_end="\Zn"
 
     ## temporary files
     _TEMP=/tmp/chanswer$$
@@ -1071,17 +1073,17 @@ if [ $(id -u) -eq 0 ]; then
         $DIALOG \
             --default-item "$CUR" --colors --backtitle "$upper_title" --title "mooOS Installer (chroot)" \
             --menu "Select action:" 20 60 11 \
-            1 $clr"Generate hostname [${GEN_HOSTNAME}]" \
-            2 $clr"Generate timezone [${GEN_TIMEZONE}]" \
-            3 $clr"Generate locale [${GEN_LANG}]" \
-            4 $clr"Set root password [$rootpasswd]" \
-            5 $clr"Create default user and add to sudoers" \
-            6 $clr"Install Bootloader" \
-            7 $clr"View/confirm generated data" \
-            8 $clr"View/edit files [optional]" \
-            9 $clr"Set up Network [mandatory]" \
-            10 $clr"Tidy up Install" \
-            11 $clr"Return to Installer" 2>$_TEMP
+            1 $clr"Generate hostname [${GEN_HOSTNAME}]"$clr_end \
+            2 $clr"Generate timezone [${GEN_TIMEZONE}]"$clr_end \
+            3 $clr"Generate locale [${GEN_LANG}]"$clr_end \
+            4 $clr"Set root password [$rootpasswd]"$clr_end \
+            5 $clr"Create default user and add to sudoers"$clr_end \
+            6 $clr"Install Bootloader"$clr_end \
+            7 $clr"View/confirm generated data"$clr_end \
+            8 $clr"View/edit files [optional]"$clr_end \
+            9 $clr"Set up Network [mandatory]"$clr_end \
+            10 $clr"Tidy up Install"$clr_end \
+            11 $clr"Return to Installer"$clr_end 2>$_TEMP
 
         if [ $? = 1 ] || [ $? = 255 ] ; then
             exiting
