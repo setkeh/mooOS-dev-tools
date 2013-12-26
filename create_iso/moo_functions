@@ -95,7 +95,7 @@ repackage_this() {
 }
 
 create_custom_packages() {
-	question="${bldyellow}Rebrand packages? (moo-tools/gh/vb-pdq) (Y/N)?\n${txtrst}"
+	question="${bldyellow}Rebrand packages? (moo-tools/moo-scripts/moo-zsh/moo-wallpapers/gh/vb-pdq) (Y/N)?\n${txtrst}"
 	if ask_something; then
 		## moo-scripts
 		delete_custom_package_caches "moo-scripts"
@@ -111,11 +111,11 @@ create_custom_packages() {
 	
 		## github wrapper
 		delete_custom_package_caches "gh"
-		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any" i
+		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any"
 
 		## install custom mooOS wallpapers
 		delete_custom_package_caches "moo-wallpapers"
-		repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any" i
+		repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
 		
 		## vimb web browser and tabbed, patched!
 		#delete_custom_package_caches "vb-pdq"
@@ -707,8 +707,12 @@ create_mooos_repos() {
 	if ask_something; then
 		echo "${bldgreen}Recreating repos now...${txtrst}"
 		## remove existing repos
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
-		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
+		if [ -f "${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz" ]; then
+			rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz
+			rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz
+		fi
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db.tar.gz
+		rm -v ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db.tar.gz
 
 		## hackity hack hack - clean up old git package caches
 		arches="32 64"
@@ -763,9 +767,9 @@ create_mooos_repos() {
 
 		## create repo databases
 		echo "${bldmagenta}Re-creating i686 repository${txtrst}"
-		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
+		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz
 		echo "${bldmagenta}Re-creating x86_64 repository${txtrst}"
-		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
+		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz
 
 		## format log a little
 		echo $(date -d "today" +"%Y%m%d%H%M") >> $REPO_LOG_TEMP
