@@ -686,6 +686,7 @@ create_build_env() {
 		
 		## create pacman.conf for livecd
 		cp -v ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
+		cp -v ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman.conf
 		
 		## create pacman.conf for livecd specific to architecture
 		cp -v ${MOO_TOOLS_PATH}misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-x86_64.conf
@@ -751,7 +752,7 @@ create_mooos_repos() {
 
 		## make RMS happy :D
 		## unzip-libre unar spectrwm-libre sdl-libre rp-pppoe-libre p7zip-libre openexr-libre mplayer-libre mozilla-searchplugins mencoder-libre mcomix-libre mc-libre lirc-libre-utils kdeutils-ark-libre kdelibs-libre kdebase-runtime-libre iceweasel-libre gstreamer0.10-bad-libre-plugins gstreamer0.10-bad-libre gst-plugins-bad-libre ghostscript-libre cpupower-libre cdrkit-libre bitlbee-libre-nonprism audio-convert-libre 
-		
+
 		rm -vf ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*
 		cp -v ${MOO_HOME}abs/i686/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp -v ${MOO_HOME}abs/x86_64/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
