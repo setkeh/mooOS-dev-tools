@@ -4,7 +4,8 @@
 ## for mooOS
 
 boot_part=$1
-upper_title="[ mooOS environment configuration ] (chroot) [boot=$boot_part] - beta"
+
+upper_title="[ mooOS environment configuration ] (chroot)"
 
 if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
@@ -432,8 +433,9 @@ if [ $(id -u) -eq 0 ]; then
             pacman -S --noconfirm --needed syslinux
             syslinux-install_update -i -a -m
             $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
-            $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --yesno "Is this your boot/root drive??\n\n$boot_part" 10 30
-            if [ $? != 0 ] ; then
+            if [ "$boot_part" != ""]; then
+                $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --yesno "Is $boot_part your boot drive?" 10 30
+            else
                 # choose boot/root drive
                 $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --inputbox "Please choose the disk to install syslinux to.\n\n This should be the same drive your boot or root partition is on:\n\nUsually /dev/sda1. Be careful!" 10 70 2> $TMP/bout
                 if [ $? = 1 ] || [ $? = 255 ] ; then

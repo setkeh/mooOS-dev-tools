@@ -77,6 +77,7 @@ repackage_this() {
 	package_name="$1"
 	package_repos="$2"
 	package_type="$3"
+	package_install="$4"
 	delete_custom_package_caches "$package_name"
 	mkdir -p "${MOO_HOME}abs/$package_name"
 	cd "${MOO_HOME}abs/$package_name"
@@ -85,10 +86,10 @@ repackage_this() {
 		wget "$urls"
 	done
 	if [ "$package_type" == "x86_64" ] || [ "$package_type" == "any" ]; then
-		makepkg -sfi
+		makepkg -sf$package_install
 	fi
 	if [ "$package_type" == "i686" ] || [ "$package_type" == "any" ]; then
-		schroot -p -- makepkg -sfi
+		schroot -p -- makepkg -sf$package_install
 	fi
 	cd "$PWD"
 }
@@ -102,7 +103,7 @@ create_custom_packages() {
 		
 		## moo-tools
 		delete_custom_package_caches "moo-tools"
-		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any"
+		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any" i
 		
 		## moo-zsh
 		delete_custom_package_caches "moo-zsh"
@@ -111,6 +112,10 @@ create_custom_packages() {
 		## github wrapper
 		delete_custom_package_caches "gh"
 		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any"
+
+		## install custom mooOS wallpapers
+		delete_custom_package_caches "moo-wallpapers"
+		repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD" "http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any" i
 		
 		## vimb web browser and tabbed, patched!
 		#delete_custom_package_caches "vb-pdq"
@@ -121,14 +126,6 @@ create_custom_packages() {
 		## sync ABS
 		echo "${bldgreen}Syncing Arch Build System...${txtrst}"
 		sudo abs
-
-		## install custom mooOS packages
-		## wallpapers
-		# cd ${MOO_HOME}github/mooOS-wallpapers
-		# makepkg -sf
-		# schroot -p -- makepkg -sf
-
-		## make custom branded packages
 
 		## FILESYSTEM
 		delete_custom_package_caches "filesystem"
