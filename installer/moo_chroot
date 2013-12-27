@@ -617,14 +617,14 @@ Defaults !tty_tickets' >>  /etc/sudoers"
     }
 
     make_mooOS() {
-        if [ "$puser" != "" ]; then
+        #if [ "$puser" != "" ]; then
 
             my_home="/home/$puser/"
             dev_directory="${my_home}Github/"
 
             locale-gen
 
-            if [ ! -f "/var/log/polipo.log" ]; then
+            #if [ ! -f "/var/log/polipo.log" ]; then
 
                 # mkdir -p /usr/share/tor/hidden_service1
                 # mkdir -p /usr/share/tor/hidden_service2
@@ -1082,12 +1082,12 @@ Defaults !tty_tickets' >>  /etc/sudoers"
               # 'lib32-nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'
               # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
                   #  else
-              fi
+          #    fi
                 $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Exiting install script...." 30 70
                # fi
             #fi
 
-        fi
+        #fi
         current_selection 11
     }
 
