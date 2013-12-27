@@ -57,7 +57,7 @@ upper_title="Welcome to mooOS Installer $archtype"
 #     DIALOG=${DIALOG=Xdialog}
 # fi
 
-$DIALOG --clear --backtitle "$upper_title" --title "Information" --msgbox "You can decrease/increase the FONT SIZE with Ctrl+Down/Up arrow keys.\n\nFeel free to use gparted or other GNU/Linux tools to manage your partitioning schema before running this installer.\n\nIf manual partitioning IS done then you SHOULD skip right to \"Step 4 Create internet connection\"" 20 70
+$DIALOG --clear --backtitle "$upper_title" --title "Information" --msgbox "You can decrease/increase the FONT SIZE with Ctrl+Down/Up arrow keys.\n\nFeel free to use gparted or other GNU/Linux tools to manage your partitioning schema before running this installer.\n\nIf manual partitioning IS done then you SHOULD skip right to \"Step 3 Format and/or mount filesystems\"" 20 70
 
 
 if [ "$archtype" = "x86_64" ]; then
