@@ -107,8 +107,8 @@ su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
 
 #useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /usr/bin/zsh arch
 
-#pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
-#pacman-key --lsign-key E73F68F6
+pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
+pacman-key --lsign-key E73F68F6
                 
 pacman -Rs sublime-text-dev --noconfirm
 su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
