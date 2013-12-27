@@ -1141,3 +1141,5 @@ Defaults !tty_tickets' >>  /etc/sudoers"
         chroot_menu
     done
 fi
+
+exit 0
