@@ -54,7 +54,8 @@ lib32-libxss
 lib32-libxinerama
 lib32-glib
 lib32-gtk
-lib32-atklib32-e2fsprogs
+lib32-atk
+lib32-e2fsprogs
 lib32-gdk-pixbuf2
 lib32-keyutils
 lib32-krb5
@@ -64,7 +65,6 @@ lib32-libldap
 lib32-libtiff
 lib32-libxcomposite
 lib32-gtk2
-lib32-dbus-lib
 lib32-dbus-glib
 lib32-libusbx
 lib32-libudev.so.0
