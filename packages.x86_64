@@ -2,3 +2,5 @@ codecs64
 steam
 lib32-libpciaccess
 lib32-libtxc_dxtn
+lib32-libxrandr
+lib32-libxcursor
