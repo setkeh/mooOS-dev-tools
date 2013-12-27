@@ -313,14 +313,14 @@ if [ $(id -u) -eq 0 ]; then
         if [ $? = 0 ] ; then
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --inputbox "Please choose your username:\n\n" 10 70 2> $TMP/puser
             puser=$(cat $TMP/puser)
-            if [ "$puser" != "" ]; then
+            #if [ "$puser" != "" ]; then
                 useradd -m -g users -s /usr/bin/zsh $puser
-            fi
-        fi
+            #fi
+        #fi
 
         puser=$(cat $TMP/puser)
 
-        if [ "$puser" != "" ]; then
+        #if [ "$puser" != "" ]; then
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Next step is to add password for $puser [ ESC to return to menu ]" 10 30
             if [ $? = 255 ] ; then
                 chroot_menu
