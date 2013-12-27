@@ -131,6 +131,8 @@ key-mon
 keychain
 lib32-libpciaccess
 lib32-libtxc_dxtn
+lib32-libxcursor
+lib32-libxrandr
 libavc1394
 libisoburn
 libkfbapi
@@ -191,6 +193,7 @@ ntp
 nvidia-utils
 ocenaudio
 omg-suite
+opencl-nvidia
 openssh
 p7zip-libre
 pacaur
