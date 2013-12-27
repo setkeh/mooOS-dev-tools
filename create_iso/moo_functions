@@ -99,7 +99,7 @@ create_custom_packages() {
 	if ask_something; then
 		## moo-scripts
 		delete_custom_package_caches "moo-scripts"
-		repackage_this "moo-scripts" "https://raw.github.com/idk/bin/master/PKGBUILD" "any"
+		repackage_this "moo-scripts" "https://raw.github.com/idk/bin/master/PKGBUILD" "any" i
 		
 		## moo-tools
 		delete_custom_package_caches "moo-tools"
@@ -111,7 +111,7 @@ create_custom_packages() {
 	
 		## github wrapper
 		delete_custom_package_caches "gh"
-		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any"
+		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any" i
 
 		## install custom mooOS wallpapers
 		#delete_custom_package_caches "moo-wallpapers"
