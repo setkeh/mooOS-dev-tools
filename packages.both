@@ -16,7 +16,6 @@ autocutsel
 automake
 autopsy
 baobab
-binutils
 bison
 bitcoin-qt
 bitlbee-libre-nonprism
@@ -70,7 +69,6 @@ fortune-mod
 frei0r-plugins
 fslint
 fuseiso
-gcc
 gcolor2
 gdb
 getmail
@@ -129,10 +127,19 @@ kdeutils-ark-libre
 keepassx
 key-mon
 keychain
+lib32-cairo
+lib32-dbus-glib
+lib32-gtk2
 lib32-libpciaccess
+lib32-libpulse
 lib32-libtxc_dxtn
+lib32-libudev.so.0
+lib32-libusbx
 lib32-libxcursor
+lib32-libxinerama
 lib32-libxrandr
+lib32-libxss
+lib32-pango
 libavc1394
 libisoburn
 libkfbapi
