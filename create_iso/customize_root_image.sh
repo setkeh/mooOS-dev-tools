@@ -81,12 +81,7 @@ if [ ! -d /home/moo ]; then
 fi
 
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
-
 #useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /usr/bin/zsh arch
-
-## TODO hack caused by poor build params? or...        
-#pacman -Rs sublime-text-dev --noconfirm
-#su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
 ## suod/su perm stuffs
 su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"

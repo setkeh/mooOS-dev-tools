@@ -107,7 +107,7 @@ create_custom_packages() {
 		
 		## moo-zsh
 		delete_custom_package_caches "moo-zsh"
-		repackage_this "moo-zsh" "https://raw.github.com/idk/zsh/master/PKGBUILD https://raw.github.com/idk/zsh/master/moo-zsh.install" "any"
+		repackage_this "moo-zsh" "https://raw.github.com/idk/zsh/master/PKGBUILD https://raw.github.com/idk/zsh/master/moo-zsh.install" "any" i
 	
 		## github wrapper
 		delete_custom_package_caches "gh"

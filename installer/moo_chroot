@@ -381,10 +381,6 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             update-mirrorlist
             pacman -Syyu --noconfirm
 
-            # TODO hack
-            #pacman -Rs sublime-text-dev --noconfirm
-            #su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
-
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
         fi
 

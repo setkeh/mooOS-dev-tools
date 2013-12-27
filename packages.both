@@ -184,10 +184,8 @@ ninvaders
 nmap
 ntfs-3g
 ntp
-nvidia-utils
 ocenaudio
 omg-suite
-opencl-nvidia
 openssh
 p7zip-libre
 pacaur
@@ -247,9 +245,6 @@ squid
 sshfs
 ssldump
 stardork
-steam-skin-ambiance
-steam-skin-manager
-steam-skin-radiance
 strace
 sublime-text-dev
 sudo
@@ -284,7 +279,6 @@ urxvt-font-size-git
 urxvt-perls
 vb-pdq
 vim
-virtualbox
 vlc
 vorbis-tools
 w3m
