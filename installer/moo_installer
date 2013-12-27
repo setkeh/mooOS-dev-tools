@@ -573,7 +573,7 @@ initial_install() {
         cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
 
         mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
-        cp -v /usr/share/enlightenment/data/backgrounds/* /mnt/usr/share/enlightenment/data/backgrounds
+        cp -v /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
 
         #mkdir -vp /mnt/usr/share/enlightenment/data/themes
         #cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
@@ -585,8 +585,8 @@ initial_install() {
         #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
 
         # copy over custom .desktop files
-        mkdir -vp /mnt/usr/share/applications
-        cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
+        #mkdir -vp /mnt/usr/share/applications
+        #cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
 
         ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
         echo "Updating Sublime Text 3 icons"
@@ -644,7 +644,7 @@ chroot_configuration() {
      
     # fix missing icons in .desktop files
     if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
-        sed -i "/<Filename>moo_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+        sed -i "/<Filename>moo_os_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
     fi
     if [ -f /mnt/etc/skel/.e/e/applications/bar/default/.order ]; then
         sed -i "s/moo_installer/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
@@ -705,22 +705,6 @@ chroot_configuration() {
 
     if [ -f /mnt/usr/share/applications/bvnc.desktop ]; then
         rm /mnt/usr/share/applications/bvnc.desktop
-    fi
-
-    if [ -f /mnt/usr/share/enlightenment/data/themes/Post_It_White.edj ]; then
-        rm -f /mnt/usr/share/enlightenment/data/themes/Post_It_White.edj
-    fi
-
-    if [ -f /mnt/usr/share/enlightenment/data/themes/Simply_White_etk.edj ]; then
-        rm -f /mnt/usr/share/enlightenment/data/themes/Simply_White_etk.edj
-    fi
-
-    if [ -f /mnt/usr/share/enlightenment/data/themes/New_Millenium.edj ]; then
-        rm -f /mnt/usr/share/enlightenment/data/themes/New_Millenium.edj
-    fi
-
-    if [ -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop ]; then
-        rm -f /mnt/usr/share/enlightenment/data/themes/qv4l2.desktop
     fi
 
     ## pass along boot partition argument

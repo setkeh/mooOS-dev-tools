@@ -73,22 +73,6 @@ if [ -f /usr/share/applications/bvnc.desktop ]; then
 	rm /usr/share/applications/bvnc.desktop
 fi
 
-if [ -f /usr/share/enlightenment/data/themes/Post_It_White.edj ]; then
-	rm -f /usr/share/enlightenment/data/themes/Post_It_White.edj
-fi
-
-if [ -f /usr/share/enlightenment/data/themes/Simply_White_etk.edj ]; then
-	rm -f /usr/share/enlightenment/data/themes/Simply_White_etk.edj
-fi
-
-if [ -f /usr/share/enlightenment/data/themes/New_Millenium.edj ]; then
-	rm -f /usr/share/enlightenment/data/themes/New_Millenium.edj
-fi
-
-if [ -f /usr/share/enlightenment/data/themes/qv4l2.desktop ]; then
-	rm -f /usr/share/enlightenment/data/themes/qv4l2.desktop
-fi
-
 ## create live home
 if [ ! -d /home/moo ]; then
 	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root

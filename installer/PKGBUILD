@@ -1,8 +1,8 @@
 # Maintainer: pdq <pdq@localhost>
 pkgname=moo-tools
-pkgver=0.23
-pkgrel=23
-pkgdesc="Installer for mooOS using dialog."
+pkgver=0.24
+pkgrel=1
+pkgdesc="Installer and various tools for mooOS."
 arch=(any)
 url="https://github.com/idk/mooOS-dev-tools.git"
 license=('GPL3')
@@ -41,8 +41,31 @@ package() {
 	install -D -m 755 "installer/moo_chroot" "$pkgdir/usr/bin/moo_chroot"
 	install -D -m 644 "create_iso/moo_config" "$pkgdir/etc/moo.cfg"
 	install -D -m 755 "create_iso/mkiso" "$pkgdir/usr/bin/mkiso"
+	install -D -m 755 "misc/moo" "$pkgdir/usr/bin/moo"
 	install -Dm644 "misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
-	install -Dm644 "applications/moo_os_installer.desktop" "$pkgdir/usr/share/applications/moo_os_installer.desktop"
+	install -Dm644 "applications/aarchup.desktop" "$pkgdir/usr/share/applications/aarchup.desktop"
+	install -Dm644 "applications/aur_package_updater.desktop" "$pkgdir/usr/share/applications/aur_package_updater.desktop"
+	install -Dm644 "applications/canto_curses.desktop" "$pkgdir/usr/share/applications/canto_curses.desktop"
+	install -Dm644 "applications/cpu_frequency.desktop" "$pkgdir/usr/share/applications/cpu_frequency.desktop"
+	install -Dm644 "applications/cpus_temp.desktop" "$pkgdir/usr/share/applications/cpus_temp.desktop"
+	install -Dm644 "applications/GPU_nvidia.desktop" "$pkgdir/usr/share/applications/GPU_nvidia.desktop"
 	install -Dm644 "applications/man_mooOS.desktop" "$pkgdir/usr/share/applications/man_mooOS.desktop"
+	install -Dm644 "applications/moo_os_installer.desktop" "$pkgdir/usr/share/applications/moo_os_installer.desktop"
+	install -Dm644 "applications/morelogs.desktop" "$pkgdir/usr/share/applications/morelogs.desktop"
+	install -Dm644 "applications/musicp.desktop" "$pkgdir/usr/share/applications/musicp.desktop"
+	install -Dm644 "applications/mutt_client.desktop" "$pkgdir/usr/share/applications/mutt_client.desktop"
+	install -Dm644 "applications/net_notify.desktop" "$pkgdir/usr/share/applications/net_notify.desktop"
+	install -Dm644 "applications/package_updates.desktop" "$pkgdir/usr/share/applications/package_updates.desktop"
+	install -Dm644 "applications/radio.desktop" "$pkgdir/usr/share/applications/radio.desktop"
+	install -Dm644 "applications/startuphint.desktop" "$pkgdir/usr/share/applications/startuphint.desktop"
+	install -Dm644 "applications/sublime_text_3_root.desktop" "$pkgdir/usr/share/applications/sublime_text_3_root.desktop"
+	install -Dm644 "applications/system_log.desktop" "$pkgdir/usr/share/applications/system_log.desktop"
+	install -Dm644 "applications/tty_clock.desktop" "$pkgdir/usr/share/applications/tty_clock.desktop"
+	install -Dm644 "applications/vimb.desktop" "$pkgdir/usr/share/applications/vimb.desktop"
+	install -Dm644 "applications/vimb_proxy.desktop" "$pkgdir/usr/share/applications/vimb_proxy.desktop"
+	install -Dm644 "applications/weechat.desktop" "$pkgdir/usr/share/applications/weechat.desktop"
+	install -Dm644 "applications/yeah.desktop" "$pkgdir/usr/share/applications/yeah.desktop"
+	install -Dm644 "applications/yt_viewer.desktop" "$pkgdir/usr/share/applications/yt_viewer.desktop"
+	install -Dm644 "applications/zandronum.desktop" "$pkgdir/usr/share/applications/zandronum.desktop"
 	gzip -f "$pkgdir/usr/local/man/man1/mooOS.1"
 }
