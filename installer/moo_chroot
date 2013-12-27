@@ -375,15 +375,15 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
 
             ## add moo keys
-            pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
-            pacman-key --lsign-key E73F68F6
+            #pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
+            #pacman-key --lsign-key E73F68F6
 
             update-mirrorlist
             pacman -Syyu --noconfirm
 
             # TODO hack
-            pacman -Rs sublime-text-dev --noconfirm
-            su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
+            #pacman -Rs sublime-text-dev --noconfirm
+            #su -l $puser -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
         fi

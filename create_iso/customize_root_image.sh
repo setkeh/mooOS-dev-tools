@@ -1,5 +1,6 @@
-#!/bin/bash
-## mooOS
+#!/usr/bin/bash
+## moo
+
 sleep 5s
 set -e -u
 
@@ -7,25 +8,26 @@ sed -i 's/#\(en_US\.UTF-8\)/\1/' /etc/locale.gen
 locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
-
 ## figure out architecture type
 archtype="$(uname -m)"
+
 if [ "$archtype" = "x86_64" ]; then
 	rm /etc/pacman.conf /etc/pacman-i686.conf
 	mv /etc/pacman-x86_64.conf /etc/pacman.conf
+else
+	rm /etc/pacman-i686.conf /etc/pacman-x86_64.conf
 fi
 
+## change moo repo from local to remote 
 sed -i "s/http:\/\/repo.mooOS.pdq/http:\/\/repos.mooos.org/g" /etc/pacman.conf
 sed -i "s/CacheDir/#CacheDir/g" /etc/pacman.conf
 
+## do some root specific stuffs
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
 # fix missing icons in .desktop files
 sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
-#sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
-#sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
-#sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
 sed -i "s/Exec=/Exec=kdesudo /g" /usr/share/applications/gparted.desktop
 sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /usr/share/applications/kde4/krandrtray.desktop
 sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /usr/share/applications/kde4/kinfocenter.desktop
@@ -87,41 +89,34 @@ if [ -f /usr/share/enlightenment/data/themes/qv4l2.desktop ]; then
 	rm -f /usr/share/enlightenment/data/themes/qv4l2.desktop
 fi
 
+## create live home
 if [ ! -d /home/moo ]; then
 	rsync -avp /etc/skel/ /home/moo --exclude=.zshrc.root
-	# ln -sf /home/moo/.local/applications/install_mooOS.desktop /home/moo/install_mooOS.desktop
-	# chmod +x /home/moo/install_mooOS.desktop
-	# chmod +x /home/moo/Github/mooOS-dev-tools/installer/chroot-install.sh
-	# chmod +x /home/moo/Github/mooOS-dev-tools/installer/installer.sh
-	#su -l moo -c 'kbuildsycoca4 --noincremental'
-	#chmod -R g+r,o+r /home/moo
 	chgrp -R users /home/moo
 	chown moo:users -R /home/moo
-	#chgrp -R users /tmp/moo-firefox-qrtww0pl.Default-User
-	#chown moo -R /tmp/moo-firefox-qrtww0pl.Default-User
 fi
 
 #ln -s /usr/lib/systemd/system/lxdm.service display-manager.service
 
-su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
-
 #useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /usr/bin/zsh arch
 
-pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
-pacman-key --lsign-key E73F68F6
-                
-pacman -Rs sublime-text-dev --noconfirm
-su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
+## TODO hack caused by poor build params? or...        
+#pacman -Rs sublime-text-dev --noconfirm
+#su -l moo -c "pacaur -S sublime-text-dev --noconfirm --noedit" #
 
+## suod/su perm stuffs
+su -c "echo 'moo ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
 chmod 750 /etc/sudoers.d
 chmod 440 /etc/sudoers.d/g_wheel
 
+## create fresh full mirrorlist
 sed -i "s/#Server/Server/g" /etc/pacman.d/mirrorlist
 sed -i 's/#\(Storage=\)auto/\1volatile/' /etc/systemd/journald.conf
+
+## create the required squid cache directories
 squid -z &
 
-#chmod -R 777 /run/transmission
-#chown -R moo /run/transmission
+## systemd stuffs
 systemctl disable iptables.service cpupower.service
 systemctl enable multi-user.target pacman-init.service choose-mirror.service
 systemctl enable ntpd.service
@@ -130,8 +125,5 @@ systemctl enable privoxy.service
 systemctl enable preload.service
 systemctl enable polipo.service
 systemctl enable cronie.service
-#systemctl daemon-reload
-#systemctl disable getty@tty1
-#systemctl enable autologin@tty1
 
 exit 0
