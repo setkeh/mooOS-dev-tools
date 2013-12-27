@@ -1,7 +1,7 @@
 # Maintainer: pdq <pdq@localhost>
 pkgname=moo-tools
 pkgver=0.23
-pkgrel=20
+pkgrel=21
 pkgdesc="Installer for mooOS using dialog."
 arch=(any)
 url="https://github.com/idk/mooOS-dev-tools.git"
