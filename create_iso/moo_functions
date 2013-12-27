@@ -677,7 +677,7 @@ create_build_env() {
 		mkdir -v "${ARCHLIVE}archlive/releng/work"
 		
 		## create customize_root_image.sh
-		cp -v ${MOO_TOOLS_PATH}create_iso/customize_root_image.sh ${ARCHLIVE}archlive/releng/root-image/customize_root_image.sh
+		cp -v ${MOO_TOOLS_PATH}create_iso/customize_root_image.sh ${ARCHLIVE}archlive/releng/root-image/root/customize_root_image.sh
 		
 		cp -v ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
 		
