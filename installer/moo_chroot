@@ -7,7 +7,7 @@ boot_part=$1
 
 upper_title="[ mooOS environment configuration ] (chroot)"
 
-if [ ! -f /usr/bin/dialog ] || [ ! -f /usr/bin/eet ]; then
+if [ ! -f /usr/bin/dialog ]; then
     echo "Missing expected installed packages...returning to Installer, (Re-installation  needed)."
     sleep 10s
     exit 0
@@ -313,12 +313,12 @@ if [ $(id -u) -eq 0 ]; then
         if [ $? = 0 ] ; then
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --inputbox "Please choose your username:\n\n" 10 70 2> $TMP/puser
             puser=$(cat $TMP/puser)
-            #if [ "$puser" != "" ]; then
+            if [ "$puser" != "" ]; then
                 useradd -m -g users -s /usr/bin/zsh $puser
             #fi
         #fi
 
-        puser=$(cat $TMP/puser)
+        #puser=$(cat $TMP/puser)
 
         #if [ "$puser" != "" ]; then
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Next step is to add password for $puser [ ESC to return to menu ]" 10 30
@@ -352,19 +352,21 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             fi
 
             ## patch config files for username
-            PWD=$(pwd)
-            cd /etc/skel/.e/e/config/standard
-            for NEW_FILE in e.*
-            do
-                EWW_FILE=${NEW_FILE/.cfg/.src}
+            if [ -f /usr/bin/eet ]; then
+                PWD=$(pwd)
+                cd /etc/skel/.e/e/config/standard
+                for NEW_FILE in e.*
+                do
+                    EWW_FILE=${NEW_FILE/.cfg/.src}
 
-                eet -d $NEW_FILE config $EWW_FILE
-                sed -i "s/moo/$puser/g" $EWW_FILE
-                rm $NEW_FILE
-                eet -e $NEW_FILE config $EWW_FILE 1
-                rm $EWW_FILE
-            done
-            cd $PWD
+                    eet -d $NEW_FILE config $EWW_FILE
+                    sed -i "s/moo/$puser/g" $EWW_FILE
+                    rm $NEW_FILE
+                    eet -e $NEW_FILE config $EWW_FILE 1
+                    rm $EWW_FILE
+                done
+                cd $PWD
+            fi
 
             ## clean up files content
             sed -i "s/moo/$puser/g" /etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
@@ -381,9 +383,9 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             update-mirrorlist
             pacman -Syyu --noconfirm
 
-            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npsswd for sudo." 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npasswd for sudo." 10 30
         fi
-
+    fi
         current_selection 6
     }
 
@@ -395,7 +397,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
         fi
         
         $DIALOG --clear --backtitle "$upper_title" --title "[ BOOTLOADER ]" --radiolist "Select bootloader" 20 70 30 \
-        "1" "syslinux" on \
+        "1" "syslinux (recommended)" on \
         "2" "grub" off \
         2> $TMP/pbootloader
         if [ $? = 1 ] || [ $? = 255 ] ; then
@@ -617,8 +619,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
     }
 
     make_mooOS() {
-        #if [ "$puser" != "" ]; then
-
+        if [ "$puser" != "" ]; then
             my_home="/home/$puser/"
             dev_directory="${my_home}Github/"
 
@@ -648,7 +649,8 @@ Defaults !tty_tickets' >>  /etc/sudoers"
                 #systemctl enable NetworkManager.service
                 #systemctl enable vnstat.sevice
                 systemctl disable sshd.service iptables.service cpupower.service
-                systemctl enable multi-user.target pacman-init.service
+                systemctl enable multi-user.target
+                # pacman-init.service
                 # choose-mirror.service
                 systemctl enable ntpd.service
                 systemctl enable tor.service
@@ -1083,14 +1085,17 @@ Defaults !tty_tickets' >>  /etc/sudoers"
               # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
                   #  else
           #    fi
-                $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Exiting install script...." 30 70
+                $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "w00t!" 30 70
                # fi
             #fi
 
         #fi
+    else
+         $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Create a user 1st (Step 5)" 30 70
+    fi
         current_selection 11
     }
-
+ 
     chroot_menu() {
         #echo "make it so"
         rootpasswd=$(cat $TMP/rootpasswd)
