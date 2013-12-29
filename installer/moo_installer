@@ -165,7 +165,7 @@ list_partitions() {
 
 is_mnt_is_device_is_freespace() {
     chosen_device="$1"
-    min_space_required="$2" ## 7864320 / 7.5 GiB
+    min_space_required="$2"
     is_mounted=$(mountpoint -q $chosen_device && echo 1 || echo 0)
 
     if [ $is_mounted -eq 1 ]; then
@@ -175,18 +175,15 @@ is_mnt_is_device_is_freespace() {
                 #echo $freespace_left
                 if [ $freespace_left -lt $min_space_required ]; then
                     $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device. $fs is mounted at $chosen_device\nMinimum freespace required: $min_space_required kilobytes.\nActual freespace on device/mount: $freespace_left kilobytes.\n\nReturning to menu..." 20 70
-                    current_selection 1
-                    installer_menu
                     return 0
                 else
                     $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "Sufficient freespace left on the target device. $fs is mounted at $chosen_device.\nMinimum freespace required: $min_space_required bytes.\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..." 20 70
+                    return 1
                 fi
             fi
         done
     else
         $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Nothing is mounted on $chosen_device.\n\nReturning to menu..." 20 70
-        current_selection 3
-        installer_menu
         return 0
     fi
 }
@@ -488,15 +485,15 @@ initial_install() {
     $DIALOG --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
     clean_return
 
-    is_mounted=$(mountpoint -q /mnt && echo 1 || echo 0)
-    if [ $is_mounted ]; then
-         update-mirrorlist
-    else
-        $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
-        current_selection 3
-        installer_menu
-        return 0 
-    fi
+    # is_mounted=$(mountpoint -q /mnt && echo 1 || echo 0)
+    # if [ $is_mounted ]; then
+    #      update-mirrorlist
+    # else
+    #     $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
+    #     current_selection 3
+    #     installer_menu
+    #     return 0 
+    # fi
 
     if [ "$archtype" = "x86_64" ]; then
         mainpkgs="${MOO_TOOLS_PATH}packages.x86_64"
@@ -508,256 +505,262 @@ initial_install() {
 
     $DIALOG --clear --backtitle "$upper_title" --title "Base packages (mandatory)" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        ## sanity checks for if is mounted and if filespace (7.5 GiB) available
-        is_mnt_is_device_is_freespace /mnt 7864320
-        if [ "$moo_arg" = "--debug" ]; then
-            pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
-        else
-            pacstrap -C /etc/pacman.conf /mnt base base-devel
+        ## sanity checks for if is mounted and if filespace available
+        if is_mnt_is_device_is_freespace /mnt 6023456; then  ## 5.7 GiB
+            update-mirrorlist
+            if [ "$moo_arg" = "--debug" ]; then
+                pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
+            else
+                pacstrap -C /etc/pacman.conf /mnt base base-devel
+            fi
         fi
     fi
     
     $DIALOG --clear --backtitle "$upper_title" --title "mooOS packages (mandatory)" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        ## sanity checks for if is mounted and if filespace (7.5 GiB) available
-        #is_mnt_is_device_is_freespace /mnt 7864320
-        echo "" > $TMP/ppkgs
-        $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
-        ppkgs=" $(cat $TMP/ppkgs)"
+        ## sanity checks for if is mounted and if filespace available
+        if is_mnt_is_device_is_freespace /mnt 5323456; then ## 5 GiB
+            echo "" > $TMP/ppkgs
+            $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
+            ppkgs=" $(cat $TMP/ppkgs)"
 
-        # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
-        # if [ $? = 0 ] ; then
-        #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
-        #     if [ $? = 0 ] ; then
-        #         basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
-        #     else
-        #         basepkgs="${MOO_TOOLS_PATH}packages.both"
-        #     fi
-        # else
-        #     basepkgs="${MOO_TOOLS_PATH}packages-server.both"
-        # fi
+            # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
+            # if [ $? = 0 ] ; then
+            #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
+            #     if [ $? = 0 ] ; then
+            #         basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
+            #     else
+            #         basepkgs="${MOO_TOOLS_PATH}packages.both"
+            #     fi
+            # else
+            #     basepkgs="${MOO_TOOLS_PATH}packages-server.both"
+            # fi
 
-        ## TODO
-        basepkgs="${MOO_TOOLS_PATH}packages.both"
-        extrapkgs="${MOO_TOOLS_PATH}packages.extra"
-        
-        mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
-        mkdir -vp /mnt/etc/pacman.d
+            ## TODO
+            basepkgs="${MOO_TOOLS_PATH}packages.both"
+            extrapkgs="${MOO_TOOLS_PATH}packages.extra"
 
-        #cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
-        cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+            
+            mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
+            mkdir -vp /mnt/etc/pacman.d
 
-        # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
-        # if [ $? = 0 ] ; then
-        #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
-        # fi
+            #cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
+            cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
 
-        update-mirrorlist
-        if [ "$moo_arg" = "--debug" ]; then
-            pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
-         else
-            pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+            # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
+            # if [ $? = 0 ] ; then
+            #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
+            # fi
+
+            update-mirrorlist
+            if [ "$moo_arg" = "--debug" ]; then
+                pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
+             else
+                pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+            fi
         fi
     fi
 
     $DIALOG --clear --backtitle "$upper_title" --title "Copy files (mandatory)" --yesno "Copy over required config files for mooOS? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        PWD=$(pwd)
+        if is_mnt_is_device_is_freespace /mnt 234560; then ## 230 MiB
+            PWD=$(pwd)
 
-        rm -rf /mnt/etc/skel
-        cp -vr /etc/skel /mnt/etc/
+            rm -rf /mnt/etc/skel
+            cp -vr /etc/skel /mnt/etc/
 
-        cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-        #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
-        sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
+            cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+            #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
+            sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
 
-        cp -v /etc/psd.conf /mnt/etc/psd.conf
-        cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
-        cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
-        cp -v /etc/resolv.conf /mnt/etc/resolv.conf
-        cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
-        mkdir -vp /mnt/etc/tor
-        cp -vr /etc/tor/* /mnt/etc/tor/
-        cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
-        
-        mkdir -vp /mnt/etc/privoxy
-        sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
+            cp -v /etc/psd.conf /mnt/etc/psd.conf
+            cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
+            cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
+            cp -v /etc/resolv.conf /mnt/etc/resolv.conf
+            cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
+            mkdir -vp /mnt/etc/tor
+            cp -vr /etc/tor/* /mnt/etc/tor/
+            cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
+            
+            mkdir -vp /mnt/etc/privoxy
+            sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
 
-        mkdir -vp /mnt/etc/dansguardian
-        cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
+            mkdir -vp /mnt/etc/dansguardian
+            cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
 
-        mkdir -vp /mnt/etc/squid
-        cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf
+            mkdir -vp /mnt/etc/squid
+            cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf
 
-        mkdir -vp /mnt/etc/pacserve
-        cp -vr /etc/pacserve/* /mnt/etc/pacserve/
+            mkdir -vp /mnt/etc/pacserve
+            cp -vr /etc/pacserve/* /mnt/etc/pacserve/
 
-        mkdir -vp /mnt/etc/modules-load.d
-        cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
+            mkdir -vp /mnt/etc/modules-load.d
+            cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
 
-        mkdir -vp /mnt/etc/grub.d
-        cp -vr /etc/grub.d/* /mnt/etc/grub.d/
+            mkdir -vp /mnt/etc/grub.d
+            cp -vr /etc/grub.d/* /mnt/etc/grub.d/
 
-        mkdir -vp /mnt/etc/default
-        cp -vr /etc/default/* /mnt/etc/default/
+            mkdir -vp /mnt/etc/default
+            cp -vr /etc/default/* /mnt/etc/default/
 
-        mkdir -vp /mnt/usr/share/nano
-        cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
+            mkdir -vp /mnt/usr/share/nano
+            cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
 
-        mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
-        cp -v /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
+            mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
+            cp -v /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
 
-        #mkdir -vp /mnt/usr/share/enlightenment/data/themes
-        #cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
+            #mkdir -vp /mnt/usr/share/enlightenment/data/themes
+            #cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
 
-        #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-        #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-        #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
-        #mv -v /etc/php/php.ini /etc/php/php.ini.bak
-        #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+            #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+            #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+            #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+            #mv -v /etc/php/php.ini /etc/php/php.ini.bak
+            #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
 
-        # copy over custom .desktop files
-        #mkdir -vp /mnt/usr/share/applications
-        #cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
+            # copy over custom .desktop files
+            #mkdir -vp /mnt/usr/share/applications
+            #cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
 
-        ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-        echo "Updating Sublime Text 3 icons"
-        cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
-        cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
-        cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
-        cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
-        cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
-        cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
-        cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
-        cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
-        cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
-        cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
-        cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
-        cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
-        cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
-        cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
-        cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
-        cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
-        cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
-        cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
+            ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
+            echo "Updating Sublime Text 3 icons"
+            cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+            cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+            cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+            cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+            cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
+            cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
+            cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
+            cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
+            cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+            cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+            cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+            cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+            cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+            cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+            cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+            cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+            cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+            cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
-        ## mooOS icon
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
-        cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
-        
-        # create ~/Github and all repos
-        rm -rf /mnt/etc/skel/Github
-        mkdir -vp /mnt/etc/skel/Github
-        cp -v /etc/skel/Github/Github.* /mnt/etc/skel/Github/
+            ## mooOS icon
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
+            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
+            
+            # create ~/Github and all repos
+            rm -rf /mnt/etc/skel/Github
+            mkdir -vp /mnt/etc/skel/Github
+            cp -v /etc/skel/Github/Github.* /mnt/etc/skel/Github/
+        fi
     fi
-
-        current_selection 6
+    current_selection 6
 }
 
 chroot_configuration() {
     $DIALOG --clear --backtitle "$upper_title" --title "Chroot (mandatory)" --msgbox "Chroot into mounted filesystem" 10 30 
     clean_return
-     
-    # fix missing icons in .desktop files
-    if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
-        sed -i "/<Filename>moo_os_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
-    fi
-    if [ -f /mnt/etc/skel/.e/e/applications/bar/default/.order ]; then
-        sed -i "s/moo_installer/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
-    fi
-    if [ -f /mnt/usr/share/applications/mediadownloader.desktop ]; then
-        sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
-    fi
-    #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
-    #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
-    #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
-    if [ -f /mnt/usr/share/applications/gparted.desktop ]; then
-        sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
-    fi
-    if [ -f /mnt/usr/share/applications/kde4/krandrtray.desktop ]; then
-        sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /mnt/usr/share/applications/kde4/krandrtray.desktop
-    fi
-    if [ -f /mnt/usr/share/applications/kde4/kinfocenter.desktop ]; then
-        sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /mnt/usr/share/applications/kde4/kinfocenter.desktop
-    fi
-    if [ -f /mnt/usr/share/applications/johnny.desktop ]; then
-        sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /mnt/usr/share/applications/johnny.desktop
-    fi
-    if [ -f /mnt/usr/share/applications/kde4/nepomukcleaner.desktop ]; then
-        rm /mnt/usr/share/applications/kde4/nepomukcleaner.desktop
-    fi
 
-    if [ -f /mnt/usr/share/applications/kde4/akonaditray.desktop ]; then
-        rm /mnt/usr/share/applications/kde4/akonaditray.desktop
+    if is_mnt_is_device_is_freespace /mnt 153456; then ## 150 MiB
+        # fix missing icons in .desktop files
+        if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
+            sed -i "/<Filename>moo_os_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
+        fi
+        if [ -f /mnt/etc/skel/.e/e/applications/bar/default/.order ]; then
+            sed -i "s/moo_installer/man_mooOS/g" /mnt/etc/skel/.e/e/applications/bar/default/.order
+        fi
+        if [ -f /mnt/usr/share/applications/mediadownloader.desktop ]; then
+            sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /mnt/usr/share/applications/mediadownloader.desktop
+        fi
+        #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukbackup.desktop
+        #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcleaner.desktop
+        #sed -i "s/Icon=nepomukpreferences-desktop/Icon=preferences-desktop/g" /usr/share/applications/kde4/nepomukcontroller.desktop
+        if [ -f /mnt/usr/share/applications/gparted.desktop ]; then
+            sed -i "s/Exec=/Exec=kdesudo /g" /mnt/usr/share/applications/gparted.desktop
+        fi
+        if [ -f /mnt/usr/share/applications/kde4/krandrtray.desktop ]; then
+            sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /mnt/usr/share/applications/kde4/krandrtray.desktop
+        fi
+        if [ -f /mnt/usr/share/applications/kde4/kinfocenter.desktop ]; then
+            sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /mnt/usr/share/applications/kde4/kinfocenter.desktop
+        fi
+        if [ -f /mnt/usr/share/applications/johnny.desktop ]; then
+            sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /mnt/usr/share/applications/johnny.desktop
+        fi
+        if [ -f /mnt/usr/share/applications/kde4/nepomukcleaner.desktop ]; then
+            rm /mnt/usr/share/applications/kde4/nepomukcleaner.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/kde4/akonaditray.desktop ]; then
+            rm /mnt/usr/share/applications/kde4/akonaditray.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/kde4/nepomukbackup.desktop ]; then
+            rm /mnt/usr/share/applications/kde4/nepomukbackup.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/feh.desktop ]; then
+            rm /mnt/usr/share/applications/feh.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/kde4/klipper.desktop ]; then
+            rm /mnt/usr/share/applications/kde4/klipper.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/kde4/nepomukcontroller.desktop ]; then
+            rm /mnt/usr/share/applications/kde4/nepomukcontroller.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/enlightenment_filemanager.desktop ]; then
+            rm /mnt/usr/share/applications/enlightenment_filemanager.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/avahi-discover.desktop ]; then
+            rm /mnt/usr/share/applications/avahi-discover.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/bssh.desktop ]; then
+            rm /mnt/usr/share/applications/bssh.desktop
+        fi
+
+        if [ -f /mnt/usr/share/applications/bvnc.desktop ]; then
+            rm /mnt/usr/share/applications/bvnc.desktop
+        fi
+
+        ## pass along boot partition argument
+        if [ "$pbout" != "" ]; then
+            boot_part_arg=$pbout
+        else
+            boot_part_arg=$pout
+
+        fi
+
+        if [ -f /mnt/usr/bin/moo_chroot ]; then
+            export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $boot_part_arg"
+        else
+            echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!"
+            exit 0
+        fi
+
+        if [ -f /mnt/boot/grub/grub.cfg ]; then
+            sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
+        fi
     fi
-
-    if [ -f /mnt/usr/share/applications/kde4/nepomukbackup.desktop ]; then
-        rm /mnt/usr/share/applications/kde4/nepomukbackup.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/feh.desktop ]; then
-        rm /mnt/usr/share/applications/feh.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/kde4/klipper.desktop ]; then
-        rm /mnt/usr/share/applications/kde4/klipper.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/kde4/nepomukcontroller.desktop ]; then
-        rm /mnt/usr/share/applications/kde4/nepomukcontroller.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/enlightenment_filemanager.desktop ]; then
-        rm /mnt/usr/share/applications/enlightenment_filemanager.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/avahi-discover.desktop ]; then
-        rm /mnt/usr/share/applications/avahi-discover.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/bssh.desktop ]; then
-        rm /mnt/usr/share/applications/bssh.desktop
-    fi
-
-    if [ -f /mnt/usr/share/applications/bvnc.desktop ]; then
-        rm /mnt/usr/share/applications/bvnc.desktop
-    fi
-
-    ## pass along boot partition argument
-    if [ "$pbout" != "" ]; then
-        boot_part_arg=$pbout
-    else
-        boot_part_arg=$pout
-
-    fi
-
-    if [ -f /mnt/usr/bin/moo_chroot ]; then
-        export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $boot_part_arg"
-    else
-        echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!"
-        exit 0
-    fi
-
-    if [ -f /mnt/boot/grub/grub.cfg ]; then
-        sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
-    fi
-
     current_selection 8
 }
 
