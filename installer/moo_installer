@@ -174,10 +174,10 @@ is_mnt_is_device_is_freespace() {
                 freespace_left=$(echo $avail | grep -o '[0-9]*')
                 #echo $freespace_left
                 if [ $freespace_left -lt $min_space_required ]; then
-                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device. $fs is mounted at $chosen_device\nMinimum freespace required: $min_space_required kilobytes.\nActual freespace on device/mount: $freespace_left kilobytes.\n\nReturning to menu..." 20 70
+                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device.\n\n$fs is mounted at $chosen_device\n\nMinimum freespace required: $min_space_required kilobytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nReturning to menu..." 20 70
                     return 0
                 else
-                    $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "Sufficient freespace left on the target device. $fs is mounted at $chosen_device.\nMinimum freespace required: $min_space_required bytes.\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..." 20 70
+                    $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $min_space_required bytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..." 20 70
                     return 1
                 fi
             fi
@@ -506,7 +506,8 @@ initial_install() {
     $DIALOG --clear --backtitle "$upper_title" --title "Base packages (mandatory)" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
         ## sanity checks for if is mounted and if filespace available
-        if is_mnt_is_device_is_freespace /mnt 6023456; then  ## 5.7 GiB
+        is_mnt_is_device_is_freespace /mnt 6023456 ## 5.7 GiB
+        if [ $? -eq 1 ]; then  ## 5.7 GiB
             update-mirrorlist
             if [ "$moo_arg" = "--debug" ]; then
                 pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
@@ -519,7 +520,8 @@ initial_install() {
     $DIALOG --clear --backtitle "$upper_title" --title "mooOS packages (mandatory)" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
         ## sanity checks for if is mounted and if filespace available
-        if is_mnt_is_device_is_freespace /mnt 5323456; then ## 5 GiB
+        is_mnt_is_device_is_freespace /mnt 5323456 ## 5.0 GiB
+        if [ $? -eq 1 ]; then
             echo "" > $TMP/ppkgs
             $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
             ppkgs=" $(cat $TMP/ppkgs)"
@@ -563,7 +565,8 @@ initial_install() {
 
     $DIALOG --clear --backtitle "$upper_title" --title "Copy files (mandatory)" --yesno "Copy over required config files for mooOS? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
-        if is_mnt_is_device_is_freespace /mnt 234560; then ## 230 MiB
+        is_mnt_is_device_is_freespace /mnt 234560 ## 230 MiB
+        if [ $? -eq 1 ]; then
             PWD=$(pwd)
 
             rm -rf /mnt/etc/skel
@@ -676,7 +679,8 @@ chroot_configuration() {
     $DIALOG --clear --backtitle "$upper_title" --title "Chroot (mandatory)" --msgbox "Chroot into mounted filesystem" 10 30 
     clean_return
 
-    if is_mnt_is_device_is_freespace /mnt 153456; then ## 150 MiB
+    is_mnt_is_device_is_freespace /mnt 153456 ## 150 MiB
+    if [ $? -eq 1 ]; then
         # fix missing icons in .desktop files
         if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
             sed -i "/<Filename>moo_os_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
