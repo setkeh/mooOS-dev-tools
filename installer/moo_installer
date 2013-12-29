@@ -163,6 +163,34 @@ list_partitions() {
     $DIALOG --clear --backtitle "$upper_title" --title "Partitions" --msgbox "${partition_list}\n\n${df_out} \n\n Hit enter to return to menu" 25 100
 }
 
+is_mnt_is_device_is_freespace() {
+    chosen_device="$1"
+    min_space_required="$2" ## 7864320 / 7.5 GiB
+    is_mounted=$(mountpoint -q $chosen_device && echo 1 || echo 0)
+
+    if [ $is_mounted -eq 1 ]; then
+        df "$chosen_device" | tail -n+2 | while read fs size used avail use mount ; do
+            if [[ $avail ]] ; then
+                freespace_left=$(echo $avail | grep -o '[0-9]*')
+                #echo $freespace_left
+                if [ $freespace_left -lt $min_space_required ]; then
+                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device. $fs is mounted at $chosen_device\nMinimum freespace required: $min_space_required kilobytes.\nActual freespace on device/mount: $freespace_left kilobytes.\n\nReturning to menu..." 20 70
+                    current_selection 1
+                    installer_menu
+                    return 0
+                else
+                    $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "Sufficient freespace left on the target device. $fs is mounted at $chosen_device.\nMinimum freespace required: $min_space_required bytes.\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..." 20 70
+                fi
+            fi
+        done
+    else
+        $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Nothing is mounted on $chosen_device.\n\nReturning to menu..." 20 70
+        current_selection 3
+        installer_menu
+        return 0
+    fi
+}
+
 partition_editor() {
     $DIALOG --clear --backtitle "$upper_title" --title "Partition editor" --cancel-label "Cancel" --msgbox "pdq is not responsible for loss of data or anything else. When in doubt, cancel and read the code.\n\nIf you accept this, you can start cfdisk now!\n\nYou can return to the main menu at any time by hitting <ESC> key." 20 70
     clean_return
@@ -480,6 +508,8 @@ initial_install() {
 
     $DIALOG --clear --backtitle "$upper_title" --title "Base packages (mandatory)" --yesno "Install base and base-devel? [Select No to skip]" 20 70
     if [ $? = 0 ] ; then
+        ## sanity checks for if is mounted and if filespace (7.5 GiB) available
+        is_mnt_is_device_is_freespace /mnt 7864320
         if [ "$moo_arg" = "--debug" ]; then
             pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
         else
@@ -488,7 +518,9 @@ initial_install() {
     fi
     
     $DIALOG --clear --backtitle "$upper_title" --title "mooOS packages (mandatory)" --yesno "Install all the mooOS packages? [Select No to skip]" 20 70
-    if [ $? = 0 ] ; then    
+    if [ $? = 0 ] ; then
+        ## sanity checks for if is mounted and if filespace (7.5 GiB) available
+        #is_mnt_is_device_is_freespace /mnt 7864320
         echo "" > $TMP/ppkgs
         $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
         ppkgs=" $(cat $TMP/ppkgs)"
