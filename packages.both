@@ -291,6 +291,7 @@ wgetpaste
 whois
 wireshark-cli
 wireshark-gtk
+wpa_supplicant_gui
 x264
 xbindkeys
 xboxdrv

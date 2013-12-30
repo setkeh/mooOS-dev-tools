@@ -460,15 +460,17 @@ Defaults !tty_tickets' >>  /etc/sudoers"
                 $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --yesno "Is $boot_part your boot drive?" 10 30
             else
                 # choose boot/root drive
-                $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --inputbox "Please choose the disk to install syslinux to.\n\n This should be the same drive your boot or root partition is on:\n\nUsually /dev/sda1. Be careful!" 10 70 2> $TMP/bout
+                $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --inputbox "Please choose the disk to install syslinux to.\n\n This should be the same drive as root partition is on:\n\nUsually /dev/sda1. Be careful!" 10 70 2> $TMP/pppbout
                 if [ $? = 1 ] || [ $? = 255 ] ; then
                     chroot_menu
                     return 0
                 fi
-                boot_part=$(cat $TMP/bout)
+                boot_part=$(cat $TMP/pppbout)
             fi
 
-            sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
+            if [ "$boot_part" != ""]; then
+                sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
+            fi
             sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg
             sed -i "s,#MENU BACKGROUND splash.png,MENU BACKGROUND /usr/share/moo-tools/images/splash.png,g" /boot/syslinux/syslinux.cfg
             sed -i "s/UI menu.c32/#UI menu.c32/g" /boot/syslinux/syslinux.cfg

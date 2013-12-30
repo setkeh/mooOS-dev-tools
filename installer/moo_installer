@@ -747,15 +747,9 @@ chroot_configuration() {
         fi
 
         ## pass along boot partition argument
-        if [ "$pbout" != "" ]; then
-            boot_part_arg=$pbout
-        else
-            boot_part_arg=$pout
-
-        fi
-
+        pout=$(cat $TMP/pout)
         if [ -f /mnt/usr/bin/moo_chroot ]; then
-            export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $boot_part_arg"
+            export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $pout"
         else
             echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!"
             exit 0
