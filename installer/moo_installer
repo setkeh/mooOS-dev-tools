@@ -188,6 +188,26 @@ is_mnt_is_device_is_freespace() {
     fi
 }
 
+check_valid_packages() {
+    chosen_packages="$1"
+    success=1
+    for pkg in $chosen_packages
+    do
+        pacman -Sdp "$pkg"
+        if [ $? -ne 0 ]; then
+            $DIALOG --backtitle "$upper_title" --title "Custom Packages" --msgbox "$pkg not found. Please re-try and remove this package from your custom package choices." 20 70
+            success=0
+            break
+        fi
+    done
+    if [ $success -eq 1 ]; then
+        $DIALOG --backtitle "$upper_title" --title "Custom Packages" --msgbox "All the custom packages you have chosen will now be installed alongside the default mooOS packages." 20 70
+        return 1
+    else
+        return 0
+    fi
+}
+
 partition_editor() {
     $DIALOG --clear --backtitle "$upper_title" --title "Partition editor" --cancel-label "Cancel" --msgbox "pdq is not responsible for loss of data or anything else. When in doubt, cancel and read the code.\n\nIf you accept this, you can start cfdisk now!\n\nYou can return to the main menu at any time by hitting <ESC> key." 20 70
     clean_return
@@ -526,153 +546,159 @@ initial_install() {
             $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
             ppkgs=" $(cat $TMP/ppkgs)"
 
-            # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
-            # if [ $? = 0 ] ; then
-            #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
-            #     if [ $? = 0 ] ; then
-            #         basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
-            #     else
-            #         basepkgs="${MOO_TOOLS_PATH}packages.both"
-            #     fi
-            # else
-            #     basepkgs="${MOO_TOOLS_PATH}packages-server.both"
-            # fi
+            ## ensure user input is valid
+            check_valid_packages "$1"
+            if [ $? -eq 1 ]; then
+                # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
+                # if [ $? = 0 ] ; then
+                #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
+                #     if [ $? = 0 ] ; then
+                #         basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
+                #     else
+                #         basepkgs="${MOO_TOOLS_PATH}packages.both"
+                #     fi
+                # else
+                #     basepkgs="${MOO_TOOLS_PATH}packages-server.both"
+                # fi
 
-            ## TODO
-            basepkgs="${MOO_TOOLS_PATH}packages.both"
-            extrapkgs="${MOO_TOOLS_PATH}packages.extra"
+                ## TODO
+                basepkgs="${MOO_TOOLS_PATH}packages.both"
+                extrapkgs="${MOO_TOOLS_PATH}packages.extra"
 
-            
-            mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
-            mkdir -vp /mnt/etc/pacman.d
+                
+                mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
+                mkdir -vp /mnt/etc/pacman.d
 
-            #cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
-            cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+                #cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
+                cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
 
-            # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
-            # if [ $? = 0 ] ; then
-            #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
-            # fi
+                # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
+                # if [ $? = 0 ] ; then
+                #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
+                # fi
 
-            update-mirrorlist
-            if [ "$moo_arg" = "--debug" ]; then
-                pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
-             else
-                pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+                update-mirrorlist
+                if [ "$moo_arg" = "--debug" ]; then
+                    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
+                 else
+                    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs)
+                fi
             fi
         fi
-    fi
 
-    $DIALOG --clear --backtitle "$upper_title" --title "Copy files (mandatory)" --yesno "Copy over required config files for mooOS? [Select No to skip]" 20 70
-    if [ $? = 0 ] ; then
-        is_mnt_is_device_is_freespace /mnt 234560 ## 230 MiB
-        if [ $? -eq 1 ]; then
-            PWD=$(pwd)
+        $DIALOG --clear --backtitle "$upper_title" --title "Copy files (mandatory)" --yesno "Copy over required config files for mooOS? [Select No to skip]" 20 70
+        if [ $? = 0 ] ; then
+            is_mnt_is_device_is_freespace /mnt 234560 ## 230 MiB
+            if [ $? -eq 1 ]; then
+                PWD=$(pwd)
 
-            rm -rf /mnt/etc/skel
-            cp -vr /etc/skel /mnt/etc/
+                rm -rf /mnt/etc/skel
+                cp -vr /etc/skel /mnt/etc/
 
-            cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
-            #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
-            sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
+                cp -v /etc/$pacman_conf /mnt/etc/pacman.conf
+                #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
+                sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
 
-            cp -v /etc/psd.conf /mnt/etc/psd.conf
-            cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
-            cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
-            cp -v /etc/resolv.conf /mnt/etc/resolv.conf
-            cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
-            mkdir -vp /mnt/etc/tor
-            cp -vr /etc/tor/* /mnt/etc/tor/
-            cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
-            
-            mkdir -vp /mnt/etc/privoxy
-            sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
+                cp -v /etc/psd.conf /mnt/etc/psd.conf
+                cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
+                cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
+                cp -v /etc/resolv.conf /mnt/etc/resolv.conf
+                cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head
+                mkdir -vp /mnt/etc/tor
+                cp -vr /etc/tor/* /mnt/etc/tor/
+                cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/
+                
+                mkdir -vp /mnt/etc/privoxy
+                sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
 
-            mkdir -vp /mnt/etc/dansguardian
-            cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
+                mkdir -vp /mnt/etc/dansguardian
+                cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
 
-            mkdir -vp /mnt/etc/squid
-            cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf
+                mkdir -vp /mnt/etc/squid
+                cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf
 
-            mkdir -vp /mnt/etc/pacserve
-            cp -vr /etc/pacserve/* /mnt/etc/pacserve/
+                mkdir -vp /mnt/etc/pacserve
+                cp -vr /etc/pacserve/* /mnt/etc/pacserve/
 
-            mkdir -vp /mnt/etc/modules-load.d
-            cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
+                mkdir -vp /mnt/etc/modules-load.d
+                cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/
 
-            mkdir -vp /mnt/etc/grub.d
-            cp -vr /etc/grub.d/* /mnt/etc/grub.d/
+                mkdir -vp /mnt/etc/grub.d
+                cp -vr /etc/grub.d/* /mnt/etc/grub.d/
 
-            mkdir -vp /mnt/etc/default
-            cp -vr /etc/default/* /mnt/etc/default/
+                mkdir -vp /mnt/etc/default
+                cp -vr /etc/default/* /mnt/etc/default/
 
-            mkdir -vp /mnt/usr/share/nano
-            cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
+                mkdir -vp /mnt/usr/share/nano
+                cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
 
-            mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
-            cp -v /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
+                mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds
+                cp -v /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
 
-            #mkdir -vp /mnt/usr/share/enlightenment/data/themes
-            #cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
+                #mkdir -vp /mnt/usr/share/enlightenment/data/themes
+                #cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
 
-            #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-            #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-            #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
-            #mv -v /etc/php/php.ini /etc/php/php.ini.bak
-            #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+                #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+                #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+                #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+                #mv -v /etc/php/php.ini /etc/php/php.ini.bak
+                #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
 
-            # copy over custom .desktop files
-            #mkdir -vp /mnt/usr/share/applications
-            #cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
+                # copy over custom .desktop files
+                #mkdir -vp /mnt/usr/share/applications
+                #cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
 
-            ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-            echo "Updating Sublime Text 3 icons"
-            cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
-            cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
-            cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
-            cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
-            cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
-            cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
-            cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
-            cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
-            cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
-            cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
-            cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
-            cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
-            cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
-            cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
-            cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
-            cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
-            cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
-            cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
+                ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
+                echo "Updating Sublime Text 3 icons"
+                cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+                cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+                cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+                cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+                cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
+                cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
+                cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
+                cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
+                cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+                cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+                cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+                cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+                cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+                cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+                cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+                cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+                cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+                cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
-            ## mooOS icon
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
-            cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
-            
-            # create ~/Github and all repos
-            rm -rf /mnt/etc/skel/Github
-            mkdir -vp /mnt/etc/skel/Github
-            cp -v /etc/skel/Github/Github.* /mnt/etc/skel/Github/
+                ## mooOS icon
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
+                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
+                
+                # create ~/Github and all repos
+                rm -rf /mnt/etc/skel/Github
+                mkdir -vp /mnt/etc/skel/Github
+                cp -v /etc/skel/Github/Github.* /mnt/etc/skel/Github/
+            fi
         fi
+        current_selection 6
+    else
+        current_selection 5
     fi
-    current_selection 6
 }
 
 chroot_configuration() {

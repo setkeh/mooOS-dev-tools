@@ -21,6 +21,32 @@ fi
 #     DIALOG=${DIALOG=Xdialog}
 # fi
 
+deps=$(cat /usr/share/moo-tools/packages.both)
+
+check_moo_installed() {
+    success=1
+    for dep in $deps
+    do
+        if ! (pacman -Q $dep > /dev/null) ; then 
+            $DIALOG --backtitle "$upper_title" --title "Missing Packages" --msgbox "$dep not found. Please re-try mooOS packages install step again." 20 70
+            success=0
+            break
+        fi
+    done
+    if [ $success -eq 1 ]; then
+        $DIALOG --backtitle "$upper_title" --title "[ SUCCESS ]" --msgbox "All the mooOS packages have been installed." 20 70
+        return 1
+    else
+        return 0
+    fi
+}
+
+check_moo_installed
+if [ $? -ne 1 ]; then
+    exit 0
+    exit 0
+fi
+
 ## only allow root to run script
 if [ $(id -u) -eq 0 ]; then
 
@@ -343,12 +369,23 @@ if [ $(id -u) -eq 0 ]; then
                 npasswd="password required"
             fi
 
-            sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/nano:/usr/bin/vim:/usr/bin/vi\"
+            ## user selected text editor
+            $DIALOG --clear --backtitle "$upper_title" --title "[ DEFAULT TEXT EDITOR ]" --yes-label "nano" --no-label "vim" --yesno "Please choose your text editor:\n\n" 20 70
+            if [ "$?" -eq 0 ]; then
+                txteditor=nano
+                sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/nano:/usr/bin/vim:/usr/bin/vi\"
 Defaults !tty_tickets' >>  /etc/sudoers"
+            else
+                txteditor=vim
+                sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/vim:/usr/bin/vi:/usr/bin/nano\"
+Defaults !tty_tickets' >>  /etc/sudoers"
+                sed -i "s/nano/vim/g" /etc/skel/.zprofile
+                sed -i "s/nano/vim/g" /etc/skel/.xinitrc
+            fi
 
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --defaultno --yesno "Confirm/view sudoers?" 10 30
             if [ $? = 0 ] ; then
-                EDITOR=nano visudo
+                EDITOR=$txteditor visudo
             fi
 
             ## patch config files for username
@@ -479,7 +516,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
 
             $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --defaultno --yesno "Edit/view syslinux.cfg?" 10 30
             if [ $? = 0 ] ; then
-                nano /boot/syslinux/syslinux.cfg
+                $txteditor /boot/syslinux/syslinux.cfg
             fi
             bootmsg="/boot/syslinux/syslinux.cfg @ $boot_part"
         fi
@@ -500,12 +537,12 @@ Defaults !tty_tickets' >>  /etc/sudoers"
     }
 
     edit_file() {
-        $DIALOG --clear --backtitle "$upper_title" --title "[ Edit files ]" --msgbox "Please choose a file to open with nano.\n\nUse the <tab>, <spacebar> and arrow keys to navigate and select file." 10 30
+        $DIALOG --clear --backtitle "$upper_title" --title "[ Edit files ]" --msgbox "Please choose a file to open with $txteditor.\n\nUse the <tab>, <spacebar> and arrow keys to navigate and select file." 10 30
 
         file_edit=$($DIALOG --stdout --backtitle "$upper_title" --title "Please select file." --fselect /etc/ 0 0)
 
         if [ $? = 0 ] ; then
-            nano "$file_edit"
+            $txteditor "$file_edit"
             $DIALOG --clear --backtitle "$upper_title" --title "[ Edit files ]" --defaultno --yesno "Edit/view another file?" 10 30
             if [ $? = 0 ] ; then
                 edit_file
