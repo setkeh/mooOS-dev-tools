@@ -586,7 +586,9 @@ initial_install() {
                 fi
             fi
         fi
+    fi
 
+    if [ -f /mnt/usr/bin/dialog ]; then
         $DIALOG --clear --backtitle "$upper_title" --title "Copy files (mandatory)" --yesno "Copy over required config files for mooOS? [Select No to skip]" 20 70
         if [ $? = 0 ] ; then
             is_mnt_is_device_is_freespace /mnt 234560 ## 230 MiB
