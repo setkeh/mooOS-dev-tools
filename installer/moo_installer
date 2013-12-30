@@ -544,11 +544,12 @@ initial_install() {
         if [ $? -eq 1 ]; then
             echo "" > $TMP/ppkgs
             $DIALOG --clear --backtitle "$upper_title" --title "Custom packages" --inputbox "Please enter any packages you would like added to the initial system installation.\n\nSeperate multiple packages with a space.\n\nIf you do not wish to add any packages beyond the default\nleave input blank and continue." 40 70 2> $TMP/ppkgs
-            ppkgs=" $(cat $TMP/ppkgs)"
+            deppkgs="$(cat $TMP/ppkgs)"
 
             ## ensure user input is valid
-            check_valid_packages "$1"
+            check_valid_packages "$deppkgs"
             if [ $? -eq 1 ]; then
+                ppkgs=" $deppkgs"
                 # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
                 # if [ $? = 0 ] ; then
                 #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
