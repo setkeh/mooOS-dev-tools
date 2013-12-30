@@ -114,6 +114,7 @@ kde-servicemenus-meld-menu-extended
 kdebase-dolphin
 kdebase-kdialog
 kdebase-konsole
+kdebase-runtime-libre
 kdebase-workspace
 kdelibs-libre
 kdemultimedia-ffmpegthumbs
