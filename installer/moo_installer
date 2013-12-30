@@ -536,7 +536,7 @@ initial_install() {
                 trap 'rm -f $tempfile; stty sane; exit 1' 1 2 3 15
 
                 $DIALOG --clear --backtitle "$upper_title" --title "Installing packages" \
-                    --begin 7 1 --tailboxbg /home/$moo/.log 20 80 \
+                    --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
                     --and-widget \
                     --begin 1 20 --msgbox "Press <Enter> when completed" 5 40 \
                     2>$tempfile &
@@ -577,7 +577,7 @@ initial_install() {
                     tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
                     trap 'rm -f $tempfile; stty sane; exit 1' 1 2 3 15
                     dialog --clear --backtitle "$upper_title" --title "Installing packages" \
-                        --begin 7 1 --tailboxbg /home/$moo/.log 20 80 \
+                        --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
                         --and-widget \
                         --begin 1 20 --msgbox "Press <Enter> when completed" 5 40 \
                         2>$tempfile &
@@ -641,7 +641,7 @@ initial_install() {
                 tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
                 trap 'rm -f $tempfile; stty sane; exit 1' 1 2 3 15
                 dialog --clear --backtitle "$upper_title" --title "Installing packages" \
-                    --begin 7 1 --tailboxbg /home/$moo/.log 20 80 \
+                    --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
                     --and-widget \
                     --begin 1 20 --msgbox "Press <Enter> when completed" 5 40 \
                     2>$tempfile &
@@ -834,7 +834,10 @@ chroot_configuration() {
         if [ -f /mnt/usr/share/applications/bvnc.desktop ]; then
             rm /mnt/usr/share/applications/bvnc.desktop
         fi
-
+        if [ -f /mnt/usr/share/applications/moo_os_installer.desktop ]; then
+           rm /mnt/usr/share/applications/moo_os_installer.desktop
+        fi
+        
         ## pass along boot partition argument
         pout=$(cat $TMP/pout)
         if [ -f /mnt/usr/bin/moo_chroot ]; then
