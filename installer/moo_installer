@@ -280,7 +280,7 @@ make_filesystems() {
             fs_type="ext2"
         fi
 
-        mkfs -t $fs_type $pout
+        mkfs -t $fs_type $pout 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Making root filesystem" --programbox 20 70
         typefs=" as $fs_type"
     fi
 
@@ -329,7 +329,7 @@ make_filesystems() {
             fi
 
             mkdir -p /mnt/home
-            mkfs -t $fs_type $plout
+            mkfs -t $fs_type $plout 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Making home filesystem" --programbox 20 70
             typefs=" as $fs_type"
         fi
 
@@ -378,7 +378,7 @@ make_filesystems() {
             fi
 
             mkdir -p /mnt/boot
-            mkfs -t $fs_type $pbout
+            mkfs -t $fs_type $pbout 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Making boot filesystem" --programbox 20 70
             typefs=" as $fs_type"
         fi
         mount $pbout /mnt/boot
@@ -398,7 +398,7 @@ make_filesystems() {
             return 0 
         fi
 
-        mkswap $psout
+        mkswap $psout 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Making swap" --programbox 20 70
         swapon $psout
         $DIALOG --clear --backtitle "$upper_title" --title "SWAP SETUP" --msgbox "Ran: mkswap $psout and swapon $psout" 10 70
     fi
@@ -537,7 +537,7 @@ initial_install() {
                 $DIALOG --clear --backtitle "$upper_title" --title "Step A) initiated" --msgbox "This may take a while...\n\nYou MUST let it run its course fully until the OK button appears." 10 30
                 update-mirrorlist > /dev/null 2>&1
   
-                pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a | $DIALOG  --clear --backtitle "$upper_title" --title "Installing base and base-devel packages" --programbox 20 70
+                pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing base and base-devel packages" --programbox 20 70
 
                 $DIALOG --clear --backtitle "$upper_title" --title "Step A) completed" --msgbox "Proceeding" 10 30
             fi
@@ -575,7 +575,7 @@ initial_install() {
 
                     update-mirrorlist > /dev/null 2>&1
 
-                    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a | $DIALOG  --clear --backtitle "$upper_title" --title "Installing mooOS and custom packages" --programbox 20 70
+                    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing mooOS and custom packages" --programbox 20 70
 
                 $DIALOG --clear --backtitle "$upper_title" --title "Step B) completed" --msgbox "Proceed" 10 30
                 fi
