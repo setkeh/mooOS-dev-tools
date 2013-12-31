@@ -226,7 +226,6 @@ python2-xynehttpserver
 python3-aur
 python3-threaded_servers
 python3-xynexdg
-qmc2
 rkhunter
 roccat-dkms
 rp-pppoe-libre
@@ -235,7 +234,6 @@ rtmpdump
 rxvt-unicode
 schroot
 scrot
-sdlmame
 secure-delete
 simplescreenrecorder
 spectrwm-libre

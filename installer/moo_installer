@@ -534,7 +534,7 @@ initial_install() {
             ## sanity checks for if is mounted and if filespace available
             is_mnt_is_device_is_freespace /mnt 6023456 ## 5.7 GiB
             if [ $? -eq 1 ]; then  ## 5.7 GiB
-                $DIALOG --clear --backtitle "$upper_title" --title "Step A) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until 'completed'" 10 30
+                $DIALOG --clear --backtitle "$upper_title" --title "Step A) initiated" --msgbox "This may take a while...\n\nYou MUST let it run its course fully until the OK button appears." 10 30
                 update-mirrorlist > /dev/null 2>&1
   
                 pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a | $DIALOG  --clear --backtitle "$upper_title" --title "Installing base and base-devel packages" --programbox 20 70
@@ -557,7 +557,7 @@ initial_install() {
                 ## ensure user input is valid
                 check_valid_packages "$deppkgs"
                 if [ $? -eq 1 ]; then
-                    $DIALOG --clear --backtitle "$upper_title" --title "Step B) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
+                    $DIALOG --clear --backtitle "$upper_title" --title "Step B) initiated" --msgbox "This may take a while...\n\nYou MUST let it run its course fully until the OK button appears" 10 30
                   
                     basepkgs="${MOO_TOOLS_PATH}packages.both"
                     extrapkgs="${MOO_TOOLS_PATH}packages.extra"
@@ -817,12 +817,12 @@ finishup() {
 
     $DIALOG --clear --backtitle "$upper_title" --title "Unmount" --yesno "Do you wish to unmount /mnt/* ?" 10 30
     if [ $? = 0 ] ; then
-        umount /mnt/* 2>/dev/null
-        umount /mnt 2>/dev/null
+        umount /mnt/* > /dev/null 2>&1
+        umount /mnt > /dev/null 2>&1
     fi
     $DIALOG --clear --backtitle "$upper_title" --title "Reboot" --yesno "Do you wish to reboot the system to complete this installation? (Remember to remove the mooOS Live DVD/USB)" 10 30
     if [ $? = 0 ] ; then
-        reboot
+        reboot > /dev/null 2>&1
     fi
 }
 
