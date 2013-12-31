@@ -6,6 +6,7 @@
 ## This utility is run as $USER
 ## This utility creates the mooOS livecd ISO image files from current OS
 
+ 
 ## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
 
 ######### START CONFIGURATION ##########
@@ -51,7 +52,6 @@ clr_end="\Zn"
 
 ## temporary files
 _TEMP=/tmp/answer$$
-mkdir -p /tmp/tmp 2>/dev/null
 _CURRENT=/tmp/$moo-cur
 
 ## functions
@@ -71,15 +71,16 @@ mkmoo_menu() {
     CUR=$(cat $_CURRENT)
     $DIALOG \
         --default-item "$CUR" --colors --backtitle "$upper_title" --title "$upper_title" \
-        --menu "Select action: (Do them in order)" 20 60 8 \
+        --menu "Select action: (Do them in order)" 20 60 9 \
         1 $clr"Update system"$clr_end \
         2 $clr"Update github repos"$clr_end \
         3 $clr"Update local repos"$clr_end \
         4 $clr"Update remote repos"$clr_end \
         5 $clr"Bump mooOS version 0.$MOO_VERSION"$clr_end \
         6 $clr"Build mooOS"$clr_end \
-        7 $clr"Sync mooOS"$clr_end \
-        8 $clr"Exit" 2>$_TEMP
+        7 $clr"Sync mooOS iso"$clr_end \
+        8 $clr"Sync mooOS info"$clr_end \
+        9 $clr"Exit" 2>$_TEMP
     if [ $? = 1 ] || [ $? = 255 ] ; then
         exiting
         return 0
@@ -93,7 +94,8 @@ mkmoo_menu() {
         5) bump_moo;;
         6) build_moo;;
         7) sync_remote;;
-        8) exiting_mkmoo;;
+		8) rsync_info;;
+        9) exiting_mkmoo;;
     esac
 }
 
@@ -311,31 +313,136 @@ rsync_iso_remote() {
 	$DIALOG --clear --backtitle "$upper_title" --title "rsync ISO" --yesno "Do you wish to rysnc this ${ARCH_ISO} iso to local/remote servers" 10 30
 	if [ $? = 0 ] ; then
 		rm $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso
-		mv -fv $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Moving iso file" --progressbox 20 70
-		cp -fv $ISO_DIR/*-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Copying iso file" --progressbox 20 70
+		mv -f $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso
+		cp -f $ISO_DIR/*-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso
 
 		## Mount server filesystem to localhost
 		# path to remote repo credentials file
-		REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 
 		## if remote web server exists
 		if [ "$REPO_CREDS" ] ; then
-			. $REPO_CREDS
-
+	        . $REPO_CREDS
 			## override credentials file
 			_iso_sync[2]="$ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso"
-
 			## rsync .iso using vars defined in credentials, e.g.:
 			port=$(eval echo $(echo '${'_iso_sync[1]'}'))
 			flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
 			src=$(eval echo $(echo '${'_iso_sync[2]'}'))
 			dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
-
-			rsync -avcPh $flags -e 'ssh -p $port' $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing iso" --progressbox 20 70 # -n, --dry-run perform a trial run with no changes made
+			rsync -avcPh $flags -e "ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing iso" --ok-label "Continue" --programbox 20 70 # -n, --dry-run perform a trial run with no changes made
 		fi
-		notify-send "${ARCH_ISO} synced" -i "$MOO_ICON"
-		$DIALOG --clear --backtitle "$upper_title" --title "rsync complete" --msgbox "${ARCH_ISO} synced" 20 70
 	fi
+	notify-send "${ARCH_ISO} synced" -i "$MOO_ICON"
+	$DIALOG --clear --backtitle "$upper_title" --title "rsync complete" --msgbox "${ARCH_ISO} synced" 20 70
+}
+
+rsync_info() {
+    $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --yesno "Sync ${ARCH_ISO} md5sums/Names to website?" 10 30
+	if [ $? = 0 ] ; then
+        ## create initial old hash
+        if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old" ]; then
+        	echo 53ef866dd48dcbd620cf402d845c2ec5 > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old
+        fi
+        
+        if ls $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso &> /dev/null; then
+            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "generating ${ARCH_ISO} md5sum... please wait a moment" 20 70
+            
+            # md5sums of current and old .iso
+            MD5HASH=$(md5sum $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso | cut -d " " -f 1)
+
+            ## create initial current hash
+            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum" ]; then
+            	echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum
+            fi
+
+            CURMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum)
+            OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
+
+            ## if new iso create hashes
+            if [ "$CURMD5HASH" != "$MD5HASH" ]; then
+            	echo $CURMD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old
+            	echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum
+            fi
+
+            OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
+            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old ${ARCH_ISO} md5sum was $OLDMD5HASH the new ${ARCH_ISO} md5sum is $MD5HASH" 20 70
+
+            ## replace old hash with new hash in info.php on local web server
+            sed -i "s/$OLDMD5HASH/$MD5HASH/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
+
+            ## create initial old name
+            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old" ]; then
+            	echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old
+            fi
+
+            cd $ISO_STORAGE
+            ## create initial current name
+            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name" ]; then
+            	ls *${ARCH_ISO}.* > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name
+            fi
+
+            NEW_NAME_LIST=$(ls *${ARCH_ISO}*)
+            CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
+            OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
+
+            cd "$PWD"
+            ## if new iso create release name
+            if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
+            	echo $CURRELNAME > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old
+            	echo $NEW_NAME_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name
+            fi
+
+            CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
+            OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
+
+            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old ${ARCH_ISO} release name was $OLDRELNAME the new ${ARCH_ISO} release name is $CURRELNAME" 20 70
+            ## replace old release name with new release name in info.php on local web server
+            sed -i "s/$OLDRELNAME/$CURRELNAME/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
+
+            ## create initial old filesize
+            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old" ]; then
+            	echo 1.8G > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old
+            fi
+
+            cd $ISO_STORAGE
+            ## create initial current filesize
+            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize" ]; then
+            	du -h "mooOS-beta-${ARCH_ISO}.iso" | awk '{print $1;}' > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize
+            fi
+
+            NEW_FILESIZE_LIST=$(du -h "mooOS-beta-${ARCH_ISO}.iso" | awk '{print $1;}')
+            CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize)
+            OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old)
+
+            cd "$PWD"
+            ## if new iso create release filesize
+            if [ "$CURRELFILESIZE" != "$NEW_FILESIZE_LIST" ]; then
+            	echo $CURRELFILESIZE > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old
+            	echo $NEW_FILESIZE_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize
+            fi
+
+            CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize)
+            OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old)
+
+            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old ${ARCH_ISO} release filesize was $OLDRELFILESIZE the new ${ARCH_ISO} release filesize is $CURRELFILESIZE" 20 70
+            ## replace old release filesize with new release filesize in info.php on local web server
+            sed -i "s/$OLDRELFILESIZE (${ARCH_ISO})/$CURRELFILESIZE (${ARCH_ISO})/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
+
+            ## if remote web server exists
+            if [ "$REPO_CREDS" ] ; then
+                    . $REPO_CREDS
+                    dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
+
+                    ## copy info.php with new hash to remote web server
+                    $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "syncing info.php to remote web server" 20 70
+    
+            fi
+        	notify-send "${ARCH_ISO} release info done." -i "$MOO_ICON"
+        else
+           $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "$ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso not exist?" 20 70
+        fi
+	fi
+	current_selection 9
 }
 
 umount_work_env() {
@@ -740,7 +847,6 @@ update_remote() {
 	$DIALOG --clear --backtitle "$upper_title" --title "mooOS repos" --yesno "Sync remote mooOS repo?" 10 30
 	if [ $? = 0 ] ; then
 		## include login credentials:
-		REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 		if [ -f "$REPO_CREDS" ] ; then
 			. $REPO_CREDS
 
@@ -777,7 +883,7 @@ build_moo() {
 			$DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Do you wish to make $moo iso?" 10 30
 			if [ $? = 0 ] ; then
 				umount_work_env $moo
-				sudo ${MOO_TOOLS_PATH}create_iso/build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Building moo iso" --programbox 20 70
+				sudo ${MOO_TOOLS_PATH}create_iso/build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Building $moo iso" --programbox 20 70
 			fi
 
 			$DIALOG --clear --backtitle "$upper_title" --title "Build complete" --msgbox "$moo iso build complete" 20 70
