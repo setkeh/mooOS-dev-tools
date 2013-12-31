@@ -25,7 +25,7 @@ upper_title="Welcome to mooOS 0.$MOO_VERSION backup utility $archtype"
 # fi
 
  ## set live user
-moo=$(whoami)
+moo_user=$(whoami)
 
 ## store current working directory 
 PWD=$(pwd)
@@ -52,7 +52,7 @@ clr_end="\Zn"
 
 ## temporary files
 _TEMP=/tmp/answer$$
-_CURRENT=/tmp/$moo-cur
+_CURRENT=/tmp/$moo_user-cur
 
 ## functions
 exiting_mkmoo() {
@@ -337,126 +337,129 @@ rsync_iso_remote() {
 }
 
 rsync_info() {
-    $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --yesno "Sync ${ARCH_ISO} md5sums/Names to website?" 10 30
-	if [ $? = 0 ] ; then
-        ## create initial old hash
-        if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old" ]; then
-        	echo 53ef866dd48dcbd620cf402d845c2ec5 > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old
-        fi
-        
-        if ls $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso &> /dev/null; then
-            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "generating ${ARCH_ISO} md5sum... please wait a moment" 20 70
-            
-            # md5sums of current and old .iso
-            MD5HASH=$(md5sum $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso | cut -d " " -f 1)
+	for moo in ${ISO_ARCH}
+	do
+	    $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --yesno "Sync $moo md5sums/Names to website?" 10 30
+		if [ $? = 0 ] ; then
+	        ## create initial old hash
+	        if [ ! -f "${ABS_BASE_DIR}mooOS_$moo.md5sum.old" ]; then
+	        	echo 53ef866dd48dcbd620cf402d845c2ec5 > ${ABS_BASE_DIR}mooOS_$moo.md5sum.old
+	        fi
+	        
+	        if ls $ISO_STORAGE/mooOS-beta-$moo.iso &> /dev/null; then
+	            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "generating $moo md5sum... please wait a moment" 20 70
+	            
+	            # md5sums of current and old .iso
+	            MD5HASH=$(md5sum $ISO_STORAGE/mooOS-beta-$moo.iso | cut -d " " -f 1)
 
-            ## create initial current hash
-            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum" ]; then
-            	echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum
-            fi
+	            ## create initial current hash
+	            if [ ! -f "${ABS_BASE_DIR}mooOS_$moo.md5sum" ]; then
+	            	echo $MD5HASH > ${ABS_BASE_DIR}mooOS_$moo.md5sum
+	            fi
 
-            CURMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum)
-            OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
+	            CURMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_$moo.md5sum)
+	            OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_$moo.md5sum.old)
 
-            ## if new iso create hashes
-            if [ "$CURMD5HASH" != "$MD5HASH" ]; then
-            	echo $CURMD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old
-            	echo $MD5HASH > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum
-            fi
+	            ## if new iso create hashes
+	            if [ "$CURMD5HASH" != "$MD5HASH" ]; then
+	            	echo $CURMD5HASH > ${ABS_BASE_DIR}mooOS_$moo.md5sum.old
+	            	echo $MD5HASH > ${ABS_BASE_DIR}mooOS_$moo.md5sum
+	            fi
 
-            OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.md5sum.old)
-            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old ${ARCH_ISO} md5sum was $OLDMD5HASH the new ${ARCH_ISO} md5sum is $MD5HASH" 20 70
+	            OLDMD5HASH=$(cat ${ABS_BASE_DIR}mooOS_$moo.md5sum.old)
+	            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old $moo md5sum was $OLDMD5HASH the new $moo md5sum is $MD5HASH" 20 70
 
-            ## replace old hash with new hash in info.php on local web server
-            sed -i "s/$OLDMD5HASH/$MD5HASH/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
+	            ## replace old hash with new hash in info.php on local web server
+	            sed -i "s/$OLDMD5HASH/$MD5HASH/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
 
-            ## create initial old name
-            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old" ]; then
-            	echo mooOS-2013.09.02-beta-0.99-${ARCH_ISO}.iso > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old
-            fi
+	            ## create initial old name
+	            if [ ! -f "${ABS_BASE_DIR}mooOS_$moo.name.old" ]; then
+	            	echo mooOS-2013.09.02-beta-0.99-$moo.iso > ${ABS_BASE_DIR}mooOS_$moo.name.old
+	            fi
 
-            cd $ISO_STORAGE
-            ## create initial current name
-            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name" ]; then
-            	ls *${ARCH_ISO}.* > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name
-            fi
+	            cd $ISO_DIR
+	            ## create initial current name
+	            if [ ! -f "${ABS_BASE_DIR}mooOS_$moo.name" ]; then
+	            	ls *$moo.* > ${ABS_BASE_DIR}mooOS_$moo.name
+	            fi
 
-            NEW_NAME_LIST=$(ls *${ARCH_ISO}*)
-            CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
-            OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
+	            NEW_NAME_LIST=$(ls *$moo*)
+	            CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_$moo.name)
+	            OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_$moo.name.old)
 
-            cd "$PWD"
-            ## if new iso create release name
-            if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
-            	echo $CURRELNAME > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old
-            	echo $NEW_NAME_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name
-            fi
+	            cd "$PWD"
+	            ## if new iso create release name
+	            if [ "$CURRELNAME" != "$NEW_NAME_LIST" ]; then
+	            	echo $CURRELNAME > ${ABS_BASE_DIR}mooOS_$moo.name.old
+	            	echo $NEW_NAME_LIST > ${ABS_BASE_DIR}mooOS_$moo.name
+	            fi
 
-            CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name)
-            OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.name.old)
+	            CURRELNAME=$(cat ${ABS_BASE_DIR}mooOS_$moo.name)
+	            OLDRELNAME=$(cat ${ABS_BASE_DIR}mooOS_$moo.name.old)
 
-            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old ${ARCH_ISO} release name was $OLDRELNAME the new ${ARCH_ISO} release name is $CURRELNAME" 20 70
-            ## replace old release name with new release name in info.php on local web server
-            sed -i "s/$OLDRELNAME/$CURRELNAME/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
+	            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old $moo release name was $OLDRELNAME the new $moo release name is $CURRELNAME" 20 70
+	            ## replace old release name with new release name in info.php on local web server
+	            sed -i "s/$OLDRELNAME/$CURRELNAME/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
 
-            ## create initial old filesize
-            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old" ]; then
-            	echo 1.8G > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old
-            fi
+	            ## create initial old filesize
+	            if [ ! -f "${ABS_BASE_DIR}mooOS_$moo.filesize.old" ]; then
+	            	echo 1.8G > ${ABS_BASE_DIR}mooOS_$moo.filesize.old
+	            fi
 
-            cd $ISO_STORAGE
-            ## create initial current filesize
-            if [ ! -f "${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize" ]; then
-            	du -h "mooOS-beta-${ARCH_ISO}.iso" | awk '{print $1;}' > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize
-            fi
+	            cd $ISO_STORAGE
+	            ## create initial current filesize
+	            if [ ! -f "${ABS_BASE_DIR}mooOS_$moo.filesize" ]; then
+	            	du -h "mooOS-beta-$moo.iso" | awk '{print $1;}' > ${ABS_BASE_DIR}mooOS_$moo.filesize
+	            fi
 
-            NEW_FILESIZE_LIST=$(du -h "mooOS-beta-${ARCH_ISO}.iso" | awk '{print $1;}')
-            CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize)
-            OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old)
+	            NEW_FILESIZE_LIST=$(du -h "mooOS-beta-$moo.iso" | awk '{print $1;}')
+	            CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_$moo.filesize)
+	            OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_$moo.filesize.old)
 
-            cd "$PWD"
-            ## if new iso create release filesize
-            if [ "$CURRELFILESIZE" != "$NEW_FILESIZE_LIST" ]; then
-            	echo $CURRELFILESIZE > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old
-            	echo $NEW_FILESIZE_LIST > ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize
-            fi
+	            cd "$PWD"
+	            ## if new iso create release filesize
+	            if [ "$CURRELFILESIZE" != "$NEW_FILESIZE_LIST" ]; then
+	            	echo $CURRELFILESIZE > ${ABS_BASE_DIR}mooOS_$moo.filesize.old
+	            	echo $NEW_FILESIZE_LIST > ${ABS_BASE_DIR}mooOS_$moo.filesize
+	            fi
 
-            CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize)
-            OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_${ARCH_ISO}.filesize.old)
+	            CURRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_$moo.filesize)
+	            OLDRELFILESIZE=$(cat ${ABS_BASE_DIR}mooOS_$moo.filesize.old)
 
-            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old ${ARCH_ISO} release filesize was $OLDRELFILESIZE the new ${ARCH_ISO} release filesize is $CURRELFILESIZE" 20 70
-            ## replace old release filesize with new release filesize in info.php on local web server
-            sed -i "s/$OLDRELFILESIZE (${ARCH_ISO})/$CURRELFILESIZE (${ARCH_ISO})/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
+	            $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "The old $moo release filesize was $OLDRELFILESIZE the new $moo release filesize is $CURRELFILESIZE" 20 70
+	            ## replace old release filesize with new release filesize in info.php on local web server
+	            sed -i "s/$OLDRELFILESIZE ($moo)/$CURRELFILESIZE ($moo)/g" /mnt/linux-pdq/media/truecrypt1/domains/pdqblog/info.php
 
-            ## if remote web server exists
-            if [ "$REPO_CREDS" ] ; then
-                    . $REPO_CREDS
-                    dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
+	            ## if remote web server exists
+	            if [ "$REPO_CREDS" ] ; then
+	                    . $REPO_CREDS
+	                    dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
 
-                    ## copy info.php with new hash to remote web server
-                    $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "syncing info.php to remote web server" 20 70
-    
-            fi
-        	notify-send "${ARCH_ISO} release info done." -i "$MOO_ICON"
-        else
-           $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "$ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso not exist?" 20 70
-        fi
-	fi
+	                    ## copy info.php with new hash to remote web server
+	                    $DIALOG --clear --backtitle "$upper_title" --title "Syncing info" --msgbox "syncing info.php to remote web server" 20 70
+	    
+	            fi
+	        	notify-send "$moo release info done." -i "$MOO_ICON"
+	        else
+	           $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "$ISO_STORAGE/mooOS-beta-$moo.iso not exist?" 20 70
+	        fi
+		fi
+	done
 	current_selection 9
 }
 
 umount_work_env() {
 	## unmount work env
-	moo=$1
-	$DIALOG --clear --backtitle "$upper_title" --title "Unmount work env" --yesno "Do you wish to unmount the $moo work env" 10 30
+	meow=$1
+	$DIALOG --clear --backtitle "$upper_title" --title "Unmount work env" --yesno "Do you wish to unmount the $meow work env" 10 30
 	if [ $? = 0 ] ; then
-		sudo umount $WORK_DIR/$moo/root-image/dev > /dev/null 2>&1
-		sudo umount $WORK_DIR/$moo/root-image/ > /dev/null 2>&1
-		sudo rm -r $WORK_DIR/$moo > /dev/null 2>&1
-		sudo rm $WORK_DIR/*$moo > /dev/null 2>&1
-		sudo rm -r $WORK_DIR/iso/$moo/$moo > /dev/null 2>&1
-		sudo rm $WORK_DIR/iso/$moo/*.$moo.* > /dev/null 2>&1
-		sudo rm -r $WORK_DIR/iso/$moo/boot/$moo > /dev/null 2>&1
+		sudo umount $WORK_DIR/$meow/root-image/dev > /dev/null 2>&1
+		sudo umount $WORK_DIR/$meow/root-image/ > /dev/null 2>&1
+		sudo rm -r $WORK_DIR/$meow > /dev/null 2>&1
+		sudo rm $WORK_DIR/*$meow > /dev/null 2>&1
+		sudo rm -r $WORK_DIR/iso/$meow/$meow > /dev/null 2>&1
+		sudo rm $WORK_DIR/iso/$meow/*.$meow.* > /dev/null 2>&1
+		sudo rm -r $WORK_DIR/iso/$meow/boot/$meow > /dev/null 2>&1
 	fi
 }
 
