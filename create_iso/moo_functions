@@ -86,10 +86,10 @@ repackage_this() {
 		wget "$urls"
 	done
 	if [ "$package_type" == "x86_64" ] || [ "$package_type" == "any" ]; then
-		makepkg -sf$package_install
+		makepkg -sf$package_install --noconfirm
 	fi
 	if [ "$package_type" == "i686" ] || [ "$package_type" == "any" ]; then
-		schroot -p -- makepkg -sf$package_install
+		schroot -p -- makepkg -sf$package_install --noconfirm
 	fi
 	cd "$PWD"
 }
