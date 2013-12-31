@@ -493,7 +493,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             pacman -S --noconfirm --needed syslinux
             syslinux-install_update -i -a -m
             $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
-            if [ "$boot_part" != ""]; then
+            if [ "$boot_part" != "" ]; then
                 $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --yesno "Is $boot_part your boot drive?" 10 30
             else
                 # choose boot/root drive
@@ -505,7 +505,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
                 boot_part=$(cat $TMP/pppbout)
             fi
 
-            if [ "$boot_part" != ""]; then
+            if [ "$boot_part" != "" ]; then
                 sed -i "s,/dev/sda3,$boot_part,g" /boot/syslinux/syslinux.cfg
             fi
             sed -i "s/Arch /mooOS GNU\//g" /boot/syslinux/syslinux.cfg

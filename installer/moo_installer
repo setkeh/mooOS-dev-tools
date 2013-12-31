@@ -177,7 +177,12 @@ is_mnt_is_device_is_freespace() {
                     $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device.\n\n$fs is mounted at $chosen_device\n\nMinimum freespace required: $min_space_required kilobytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nReturning to menu..." 20 70
                     return 0
                 else
-                    $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $min_space_required bytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..." 20 70
+                    if [ $min_space_required -eq 0 ]; then
+                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..."
+                    else
+                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $min_space_required bytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..."
+                    fi
+                    $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "$mnt_msg" 20 70
                     return 1
                 fi
             fi
@@ -529,6 +534,7 @@ initial_install() {
             ## sanity checks for if is mounted and if filespace available
             is_mnt_is_device_is_freespace /mnt 0 ## 5.7 GiB
             if [ $? -eq 1 ]; then  ## 5.7 GiB
+                $DIALOG --clear --backtitle "$upper_title" --title "Step A) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
                 rm -f /home/$moo/.log
                 echo "Initialize log" >> /home/$moo/.log
                 echo "Installing base base-devel packages" >> /home/$moo/.log
@@ -538,7 +544,7 @@ initial_install() {
                 $DIALOG --clear --backtitle "$upper_title" --title "Installing packages" \
                     --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
                     --and-widget \
-                    --begin 1 20 --msgbox "Press <Enter> when completed" 5 40 \
+                    --begin 1 20 --msgbox "Press <Enter> ONLY once completed" 5 40 \
                     2>$tempfile &
                 mypid=$!
                 update-mirrorlist >> /home/$moo/.log 2>&1
@@ -571,6 +577,7 @@ initial_install() {
                 ## ensure user input is valid
                 check_valid_packages "$deppkgs"
                 if [ $? -eq 1 ]; then
+                    $DIALOG --clear --backtitle "$upper_title" --title "Step B) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
                     rm -f /home/$moo/.log
                     echo "Initialize log" >> /home/$moo/.log
                     echo "Installing mooOS and custom packages" >> /home/$moo/.log
@@ -579,7 +586,7 @@ initial_install() {
                     dialog --clear --backtitle "$upper_title" --title "Installing packages" \
                         --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
                         --and-widget \
-                        --begin 1 20 --msgbox "Press <Enter> when completed" 5 40 \
+                        --begin 1 20 --msgbox "Press <Enter> ONLY once completed" 5 40 \
                         2>$tempfile &
                     mypid=$!
                     ppkgs=" $deppkgs"
@@ -635,6 +642,7 @@ initial_install() {
         if [ $? = 0 ] ; then
             is_mnt_is_device_is_freespace /mnt 0 ## 230 MiB
             if [ $? -eq 1 ]; then
+                $DIALOG --clear --backtitle "$upper_title" --title "Step C) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
                 rm -f /home/$moo/.log
                 echo "Initialize log" >> /home/$moo/.log
                 echo "Installing mooOS and custom packages" >> /home/$moo/.log
@@ -643,7 +651,7 @@ initial_install() {
                 dialog --clear --backtitle "$upper_title" --title "Installing packages" \
                     --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
                     --and-widget \
-                    --begin 1 20 --msgbox "Press <Enter> when completed" 5 40 \
+                    --begin 1 20 --msgbox "Press <Enter> ONLY once completed" 5 40 \
                     2>$tempfile &
                 mypid=$!
                 PWD=$(pwd)
