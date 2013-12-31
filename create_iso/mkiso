@@ -6,6 +6,14 @@
 ## This utility is run as $USER
 ## This utility creates the mooOS livecd ISO image files from current OS
 
+## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
+
+######### START CONFIGURATION ##########
+. /etc/moo.cfg
+
+######### START FUNCTIONS ##############
+#. /usr/share/moo-tools/create_iso/moo_functions
+
 upper_title="Welcome to mooOS 0.$MOO_VERSION backup utility $archtype"
 
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the backup utility Type." 20 70
@@ -14,14 +22,6 @@ upper_title="Welcome to mooOS 0.$MOO_VERSION backup utility $archtype"
 # else
 #     DIALOG=${DIALOG=Xdialog}
 # fi
-
-## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
-
-######### START CONFIGURATION ##########
-. /etc/moo.cfg
-
-######### START FUNCTIONS ##############
-#. /usr/share/moo-tools/create_iso/moo_functions
 
  ## set live user
 moo=$(whoami)
@@ -354,7 +354,7 @@ umount_work_env() {
 }
 
 create_build_env() {
-	$DIALOG --clear --backtitle "$upper_title" --title "Create build env" --yesno --defaultno "Do you wish to skip to create iso" 10 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Create build env" --defaultno --yesno "Do you wish to skip to create iso" 10 30
 	if [ $? -ne 0 ] ; then
 		PWD=$(pwd)
 		## copy root files
@@ -383,7 +383,7 @@ create_build_env() {
 		
 		## tor config
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/tor
-		sudo cp /etc/torrc ${ARCHLIVE}archlive/releng/root-image/etc/tor/torrc
+		sudo cp /etc/tor/torrc ${ARCHLIVE}archlive/releng/root-image/etc/tor/torrc
 		
 		## privoxy config
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/privoxy
@@ -412,10 +412,10 @@ create_build_env() {
 		
 		## copy over rss reader files
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
-		sudo cp ${MOO_HOME}.canto-ng/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/config
+		sudo cp ${MOO_HOME}.canto-ng/conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/conf
 		
 		## copy over firefox files
-		sudo cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User
+		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 		sudo cp -r ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 		
@@ -454,7 +454,7 @@ create_build_env() {
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 		sudo cp -r ${MOO_HOME}.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
 		sudo cp ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
-		sudo cp ${MOO_TOOLS_PATH}misc/kdenliveuirc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliveuirc
+		sudo cp ${MOO_TOOLS_PATH}misc/kdenliverc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliverc
 		sudo cp ${MOO_TOOLS_PATH}misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
 		sudo cp ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
 		sudo cp ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
@@ -565,6 +565,7 @@ create_build_env() {
 		cd "$PWD"
 	
 		## terminology
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard
 		sudo cp -r ${MOO_HOME}.config/terminology/config/standard/base.cfg ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/base.cfg
 		## patch config files for username
 		cd  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/
