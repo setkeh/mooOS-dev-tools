@@ -418,7 +418,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             #pacman-key --lsign-key E73F68F6
 
             update-mirrorlist > /dev/null 2>&1
-            pacman -Syyu --noconfirm 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Updating mooOS" --programbox 20 70
+            pacman -Syyu --noconfirm 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --programbox 20 70
 
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npasswd for sudo." 10 30
         fi
@@ -455,9 +455,9 @@ Defaults !tty_tickets' >>  /etc/sudoers"
 
             pgrub=$(cat $TMP/pgrub)
             if [ "$pgrub" == "1" ] ; then
-                pacman -S --noconfirm --needed grub-bios 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing grub package" --programbox 20 70
+                pacman -S --noconfirm --needed grub-bios 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing grub package" --ok-label "Continue" --programbox 20 70
             else
-                pacman -S --noconfirm --needed grub-efi-x86_64 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing grub package" --programbox 20 70
+                pacman -S --noconfirm --needed grub-efi-x86_64 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing grub package" --ok-label "Continue" --programbox 20 70
             fi
 
             # choose boot/root drive
@@ -472,7 +472,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
            
             $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB ]" --yesno "Is this correct?\n\n grub-install --target=i386-pc --recheck $bout" 10 30
             if [ $? = 0 ] ; then
-                grub-install --target=i386-pc --recheck $bout 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing grub" --programbox 20 70
+                grub-install --target=i386-pc --recheck $bout 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing grub" --ok-label "Continue" --programbox 20 70
 
                 $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB ]" --msgbox "Grub installed" 10 30
     
@@ -484,15 +484,15 @@ Defaults !tty_tickets' >>  /etc/sudoers"
 
                 ## TODO
                 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
-                grub-mkconfig -o /boot/grub/grub.cfg 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "grub-mkconfig" --programbox 20 70
+                grub-mkconfig -o /boot/grub/grub.cfg 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "grub-mkconfig" --ok-label "Continue" --programbox 20 70
                 $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB CONFIGURE ]" --msgbox "Grub configured" 10 30
 
             else
                 $DIALOG --clear --backtitle "$upper_title" --title "[ GRUB ]" --msgbox "Grub not installed..." 10 30
             fi
         else
-            pacman -S --noconfirm --needed syslinux 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing syslinux package" --programbox 20 70
-            syslinux-install_update -i -a -m 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing syslinux" --programbox 20 70
+            pacman -S --noconfirm --needed syslinux 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing syslinux package" --ok-label "Continue" --programbox 20 70
+            syslinux-install_update -i -a -m 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Installing syslinux" --ok-label "Continue" --programbox 20 70
             $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --msgbox "Syslinux installed" 10 30
             if [ "$boot_part" != "" ]; then
                 $DIALOG --clear --backtitle "$upper_title" --title "[ SYSLINUX ]" --yesno "Is $boot_part your boot drive?" 10 30
@@ -575,9 +575,9 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             fi
 
             if [ "$my_networks" ] ; then # some better check should be here / placeholder
-                dhcpcd $my_networks 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Activating network" --programbox 20 70
-                systemctl start dhcpcd 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Starting network" --programbox 20 70
-                systemctl enable dhcpcd 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Enabling network" --programbox 20 70
+                dhcpcd $my_networks 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Activating network" --ok-label "Continue" --programbox 20 70
+                systemctl start dhcpcd > /dev/null 2>&1
+                systemctl enable dhcpcd > /dev/null 2>&1
 
                 # if [ -f /usr/bin/netctl ]; then
                 #     mkdir create_network && cd create_network
@@ -624,7 +624,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             fi
 
             if [ "$my_networks" ] ; then # some better check should be here / placeholder
-                dhcpcd $my_networks 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Activating network" --programbox 20 70
+                dhcpcd $my_networks 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Activating network" --ok-label "Continue" --programbox 20 70
                 $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Set network to $my_networks" 10 30
             else
                 $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Failed to set network...network does not exist/null?" 10 30
@@ -635,7 +635,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
                 if [ -f /usr/bin/netctl ]; then
                     wifi-menu $my_networks
                 else
-                    dhcpcd $my_networks 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Activating network" --programbox 20 70
+                    dhcpcd $my_networks 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Activating network" --ok-label "Continue" --programbox 20 70
                 fi
             else
                 $DIALOG --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
@@ -657,7 +657,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
             my_home="/home/$puser/"
             dev_directory="${my_home}Github/"
 
-            locale-gen 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Generating locale" --programbox 20 70
+            locale-gen 2>&1 | $DIALOG  --clear --backtitle "$upper_title" --title "Generating locale" --ok-label "Continue" --programbox 20 70
 
             #if [ ! -f "/var/log/polipo.log" ]; then
 
@@ -1119,7 +1119,7 @@ Defaults !tty_tickets' >>  /etc/sudoers"
               # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
                   #  else
           #    fi
-                $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "w00t!" 30 70
+                #$DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "w00t!" 30 70
                # fi
             #fi
 
