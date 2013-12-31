@@ -3,9 +3,17 @@
 ## pdq 08-13-2013 - PRESENT
 ## License: GPL3
 
-## This script is run as $USER then following that as root
-## This script creates the mooOS livecd ISO image files from current OS
+## This utility is run as $USER
+## This utility creates the mooOS livecd ISO image files from current OS
 
+upper_title="Welcome to mooOS 0.$MOO_VERSION backup utility $archtype"
+
+# dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the backup utility Type." 20 70
+# if [ $? = 0 ] ; then
+      DIALOG=${DIALOG=dialog}
+# else
+#     DIALOG=${DIALOG=Xdialog}
+# fi
 
 ## DO NOT EDIT BELOW UNLESS YOU KNOW WHAT YOURE DOING ##
 
@@ -13,82 +21,791 @@
 . /etc/moo.cfg
 
 ######### START FUNCTIONS ##############
-. /usr/share/moo-tools/create_iso/moo_functions
+#. /usr/share/moo-tools/create_iso/moo_functions
+
+ ## set live user
+moo=$(whoami)
 
 ## store current working directory 
 PWD=$(pwd)
 
-######### EXECUTE SCRIPT START #########
-if [ $(id -u) -ne 0 ]; then ## as $USER
+## figure out architecture type
+archtype="$(uname -m)"
 
-	## check repos are up
-	check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
-	check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
+## DO NOT RUN AS ROOT
+if [ $(id -u) -eq 0 ]; then
+	$DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "Do not run this utility as root or super user" 10 40
+    exit 0
+fi
 
-	## create the build environment, preparation and update HOST system
-	do_system_updates
+$DIALOG --clear --backtitle "$upper_title" --title "Information" --msgbox "You can decrease/increase the FONT SIZE with Ctrl+Down/Up arrow keys." 20 70
+if [ "$archtype" != "x86_64" ] || [ $? = 255 ] ; then
+    exit 0
+fi
 
-	create_packages_list
+setterm -blank 0
+
+## styling
+clr="\Zb"
+clr_end="\Zn"
+
+## temporary files
+_TEMP=/tmp/answer$$
+mkdir -p /tmp/tmp 2>/dev/null
+_CURRENT=/tmp/$moo-cur
+
+## functions
+exiting_mkmoo() {
+    clear
+    rm -f ${_TEMP}
+    rm -f ${_CURRENT}
+    $DIALOG --clear --backtitle "$upper_title" --title "Exiting Script" --msgbox "type: mkiso to re-run" 10 40
+    exit 0
+}
+
+current_selection() {
+    echo "$1" > $_CURRENT
+}
+
+mkmoo_menu() {
+    CUR=$(cat $_CURRENT)
+    $DIALOG \
+        --default-item "$CUR" --colors --backtitle "$upper_title" --title "$upper_title" \
+        --menu "Select action: (Do them in order)" 20 60 8 \
+        1 $clr"Update system"$clr_end \
+        2 $clr"Update github repos"$clr_end \
+        3 $clr"Update local repos"$clr_end \
+        4 $clr"Update remote repos"$clr_end \
+        5 $clr"Bump mooOS version 0.$MOO_VERSION"$clr_end \
+        6 $clr"Build mooOS"$clr_end \
+        7 $clr"Sync mooOS"$clr_end \
+        8 $clr"Exit" 2>$_TEMP
+    if [ $? = 1 ] || [ $? = 255 ] ; then
+        exiting
+        return 0
+    fi
+    choice=$(cat $_TEMP)
+    case $choice in
+        1) update_moo;;
+        2) update_moohub;;
+        3) update_local;;  
+        4) update_remote;;
+        5) bump_moo;;
+        6) build_moo;;
+        7) sync_remote;;
+        8) exiting_mkmoo;;
+    esac
+}
+
+check_repos() {
+	check_repos_title="Checking repo connectivity"
+	while true
+	do
+		if [ $2 -eq 1 ]; then
+			torsocks curl -s -o "/dev/null" "$1"
+		else
+			curl -s -o "/dev/null" "$1"
+		fi
+		if [ $? -ne 0 ] ; then
+			$DIALOG --clear --backtitle "$upper_title" --title $check_repos_title --msgbox "Error occurred getting URL $1: rechecking in 10 seconds" 10 40
+		elif [ $? -eq 6 ]; then
+			$DIALOG --clear --backtitle "$upper_title" --title $check_repos_title --msgbox "Unable to resolve host: rechecking in 10 seconds" 10 40
+		elif [ $? -eq 7 ]; then
+			$DIALOG --clear --backtitle "$upper_title" --title $check_repos_title --msgbox "Unable to connect to host: rechecking in 10 seconds" 10 40
+		else
+			break
+		fi
+		sleep 10s
+	done
+}
+
+update_moo() {
+	$DIALOG --clear --backtitle "$upper_title" --title "Update packages" --yesno "Run system updates?" 10 30
+	if [ $? = 0 ] ; then
+		$DIALOG --clear --backtitle "$upper_title" --title "Update packages" --defaultno --yesno "With --devel?" 10 30
+		if [ $? = 0 ] ; then
+			devel=" --devel"
+		fi
+
+		$DIALOG --clear --backtitle "$upper_title" --title "Updating packages" --msgbox "Applying i686 updates" 10 40
+		schroot -p -- sudo pacman -Syu && schroot -p -- pacaur -Syua$devel --noedit --rebuild
+		echo ""
+		echo "Applied i686 AUR updates? Then hit [ENTER]:"
+		read wee
+
+		$DIALOG --clear --backtitle "$upper_title" --title "Updating packages" --msgbox "Applying x86_64 updates" 10 40
+		sudo pacman -Syu && pacaur -Syua$devel --noedit --rebuild
+		echo ""
+		echo "Applied x86_64 AUR updates Then hit [ENTER]:"
+		read wee
+	fi
+	current_selection 2
+}
+
+update_moohub() {
+	$DIALOG --clear --backtitle "$upper_title" --title "Update github" --yesno "Run github sync?" 10 30
+	if [ $? = 0 ] ; then
+		su -l "root" -c "pacman -Qqe  | grep -vx \"$(pacman -Qqg base)\" | grep -vx \"$(cat ${MOO_TOOLS_PATH}exclude_pkgs)\" > ${MOO_TOOLS_PATH}packages.both"
+		gh -b 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating github repos" --ok-label "Continue" --programbox 20 70
+	fi
+	current_selection 3
+}
+
+repackage_this() {
+	package_name="$1"
+	package_repos="$2"
+	package_type="$3"
+	package_install="$4"
+	delete_custom_package_caches "$package_name"
+	mkdir -p "${MOO_HOME}abs/$package_name"
+	cd "${MOO_HOME}abs/$package_name"
+	for urls in $package_repos
+	do
+		wget "$urls" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Grabbing package" --progressbox 20 70
+	done
+	if [ "$package_type" == "x86_64" ] || [ "$package_type" == "any" ]; then
+		makepkg -sf$package_install --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Repackaging package" --progressbox 20 70
+	fi
+	if [ "$package_type" == "i686" ] || [ "$package_type" == "any" ]; then
+		schroot -p -- makepkg -sf$package_install --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Repackaging package" --progressbox 20 70
+	fi
+	cd "$PWD"
+}
+
+create_custom_packages() {
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages? (moo-tools/moo-scripts/moo-zsh/moo-wallpapers/gh/vb-pdq)" 10 30
+	if [ $? = 0 ] ; then
+		## moo-scripts
+		delete_custom_package_caches "moo-scripts"
+		repackage_this "moo-scripts" "https://raw.github.com/idk/bin/master/PKGBUILD" "any" i
+		
+		## moo-tools
+		delete_custom_package_caches "moo-tools"
+		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any" i
+		
+		## moo-zsh
+		delete_custom_package_caches "moo-zsh"
+		repackage_this "moo-zsh" "https://raw.github.com/idk/zsh/master/PKGBUILD https://raw.github.com/idk/zsh/master/moo-zsh.install" "any" i
 	
+		## github wrapper
+		delete_custom_package_caches "gh"
+		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any" i
+
+		## install custom mooOS wallpapers
+		#delete_custom_package_caches "moo-wallpapers"
+		#repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
+		
+		## vimb web browser and tabbed, patched!
+		#delete_custom_package_caches "vb-pdq"
+		#repackage_this "vb-pdq" "https://raw.github.com/idk/vb-pdq/master/PKGBUILD https://raw.github.com/idk/vb-pdq/master/vb-pdq.install" "any"
+	fi
+
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages? (filesystem/grub/lsb-release/syslinux/hardinfo)" 10 30
+	if [ $? = 0 ] ; then
+		## sync ABS
+		sudo abs 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating ABS" --progressbox 20 70
+
+		## FILESYSTEM
+		delete_custom_package_caches "filesystem"
+		cp -r /var/abs/core/filesystem/ ${MOO_HOME}abs
+		cp -f ${MOO_TOOLS_PATH}filesystem/issue ${MOO_HOME}abs/filesystem/
+		cp -f ${MOO_TOOLS_PATH}filesystem/os-release ${MOO_HOME}abs/filesystem/
+		FILESYSTEM_HASH=$(md5sum ${MOO_HOME}abs/filesystem/issue | awk '{print $1}')
+		FILESYSTEM2_HASH=$(md5sum ${MOO_HOME}abs/filesystem/os-release | awk '{print $1}')
+		sed -i "s/7813c481156f6b280a3ba91fc6236368/$FILESYSTEM_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+		sed -i "s/b16a4674ccf3a932ff34c6c8393a4f33/$FILESYSTEM2_HASH/g" ${MOO_HOME}abs/filesystem/PKGBUILD
+		cd ${MOO_HOME}abs/filesystem
+		makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating filesystem" --progressbox 20 70
+		schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating filesystem" --progressbox 20 70
+		cd "$PWD"
+
+		## LSB-RELEASE
+		delete_custom_package_caches "lsb-release"
+		cp -r /var/abs/community/lsb-release/ ${MOO_HOME}abs
+		cp -f ${MOO_TOOLS_PATH}lsb-release/PKGBUILD ${MOO_HOME}abs/lsb-release/
+		cp -f ${MOO_TOOLS_PATH}lsb-release/lsb-release.install ${MOO_HOME}abs/lsb-release/
+		cd ${MOO_HOME}abs/lsb-release
+		makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating lsb-release" --progressbox 20 70
+		schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating lsb-release" --progressbox 20 70
+		cd "$PWD"
+
+		## GRUB
+		delete_custom_package_caches "grub"
+		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grub
+		sed -i "s/\"Arch\"/\"mooOS\"/g" ${MOO_HOME}abs/grub/grub.default
+		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
+		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
+		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
+		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
+		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
+		cd ${MOO_HOME}abs/grub
+		makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating grub" --progressbox 20 70
+		schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating grub" --progressbox 20 70
+		cd "$PWD"
+
+		## SYSLINUX
+		delete_custom_package_caches "syslinux"
+		cp -r /var/abs/core/syslinux/ ${MOO_HOME}abs
+		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+        sed -i "s,#MENU BACKGROUND splash.png,MENU BACKGROUND /usr/share/moo-tools/images/splash.png,g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+        sed -i "s/UI menu.c32/#UI menu.c32/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+        sed -i "s/#UI vesamenu.c32/UI vesamenu.c32/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+        sed -i "s/TIMEOUT 50/TIMEOUT 300/g" ${MOO_HOME}abs/syslinux/syslinux.cfg
+		SYSLINUX_HASH=$(md5sum ${MOO_HOME}abs/syslinux/syslinux.cfg | awk '{print $1}')
+		sed -i "s/46ca150f53322ff8f1597d9a342f7e40/$SYSLINUX_HASH/g" ${MOO_HOME}abs/syslinux/PKGBUILD
+		cd ${MOO_HOME}abs/syslinux
+		makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating syslinux" --progressbox 20 70
+		schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating syslinux" --progressbox 20 70
+		cd "$PWD"
+
+		## HARDINFO
+		delete_custom_package_caches "hardinfo"
+		cp -r /var/abs/community/hardinfo/ ${MOO_HOME}abs
+		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/hardinfo/hardinfo.distro
+		HARDINFO_HASH=$(sha1sum ${MOO_HOME}abs/hardinfo/hardinfo.distro | awk '{print $1}')
+		sed -i "s/\"arch\"/\"mooos\"/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+		sed -i "s/4c31cbbfbdeb48593641ff600c8d4fb7bda2b01c/$HARDINFO_HASH/g" ${MOO_HOME}abs/hardinfo/PKGBUILD
+		cd ${MOO_HOME}abs/hardinfo
+		makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating hardinfo" --progressbox 20 70
+		#TODO
+		#schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating hardinfo" --progressbox 20 70
+		cd "$PWD"
+		notify-send "Rebranded packages" -i "$MOO_ICON"
+	fi
+}
+
+delete_package_caches() {
+	#sudo pkgcacheclean -v 1
+	schroot -p -- sudo pkgcacheclean -v 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/i686 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/x86_64 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	mv ${ABS_BASE_DIR}mooOS-pkgs-32/*nvidia* ${ABS_BASE_DIR}nonfree/
+	mv ${ABS_BASE_DIR}mooOS-pkgs-64/*nvidia* ${ABS_BASE_DIR}nonfree/
+}
+
+delete_custom_package_caches() {
+	if [ "$1" != "" ]; then
+		sudo rm ${ABS_BASE_DIR}mooOS-pkgs-32/$1-*
+		sudo rm ${ABS_BASE_DIR}mooOS-pkgs-64/$1-*
+		sudo rm ${MOO_HOME}abs/i686/$1-*
+		sudo rm ${MOO_HOME}abs/x86_64/$1-*
+		rm -fr ${MOO_HOME}abs/$1
+	fi
+}
+
+update_local() {
 	## add branding and custom packages
 	create_custom_packages
-
 	## delete useless package caches
 	delete_package_caches
-
 	## create and sync local repos
 	create_mooos_repos
+	current_selection 4
+}
 
-	## sync local to remote repos
-	sync_mooos_repos
+rsync_iso_remote() {
+	## sync .iso to remote server
+	ARCH_ISO=$1
+	$DIALOG --clear --backtitle "$upper_title" --title "rsync ISO" --yesno "Do you wish to rysnc this ${ARCH_ISO} iso to local/remote servers" 10 30
+	if [ $? = 0 ] ; then
+		rm $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso
+		mv -fv $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}-old.iso 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Moving iso file" --progressbox 20 70
+		cp -fv $ISO_DIR/*-${ARCH_ISO}.iso $ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Copying iso file" --progressbox 20 70
 
-	## bump the version number
-	moo_version
+		## Mount server filesystem to localhost
+		# path to remote repo credentials file
+		REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 
-	notify-send "User script complete" -i "$MOO_ICON"
-	echo "${bldred}Re-running this script as root!${txtrst}"
+		## if remote web server exists
+		if [ "$REPO_CREDS" ] ; then
+			. $REPO_CREDS
 
-	## re-run script as root
- 	sudo $0
+			## override credentials file
+			_iso_sync[2]="$ISO_STORAGE/mooOS-beta-${ARCH_ISO}.iso"
 
-else ## as $ROOT
-	question="${bldyellow}Have you ran this script as USER 1st? You wish to make iso (Y/N)?\n${txtrst}"
-	if ask_something; then
-		## cleanup work/build env
-		for m in ${ISO_ARCH}
+			## rsync .iso using vars defined in credentials, e.g.:
+			port=$(eval echo $(echo '${'_iso_sync[1]'}'))
+			flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
+			src=$(eval echo $(echo '${'_iso_sync[2]'}'))
+			dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
+
+			rsync -avcPh $flags -e 'ssh -p $port' $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing iso" --progressbox 20 70 # -n, --dry-run perform a trial run with no changes made
+		fi
+		notify-send "${ARCH_ISO} synced" -i "$MOO_ICON"
+		$DIALOG --clear --backtitle "$upper_title" --title "rsync complete" --msgbox "${ARCH_ISO} synced" 20 70
+	fi
+}
+
+umount_work_env() {
+	## unmount work env
+	moo=$1
+	$DIALOG --clear --backtitle "$upper_title" --title "Unmount work env" --yesno "Do you wish to unmount the $moo work env" 10 30
+	if [ $? = 0 ] ; then
+		sudo umount $WORK_DIR/$moo/root-image/dev > /dev/null 2>&1
+		sudo umount $WORK_DIR/$moo/root-image/ > /dev/null 2>&1
+		sudo rm -r $WORK_DIR/$moo > /dev/null 2>&1
+		sudo rm $WORK_DIR/*$moo > /dev/null 2>&1
+		sudo rm -r $WORK_DIR/iso/$moo/$moo > /dev/null 2>&1
+		sudo rm $WORK_DIR/iso/$moo/*.$moo.* > /dev/null 2>&1
+		sudo rm -r $WORK_DIR/iso/$moo/boot/$moo > /dev/null 2>&1
+	fi
+}
+
+create_build_env() {
+	$DIALOG --clear --backtitle "$upper_title" --title "Create build env" --yesno --defaultno "Do you wish to skip to create iso" 10 30
+	if [ $? -ne 0 ] ; then
+		PWD=$(pwd)
+		## copy root files
+
+		## profile-sync-daemon
+		sudo cp /etc/psd.conf ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
+		
+		## resolv.conf
+		sudo cp /etc/resolv.conf ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf
+		
+		## resolv.conf.head
+		sudo cp /etc/resolv.conf.head ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf.head
+		
+		## dnsmasq
+		sudo cp /etc/dnsmasq.conf ${ARCHLIVE}archlive/releng/root-image/etc/dnsmasq.conf
+		
+		## dhcpcd
+		sudo cp /etc/dhcpcd.conf ${ARCHLIVE}archlive/releng/root-image/etc/dhcpcd.conf
+		
+		## nano config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/nano
+		sudo cp /usr/share/nano/pkgbuild.nanorc ${ARCHLIVE}archlive/releng/root-image//usr/share/nano/pkgbuild.nanorc
+		
+		## e17 backgrounds
+		sudo cp /usr/share/enlightenment/data/backgrounds/mooOS* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
+		
+		## tor config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/tor
+		sudo cp /etc/torrc ${ARCHLIVE}archlive/releng/root-image/etc/tor/torrc
+		
+		## privoxy config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/privoxy
+		sudo sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
+		
+		## dansguardian config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian
+		sudo cp /etc/dansguardian/dansguardian.conf ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian/dansguardian.conf
+		
+		## squid config
+		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/squid
+		#sudo cp /etc/squid/squid.conf ${ARCHLIVE}archlive/releng/root-image/etc/squid/squid.conf
+
+		## TODO
+		#mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+		#sudo cp ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+		#sudo cp ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+		#mv /etc/php/php.ini /etc/php/php.ini.bak
+		#sudo cp ${dev_directory}etc/php.ini /etc/php/php.ini
+
+		## copy over pentadactyl files
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+		sudo cp -r ${MOO_HOME}.pentadactyl/colors/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
+		sudo cp -r ${MOO_HOME}.pentadactyl/plugins/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
+		
+		## copy over rss reader files
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
+		sudo cp ${MOO_HOME}.canto-ng/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/config
+		
+		## copy over firefox files
+		sudo cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+		sudo cp -r ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+		
+		## copy over ~/.local files
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
+		sudo cp ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
+		sudo cp ${MOO_HOME}.local/applications/tabbed.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
+		sudo cp ${MOO_HOME}.local/applications/URxvt.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
+
+		## copy over ~/.* (dotfiles)
+		sudo cp ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
+		sudo cp ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
+		sudo cp ${MOO_HOME}.zshrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.zshrc
+		sudo cp ${MOO_HOME}.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
+		sudo cp ${MOO_HOME}.nanorc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.nanorc
+		sudo cp ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
+		sudo cp ${MOO_HOME}.pentadactylrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactylrc
+		sudo cp ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
+		sudo cp ${MOO_HOME}.wgetrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.wgetrc
+		sudo cp ${MOO_HOME}.curlrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.curlrc
+		
+		## copy over ~/.themes
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+		sudo cp -r ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+		
+		## copy over ~/.fonts
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
+		sudo cp -r ${MOO_HOME}.fonts/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
+		
+		## copy over kde files
+		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
+		sudo cp -r ${MOO_HOME}.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
+		sudo cp ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
+		sudo cp ${MOO_TOOLS_PATH}misc/kdenliveuirc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliveuirc
+		sudo cp ${MOO_TOOLS_PATH}misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
+		sudo cp ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
+		sudo cp ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
+		sudo cp ${MOO_HOME}.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc
+		sudo cp -r ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
+		sudo cp -r ${MOO_HOME}.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
+		sudo cp ${MOO_HOME}.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+		sudo cp ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
+		sudo cp ${MOO_HOME}.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc
+		sudo cp ${MOO_HOME}.kde4/share/config/kcmdisplayrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kcmdisplayrc
+		sudo cp ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc-2.0
+		
+		## copy over ~/.gnupg
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg
+		sudo cp ${MOO_HOME}.gnupg/gpg-agent.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg-agent.conf
+		sudo cp ${MOO_HOME}.gnupg/gpg.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg.conf
+
+		## copy over transmission file
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon
+		sudo cp ${MOO_TOOLS_PATH}misc/settings.json ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+		
+		## copy over key-mon config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon
+		sudo cp ${MOO_HOME}.config/key-mon/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon/config
+		
+		## copy lxtask config
+		sudo cp ${MOO_HOME}.config/lxtask.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/lxtask.conf
+
+		## copy Trolltech config
+		sudo cp ${MOO_HOME}.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/Trolltech.conf
+		
+		## copy pavucontrol config
+		sudo cp ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
+		
+		## copy over mosudo cp file
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc
+		sudo cp ${MOO_HOME}.moc/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
+		
+		## copy htop file
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop
+		sudo cp ${MOO_HOME}.config/htop/htoprc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop/htoprc
+		
+		## copy sublime text 3 files
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
+		sudo cp -r ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
+		sudo cp ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+		## as above but root
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/User
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/Theme\ -\ Nil
+		sudo cp -r ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/Theme\ -\ Nil/
+		sudo cp ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+		
+		## mooOS icon
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/16x16/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/256x256/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/32x32/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/gnome/48x48/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/128x128/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/16x16/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/256x256/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/32x32/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/hicolor/48x48/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
+		
+		## copy vlc files
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
+		sudo cp ${MOO_TOOLS_PATH}misc/vlc-qt-interface.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
+		sudo cp ${MOO_HOME}.config/vlc/vlcrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
+		
+		## copy over window manager files
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
+		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
+		#sudo rm -r ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
+		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images
+		sudo cp -r ${MOO_HOME}.e/e/applications/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
+		#sudo cp -r ${MOO_HOME}.e/e/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
+		sudo cp -r ${MOO_HOME}.e/e/config/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
+		#sudo cp -r ${MOO_HOME}.e/e/themes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
+		#sudo cp ${MOO_HOME}.e/e/images/tw_cache_images.eet ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
+		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
+		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
+		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
+		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
+		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+		#sudo cp -r /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+
+		## patch config files for username
+		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
+		for NEW_FILE in e.*
 		do
-			umount_work_env $m
+			EWW_FILE=${NEW_FILE/.cfg/.src}
+			sudo eet -d $NEW_FILE config $EWW_FILE
+			sudo sed -i "s/$MOO_USER/moo/g" $EWW_FILE
+			sudo rm $NEW_FILE
+			sudo eet -e $NEW_FILE config $EWW_FILE 1
+			sudo rm $EWW_FILE
+		done
+		cd "$PWD"
+	
+		## terminology
+		sudo cp -r ${MOO_HOME}.config/terminology/config/standard/base.cfg ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/base.cfg
+		## patch config files for username
+		cd  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/
+		sudo eet -d base.cfg config base.src
+		sudo sed -i "s/$MOO_USER/moo/g" base.src
+		sudo rm base.cfg
+		sudo eet -e base.cfg config base.src 1
+		sudo rm base.src
+		cd "$PWD"
+
+		## clean up files content
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf 
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0		
+
+		## copy over hosts file (needed for LAN repos) TODO
+		#sudo cp /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
+
+		## cleanup Github local repos
+		sudo rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+		## mooOS stuffs
+	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop
+	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads
+	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos
+	 	#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox
+	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music
+	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures
+
+	 	## copy home files and create default directories
+	 	sudo cp ${MOO_TOOLS_PATH}misc/Desktop.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop/
+	 	sudo cp ${MOO_TOOLS_PATH}misc/Downloads.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads/
+	 	sudo cp ${MOO_HOME}Videos/Videos.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos/
+	 	sudo cp ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
+	 	sudo cp ${MOO_TOOLS_PATH}misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
+	 	sudo cp ${MOO_TOOLS_PATH}misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
+
+		## deprecated method
+		if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
+			sudo rm -r ${ARCHLIVE}archlive/releng/work
+		fi
+
+		## new method
+		if [ -d "$ISO_DIR" ]; then
+			sudo rm -r "$ISO_DIR"
+		fi
+		if [ -d "$WORK_DIR" ]; then
+			sudo rm -r "$WORK_DIR"
+		fi
+
+		## create pacman.conf for build
+		sudo mkdir -p "$WORK_DIR" && sudo cp ${MOO_TOOLS_PATH}misc/pacman.conf ${WORK_DIR}/pacman.conf
+
+		sudo mkdir -p "${ARCHLIVE}archlive/releng/work"
+		
+		## create customize_root_image.sh
+		sudo cp ${MOO_TOOLS_PATH}create_iso/customize_root_image.sh ${ARCHLIVE}archlive/releng/root-image/root/customize_root_image.sh
+		
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
+		
+		## create pacman.conf for livecd
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/work/pacman.conf
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman.conf
+		
+		## create pacman.conf for livecd specific to architecture
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-x86_64.conf
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/root-image/etc/pacman-i686.conf
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman-x86_64.conf ${ARCHLIVE}archlive/releng/work/pacman-x86_64.conf
+		sudo cp ${MOO_TOOLS_PATH}misc/pacman-i686.conf ${ARCHLIVE}archlive/releng/work/pacman-i686.conf
+
+		sudo cp ${MOO_TOOLS_PATH}packages.both ${ARCHLIVE}archlive/releng/packages.both
+		sudo cp ${MOO_TOOLS_PATH}packages.extra ${ARCHLIVE}archlive/releng/packages.extra
+		sudo cp ${MOO_TOOLS_PATH}packages-server.both ${ARCHLIVE}archlive/releng/packages-server.both
+		sudo cp ${MOO_TOOLS_PATH}packages.i686 ${ARCHLIVE}archlive/releng/packages.i686
+		sudo cp ${MOO_TOOLS_PATH}packages.x86_64 ${ARCHLIVE}archlive/releng/packages.x86_64
+
+		## copy over boot splash screen and mooOS branding
+		sudo cp ${ARCHLIVE}archlive/releng/syslinux/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png
+		sudo convert ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.png ${ARCHLIVE}archlive/releng/root-image/etc/grub.d/splash.jpg > /dev/null 2>&1
+	fi
+		notify-send "Files copied!" -i "$MOO_ICON"
+}
+
+create_mooos_repos() {
+	$DIALOG --clear --backtitle "$upper_title" --title "mooOS repos" --yesno "Create and cleanup mooOS repos?" 10 30
+	if [ $? = 0 ] ; then
+		## remove existing repos
+		if [ -f "${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz" ]; then
+			rm ${ABS_BASE_DIR}mooOS-pkgs-32/mooOS.db.tar.gz > /dev/null 2>&1
+			rm ${ABS_BASE_DIR}mooOS-pkgs-64/mooOS.db.tar.gz > /dev/null 2>&1
+		fi
+		rm ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db.tar.gz > /dev/null 2>&1
+		rm ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db.tar.gz > /dev/null 2>&1
+
+		## hackity hack hack - clean up old git package caches
+		arches="32 64"
+		for mm in $arches
+		do
+			cd ${MOO_HOME}abs/mooOS-pkgs-$mm/
+			mv $(ls | grep "efl-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "efl-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "elementary_test-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "enlightenment17-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "enlightenment17-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "evas_generic_loaders-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "pyradio-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "sqlmap-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "terminology-git-debug-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			rm ${MOO_HOME}abs/mooOS-pkgs-$mm/*-git* > /dev/null 2>&1
+			mv ${MOO_HOME}abs/staging_$mm/* ${MOO_HOME}abs/mooOS-pkgs-$mm/
+			cd "$PWD"
 		done
 
-		## check repos are up
-		check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
-		check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
+		rm -f ${MOO_HOME}abs/i686/*-git* > /dev/null 2>&1
+		rm -f ${MOO_HOME}abs/x86_64/*-git* > /dev/null 2>&1
 
-		create_packages_list
+		## make RMS happy :D
+		## unzip-libre unar spectrwm-libre sdl-libre rp-pppoe-libre p7zip-libre openexr-libre mplayer-libre mozilla-searchplugins mencoder-libre mcomix-libre mc-libre lirc-libre-utils kdeutils-ark-libre kdelibs-libre kdebase-runtime-libre iceweasel-libre gstreamer0.10-bad-libre-plugins gstreamer0.10-bad-libre gst-plugins-bad-libre ghostscript-libre cpupower-libre cdrkit-libre bitlbee-libre-nonprism audio-convert-libre 
 
-		## create the build env
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-*any* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/*-libre-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/unar-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/unar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/unar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/opencollada-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/opencollada-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/opencollada-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/mozilla-searchplugins-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/mozilla-searchplugins-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		# rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/rasqal-*
+		# cp ${MOO_HOME}abs/i686/rasqal-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		# cp ${MOO_HOME}abs/x86_64/rasqal-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		## create repo databases
+		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Creating i686 repository" --progressbox 20 70
+		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Creating x86_64 repository" --progressbox 20 70
+
+		notify-send "Repos created!" -i "$MOO_ICON"
+
+		## clean up stable repos
+		## re-create repos local and remoteed 
+		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/i686/ ${ABS_BASE_DIR}mooOS-pkgs-32-out-of-date 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing old i686 repo" --progressbox 20 70
+		rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/x86_64/ ${ABS_BASE_DIR}mooOS-pkgs-64-out-of-date 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing old x86_64 repo" --progressbox 20 70
+		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}mooOS-pkgs-32/ ${REPO_BASE_DIR}/i686 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing current i686 repo" --progressbox 20 70
+		rsync -avzrcpPh --delete --stats ${ABS_BASE_DIR}mooOS-pkgs-64/ ${REPO_BASE_DIR}/x86_64 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing current x86_64 repo" --progressbox 20 70
+		notify-send "Repos synced to local server!" -i "$MOO_ICON"
+	fi
+}
+
+update_remote() {
+	$DIALOG --clear --backtitle "$upper_title" --title "mooOS repos" --yesno "Sync remote mooOS repo?" 10 30
+	if [ $? = 0 ] ; then
+		## include login credentials:
+		REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
+		if [ -f "$REPO_CREDS" ] ; then
+			. $REPO_CREDS
+
+			## rsync using vars defined in credentials, e.g.:
+			#for i in {1..5}
+			for i in $(eval echo {1..$_remote_count})
+			do
+				port=$(eval echo $(echo '${'_remote$i[1]'}'))
+				flags=$(eval echo $(echo '${'_remote$i[4]'}'))
+				src=$(eval echo $(echo '${'_remote$i[2]'}'))
+				dest=$(eval echo $(echo '${'_remote$i[3]'}'))
+				torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing remote repository" --progressbox 20 70 # -n, --dry-run perform a trial run with no changes made
+			done
+			notify-send "Repos synced to remote server!" -i "$MOO_ICON"
+		fi
+	fi
+	current_selection 5
+}
+
+sync_remote() {
+	## sync .isos to local directory and remote server
+	for mooos in ${ISO_ARCH}
+	do
+		rsync_iso_remote $mooos
+	done
+	current_selection 8
+}
+
+build_moo() {
 		create_build_env
-
 		## change to build directory and build iso
 		for moo in ${ISO_ARCH}
 		do
-
-			question="${bldyellow}You wish to make $moo iso (Y/N)?\n${txtrst}"
-			if ask_something; then
-				echo "${bldcyan}Building $moo iso now...${txtrst}"
-				 ${MOO_TOOLS_PATH}create_iso/build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL"
+			$DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Do you wish to make $moo iso?" 10 30
+			if [ $? = 0 ] ; then
+				umount_work_env $moo
+				sudo ${MOO_TOOLS_PATH}create_iso/build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Building moo iso" --programbox 20 70
 			fi
 
-			echo "${bldcyan}$moo iso build complete${txtrst}"
+			$DIALOG --clear --backtitle "$upper_title" --title "Build complete" --msgbox "$moo iso build complete" 20 70
 			umount_work_env $moo
 		done
+	current_selection 7
+}
 
-		## sync .isos to local directory and remote server
-		for mooos in ${ISO_ARCH}
-		do
-			rsync_iso_remote $mooos
-		done
+bump_moo() {
+	$DIALOG --clear --backtitle "$upper_title" --title "mooOS version" --yesno "Increase moo version number? Current: $MOO_VERSION" 10 30
+	if [ $? = 0 ] ; then
+		MOO_NEW_VERSION=$(( $(echo $MOO_VERSION) + 1 ))
+		sudo sed -i "s/MOO_VERSION=$MOO_VERSION/MOO_VERSION=$MOO_NEW_VERSION/g" /etc/moo.cfg
+		$DIALOG --clear --backtitle "$upper_title" --title "mooOS version" --msgbox "Old version: 0.$MOO_VERSION\nCurrent version: 0.$MOO_NEW_VERSION" 20 70
 	fi
-fi
+	current_selection 6
+}
+
+######### EXECUTE SCRIPT START #########
+## check repos are up
+check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
+check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
+
+# utility execution
+while true
+do
+    mkmoo_menu
+done
+
+notify-send "User script complete" -i "$MOO_ICON"
 
 exit 0
