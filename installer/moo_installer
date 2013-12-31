@@ -328,7 +328,7 @@ make_filesystems() {
                 fs_type="ext2"
             fi
 
-            mkdir -vp /mnt/home
+            mkdir -p /mnt/home
             mkfs -t $fs_type $plout
             typefs=" as $fs_type"
         fi
@@ -377,7 +377,7 @@ make_filesystems() {
             fs_type="ext2"
             fi
 
-            mkdir -vp /mnt/boot
+            mkdir -p /mnt/boot
             mkfs -t $fs_type $pbout
             typefs=" as $fs_type"
         fi
@@ -520,46 +520,26 @@ initial_install() {
     #     return 0 
     # fi
 
+    if [ "$archtype" = "x86_64" ]; then
+        mainpkgs="${MOO_TOOLS_PATH}packages.x86_64"
+    else
+        mainpkgs="${MOO_TOOLS_PATH}packages.i686"
+    fi
+
+    pacman_conf="pacman.conf"
+
     if [ ! -f /mnt/usr/bin/sudo ]; then
-        if [ "$archtype" = "x86_64" ]; then
-            mainpkgs="${MOO_TOOLS_PATH}packages.x86_64"
-        else
-            mainpkgs="${MOO_TOOLS_PATH}packages.i686"
-        fi
-
-        pacman_conf="pacman.conf"
-
         $DIALOG --clear --backtitle "$upper_title" --title "Base packages (mandatory)" --yesno "Install base and base-devel? [Select No to skip]" 20 70
         if [ $? = 0 ] ; then
             ## sanity checks for if is mounted and if filespace available
-            is_mnt_is_device_is_freespace /mnt 0 ## 5.7 GiB
+            is_mnt_is_device_is_freespace /mnt 6023456 ## 5.7 GiB
             if [ $? -eq 1 ]; then  ## 5.7 GiB
-                $DIALOG --clear --backtitle "$upper_title" --title "Step A) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
-                rm -f /home/$moo/.log
-                echo "Initialize log" >> /home/$moo/.log
-                echo "Installing base base-devel packages" >> /home/$moo/.log
-                tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
-                trap 'rm -f $tempfile; stty sane; exit 1' 1 2 3 15
-
-                $DIALOG --clear --backtitle "$upper_title" --title "Installing packages" \
-                    --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
-                    --and-widget \
-                    --begin 1 20 --msgbox "Press <Enter> ONLY once completed" 5 40 \
-                    2>$tempfile &
-                mypid=$!
-                update-mirrorlist >> /home/$moo/.log 2>&1
-                #if [ "$moo_arg" = "--debug" ]; then
-                #    pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a /home/$moo/.log
-                #else
-                    pacstrap -C /etc/pacman.conf /mnt base base-devel >> /home/$moo/.log 2>&1
-                echo "
-                Step A) completed! Proceed..." >> /home/$moo/.log
-
-                wait $mypid
-                rm -f $tempfile
+                $DIALOG --clear --backtitle "$upper_title" --title "Step A) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until 'completed'" 10 30
+                update-mirrorlist > /dev/null 2>&1
+  
+                pacstrap -C /etc/pacman.conf /mnt base base-devel 2>&1 | tee -a | $DIALOG  --clear --backtitle "$upper_title" --title "Installing base and base-devel packages" --programbox 20 70
 
                 $DIALOG --clear --backtitle "$upper_title" --title "Step A) completed" --msgbox "Proceeding" 10 30
-                #fi
             fi
         fi
     fi
@@ -578,58 +558,24 @@ initial_install() {
                 check_valid_packages "$deppkgs"
                 if [ $? -eq 1 ]; then
                     $DIALOG --clear --backtitle "$upper_title" --title "Step B) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
-                    rm -f /home/$moo/.log
-                    echo "Initialize log" >> /home/$moo/.log
-                    echo "Installing mooOS and custom packages" >> /home/$moo/.log
-                    tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
-                    trap 'rm -f $tempfile; stty sane; exit 1' 1 2 3 15
-                    dialog --clear --backtitle "$upper_title" --title "Installing packages" \
-                        --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
-                        --and-widget \
-                        --begin 1 20 --msgbox "Press <Enter> ONLY once completed" 5 40 \
-                        2>$tempfile &
-                    mypid=$!
-                    ppkgs=" $deppkgs"
-                    # $DIALOG --clear --backtitle "$upper_title" --title "Install type" --yes-label "Desktop (Full)" --no-label "Server (INCOMPLETE) " --yesno "Installation type?" 20 70
-                    # if [ $? = 0 ] ; then
-                    #     $DIALOG --clear --backtitle "$upper_title" --title "Server Utilities" --defaultno --yesno "Install Apache, MySQL, php, phpmyadmin, transmission-cli, flexget?\n (INCOMPLETE)" 20 70
-                    #     if [ $? = 0 ] ; then
-                    #         basepkgs="${MOO_TOOLS_PATH}packages.both ${MOO_TOOLS_PATH}packages-server.both"
-                    #     else
-                    #         basepkgs="${MOO_TOOLS_PATH}packages.both"
-                    #     fi
-                    # else
-                    #     basepkgs="${MOO_TOOLS_PATH}packages-server.both"
-                    # fi
-
-                    ## TODO
+                  
                     basepkgs="${MOO_TOOLS_PATH}packages.both"
                     extrapkgs="${MOO_TOOLS_PATH}packages.extra"
 
-                    
-                    mv -v /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak >> /home/$moo/.log 2>&1
-                    mkdir -vp /mnt/etc/pacman.d
+                    mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
+                    mkdir -p /mnt/etc/pacman.d
 
-                    #cp -v /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
-                    cp -v /etc/$pacman_conf /mnt/etc/pacman.conf >> /home/$moo/.log 2>&1
+                    #cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/
+                    cp /etc/$pacman_conf /mnt/etc/pacman.conf
 
                     # $DIALOG --clear --backtitle "$upper_title" --title "Packages" --yesno "Do you wish to use socks5 proxy for pacman? (Default: yes)" 10 30
                     # if [ $? = 0 ] ; then
                     #     sed -i "s/#XferCommand = \/usr\/bin\/curl -C - -f %u > %o/XferCommand = \/usr\/bin\/curl --socks5-hostname localhost:9050 -C - -f %u > %o/g" /mnt/etc/pacman.conf
                     # fi
 
-                    update-mirrorlist >> /home/$moo/.log 2>&1
-                    #if [ "$moo_arg" = "--debug" ]; then
-                    #    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a /home/$moo/.log
-                     #else
-                        pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) >> /home/$moo/.log 2>&1
+                    update-mirrorlist > /dev/null 2>&1
 
-                    #fi
-                     echo "
-                Step B) completed! You may proceed..." >> /home/$moo/.log
-
-                wait $mypid
-                rm -f $tempfile
+                    pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | tee -a | $DIALOG  --clear --backtitle "$upper_title" --title "Installing mooOS and custom packages" --programbox 20 70
 
                 $DIALOG --clear --backtitle "$upper_title" --title "Step B) completed" --msgbox "Proceed" 10 30
                 fi
@@ -642,128 +588,115 @@ initial_install() {
         if [ $? = 0 ] ; then
             is_mnt_is_device_is_freespace /mnt 0 ## 230 MiB
             if [ $? -eq 1 ]; then
-                $DIALOG --clear --backtitle "$upper_title" --title "Step C) initiated" --msgbox "This may take a while...\n\nYou must let it run its course fully until it says 'completed'" 10 30
-                rm -f /home/$moo/.log
-                echo "Initialize log" >> /home/$moo/.log
-                echo "Installing mooOS and custom packages" >> /home/$moo/.log
-                tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
-                trap 'rm -f $tempfile; stty sane; exit 1' 1 2 3 15
-                dialog --clear --backtitle "$upper_title" --title "Installing packages" \
-                    --begin 7 1 --tailboxbg /home/$moo/.log 19 80 \
-                    --and-widget \
-                    --begin 1 20 --msgbox "Press <Enter> ONLY once completed" 5 40 \
-                    2>$tempfile &
-                mypid=$!
+                $DIALOG --clear --backtitle "$upper_title" --title "Step C) initiated" --msgbox "This will not take a while.'" 10 30
                 PWD=$(pwd)
 
                 rm -rf /mnt/etc/skel
-                cp -vr /etc/skel /mnt/etc/ >> /home/$moo/.log 2>&1
+                cp -r /etc/skel /mnt/etc/
 
-                cp -v /etc/$pacman_conf /mnt/etc/pacman.conf >> /home/$moo/.log 2>&1
+                cp /etc/$pacman_conf /mnt/etc/pacman.conf
                 #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
-                sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf >> /home/$moo/.log 2>&1
+                sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
 
-                cp -v /etc/psd.conf /mnt/etc/psd.conf >> /home/$moo/.log 2>&1
-                cp -v /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf >> /home/$moo/.log 2>&1
-                cp -v /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf >> /home/$moo/.log 2>&1
-                cp -v /etc/resolv.conf /mnt/etc/resolv.conf >> /home/$moo/.log 2>&1
-                cp -v /etc/resolv.conf.head /mnt/etc/resolv.conf.head >> /home/$moo/.log 2>&1
-                mkdir -vp /mnt/etc/tor >> /home/$moo/.log 2>&1
-                cp -vr /etc/tor/* /mnt/etc/tor/ >> /home/$moo/.log 2>&1
-                cp -vr /etc/systemd/system/* /mnt/etc/systemd/system/ >> /home/$moo/.log 2>&1
+                cp /etc/psd.conf /mnt/etc/psd.conf
+                cp /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
+                cp /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
+                cp /etc/resolv.conf /mnt/etc/resolv.conf
+                cp /etc/resolv.conf.head /mnt/etc/resolv.conf.head
+                mkdir -p /mnt/etc/tor
+                cp -r /etc/tor/* /mnt/etc/tor/
+                cp -r /etc/systemd/system/* /mnt/etc/systemd/system/
                 
-                mkdir -vp /mnt/etc/privoxy >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/privoxy
                 sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
 
-                mkdir -vp /mnt/etc/dansguardian >> /home/$moo/.log 2>&1
-                cp -v /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/dansguardian
+                cp /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf
 
-                mkdir -vp /mnt/etc/squid >> /home/$moo/.log 2>&1
-                cp -v /etc/squid/squid.conf /mnt/etc/squid/squid.conf >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/squid
+                cp /etc/squid/squid.conf /mnt/etc/squid/squid.conf
 
-                mkdir -vp /mnt/etc/pacserve >> /home/$moo/.log 2>&1
-                cp -vr /etc/pacserve/* /mnt/etc/pacserve/ >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/pacserve
+                cp -r /etc/pacserve/* /mnt/etc/pacserve/
 
-                mkdir -vp /mnt/etc/modules-load.d >> /home/$moo/.log 2>&1
-                cp -vr /etc/modules-load.d/* /mnt/etc/modules-load.d/ >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/modules-load.d
+                cp -r /etc/modules-load.d/* /mnt/etc/modules-load.d/
 
-                mkdir -vp /mnt/etc/grub.d >> /home/$moo/.log 2>&1
-                cp -vr /etc/grub.d/* /mnt/etc/grub.d/ >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/grub.d
+                cp -r /etc/grub.d/* /mnt/etc/grub.d/
 
-                mkdir -vp /mnt/etc/default >> /home/$moo/.log 2>&1
-                cp -vr /etc/default/* /mnt/etc/default/ >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/etc/default
+                cp -r /etc/default/* /mnt/etc/default/
 
-                mkdir -vp /mnt/usr/share/nano >> /home/$moo/.log 2>&1
-                cp -v /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/usr/share/nano
+                cp /usr/share/nano/pkgbuild.nanorc /mnt/usr/share/nano/pkgbuild.nanorc
 
-                mkdir -vp /mnt/usr/share/enlightenment/data/backgrounds >> /home/$moo/.log 2>&1
-                cp -v /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds >> /home/$moo/.log 2>&1
+                mkdir -p /mnt/usr/share/enlightenment/data/backgrounds
+                cp /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
 
-                #mkdir -vp /mnt/usr/share/enlightenment/data/themes
-                #cp -v /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
+                #mkdir -p /mnt/usr/share/enlightenment/data/themes
+                #cp /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
 
                 #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-                #cp -v ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
-                #cp -v ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+                #cp ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
+                #cp ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
                 #mv -v /etc/php/php.ini /etc/php/php.ini.bak
-                #cp -v ${dev_directory}etc/php.ini /etc/php/php.ini
+                #cp ${dev_directory}etc/php.ini /etc/php/php.ini
 
                 # copy over custom .desktop files
-                #mkdir -vp /mnt/usr/share/applications
-                #cp -v /usr/share/applications/*.desktop /mnt/usr/share/applications/
+                #mkdir -p /mnt/usr/share/applications
+                #cp /usr/share/applications/*.desktop /mnt/usr/share/applications/
 
                 ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
-                echo "Updating Sublime Text 3 icons" >> /home/$moo/.log
-                cp -v /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png >> /home/$moo/.log 2>&1
-                cp -v /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png >> /home/$moo/.log 2>&1
+                cp /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
+                cp /usr/share/icons/HighContrast/256x256/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/256x256/apps/sublime-text.png
+                cp /usr/share/icons/HighContrast/32x32/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/32x32/apps/sublime-text.png
+                cp /usr/share/icons/HighContrast/48x48/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/48x48/apps/sublime-text.png
+                cp /usr/share/icons/gnome/16x16/apps/sublime-text.png /mnt/usr/share/icons/gnome/16x16/apps/sublime-text.png
+                cp /usr/share/icons/gnome/256x256/apps/sublime-text.png /mnt/usr/share/icons/gnome/256x256/apps/sublime-text.png
+                cp /usr/share/icons/gnome/32x32/apps/sublime-text.png /mnt/usr/share/icons/gnome/32x32/apps/sublime-text.png
+                cp /usr/share/icons/gnome/48x48/apps/sublime-text.png /mnt/usr/share/icons/gnome/48x48/apps/sublime-text.png
+                cp /usr/share/icons/hicolor/128x128/apps/sublime-text.png /mnt/usr/share/icons/hicolor/128x128/apps/sublime-text.png
+                cp /usr/share/icons/hicolor/16x16/apps/sublime-text.png /mnt/usr/share/icons/hicolor/16x16/apps/sublime-text.png
+                cp /usr/share/icons/hicolor/256x256/apps/sublime-text.png /mnt/usr/share/icons/hicolor/256x256/apps/sublime-text.png
+                cp /usr/share/icons/hicolor/32x32/apps/sublime-text.png /mnt/usr/share/icons/hicolor/32x32/apps/sublime-text.png
+                cp /usr/share/icons/hicolor/48x48/apps/sublime-text.png /mnt/usr/share/icons/hicolor/48x48/apps/sublime-text.png
+                cp /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/oxygen/128x128/apps/sublime-text.png
+                cp /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/oxygen/16x16/apps/sublime-text.png
+                cp /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/oxygen/256x256/apps/sublime-text.png
+                cp /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/oxygen/32x32/apps/sublime-text.png
+                cp /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/oxygen/48x48/apps/sublime-text.png
 
                 ## mooOS icon
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png >> /home/$moo/.log 2>&1
-                cp -v ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png >> /home/$moo/.log 2>&1
+                cp ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/HighContrast/16x16/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/HighContrast/256x256/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/HighContrast/32x32/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/HighContrast/48x48/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/gnome/16x16/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/gnome/256x256/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/gnome/32x32/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/gnome/48x48/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/hicolor/128x128/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/hicolor/16x16/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/hicolor/256x256/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/hicolor/32x32/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/hicolor/48x48/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/oxygen/128x128/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/oxygen/16x16/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
                 
                 # create ~/Github and all repos
                 rm -rf /mnt/etc/skel/Github
-                mkdir -vp /mnt/etc/skel/Github >> /home/$moo/.log 2>&1
-                cp -v /etc/skel/Github/Github.* /mnt/etc/skel/Github/ >> /home/$moo/.log 2>&1
-                echo "
-                Step C) completed! You may proceed..." >> /home/$moo/.log
+                mkdir -p /mnt/etc/skel/Github
+                cp /etc/skel/Github/Github.* /mnt/etc/skel/Github/
 
-                wait $mypid
-                rm -f $tempfile
-
-                $DIALOG --clear --backtitle "$upper_title" --title "Step C) completed" --msgbox "Proceed" 10 30
+                if [ -f /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png ]; then
+                    $DIALOG --clear --backtitle "$upper_title" --title "Step C) completed" --msgbox "Proceed" 10 30
+                else
+                    $DIALOG --clear --backtitle "$upper_title" --title "Step C) failed" --msgbox "This step failed. Check Step 1. mount points /mnt" 10 30
+                fi
             fi
         fi
         current_selection 6
@@ -851,7 +784,7 @@ chroot_configuration() {
         if [ -f /mnt/usr/bin/moo_chroot ]; then
             export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $pout"
         else
-            echo "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!"
+                $DIALOG --clear --backtitle "$upper_title" --title "mooOS warning" --msgbox "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!" 10 30
             exit 0
         fi
 
