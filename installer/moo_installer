@@ -688,7 +688,7 @@ initial_install() {
                 cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
                 
                 # create ~/Github and all repos
-                rm -rf /mnt/etc/skel/Github
+                rm -rf /mnt/etc/skel/Github > /dev/null 2>&1
                 mkdir -p /mnt/etc/skel/Github
                 cp /etc/skel/Github/Github.* /mnt/etc/skel/Github/
 
@@ -813,7 +813,7 @@ finishup() {
     $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "Finish install - unmount /mnt/* and reboot" 10 30
     clean_return
     
-    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\Reboot, to complete install of mooOS." 30 60
+    $DIALOG --clear --backtitle "$upper_title" --title "Finishing up" --msgbox "mooOS has been installed!\n\nReboot, to complete install of mooOS." 30 60
 
     $DIALOG --clear --backtitle "$upper_title" --title "Unmount" --yesno "Do you wish to unmount /mnt/* ?" 10 30
     if [ $? = 0 ] ; then
