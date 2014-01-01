@@ -147,7 +147,7 @@ update_moo() {
 update_moohub() {
 	$DIALOG --clear --backtitle "$upper_title" --title "Update github" --yesno "Run github sync?" 10 30
 	if [ $? = 0 ] ; then
-		su -l "root" -c "pacman -Qqe  | grep -vx \"$(pacman -Qqg base)\" | grep -vx \"$(cat ${MOO_TOOLS_PATH}exclude_pkgs)\" > ${MOO_TOOLS_PATH}packages.both"
+		sudo sh -c "pacman -Qqe  | grep -vx \"$(pacman -Qqg base)\" | grep -vx \"$(cat ${MOO_TOOLS_PATH}exclude_pkgs)\" > ${MOO_TOOLS_PATH}packages.both"
 		gh -b 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating github repos" --ok-label "Continue" --programbox 20 70
 	fi
 	current_selection 3
