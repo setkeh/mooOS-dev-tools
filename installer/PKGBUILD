@@ -43,7 +43,6 @@ package() {
 	install -D -m 755 "create_iso/mkiso" "$pkgdir/usr/bin/mkiso"
 	install -Dm644 "misc/man.1" "$pkgdir/usr/local/man/man1/mooOS.1"
 	install -Dm644 "applications/aarchup.desktop" "$pkgdir/usr/share/applications/aarchup.desktop"
-	install -Dm644 "applications/aur_package_updater.desktop" "$pkgdir/usr/share/applications/aur_package_updater.desktop"
 	install -Dm644 "applications/canto_curses.desktop" "$pkgdir/usr/share/applications/canto_curses.desktop"
 	install -Dm644 "applications/cpu_frequency.desktop" "$pkgdir/usr/share/applications/cpu_frequency.desktop"
 	install -Dm644 "applications/cpus_temp.desktop" "$pkgdir/usr/share/applications/cpus_temp.desktop"
