@@ -175,7 +175,7 @@ repackage_this() {
 }
 
 create_custom_packages() {
-	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\n(moo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngh\nvb-pdq)" 10 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngh\nvb-pdq" 20 30
 	if [ $? = 0 ] ; then
 		## moo-scripts
 		delete_custom_package_caches "moo-scripts"
@@ -187,7 +187,8 @@ create_custom_packages() {
 
 		## moo-aarchup
 		delete_custom_package_caches "moo-aarchup"
-		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "any" i
+		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "i686" i
+		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "x86_64" i
 		
 		## moo-zsh
 		delete_custom_package_caches "moo-zsh"
