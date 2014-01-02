@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=System Monitor
+Comment=Deskop file for gkrellm
+Exec=gkrellm
+Icon=system-monitor
+Terminal=false
+Type=Application
+Categories=Utility;Application;

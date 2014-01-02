@@ -162,7 +162,7 @@ ${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 #[ -z "$(pidof youtube-viewer)" ] && ${TERM_USED}${BG6} $NAME"youtube" $TITLE"youtube" -e youtube-viewer --prefer-https --prefer-webm --use-colors --quiet -7 -S -C --mplayer="/usr/bin/vlc" --mplayer-args="-q"
 
 ## Start Arch Linux update notifier
-[ -z "$(pidof aarchup)" ] && /usr/bin/aarchup --loop-time 60 --aur --icon "$HOME/.icons/pacman_icon_48x48.png" &
+[ -z "$(pidof aarchup)" ] && /usr/bin/aarchup --loop-time 60 --aur --icon /usr/share/aarchup/archlogo.svg &
 
 ## Start sillyness
 #[ -z "$(pidof cmatrix)" ] && ${TERM_USED} $NAME"Shall we play a game" $TITLE"Shall we play a game" -e cmatrix -C cyan

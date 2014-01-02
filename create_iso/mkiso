@@ -184,6 +184,10 @@ create_custom_packages() {
 		## moo-tools
 		delete_custom_package_caches "moo-tools"
 		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any" i
+
+		## moo-aarchup
+		delete_custom_package_caches "moo-aarchup"
+		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "any" i
 		
 		## moo-zsh
 		delete_custom_package_caches "moo-zsh"
@@ -532,8 +536,6 @@ create_build_env() {
 		## copy over ~/.local files
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
 		sudo cp ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
-		sudo cp ${MOO_HOME}.local/applications/tabbed.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/tabbed.desktop
-		sudo cp ${MOO_HOME}.local/applications/URxvt.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/URxvt.desktop
 
 		## copy over ~/.* (dotfiles)
 		sudo cp ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
@@ -541,15 +543,14 @@ create_build_env() {
 		sudo cp ${MOO_HOME}.zshrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.zshrc
 		sudo cp ${MOO_HOME}.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 		sudo cp ${MOO_HOME}.nanorc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.nanorc
-		sudo cp ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
 		sudo cp ${MOO_HOME}.pentadactylrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactylrc
 		sudo cp ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
 		sudo cp ${MOO_HOME}.wgetrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.wgetrc
 		sudo cp ${MOO_HOME}.curlrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.curlrc
 		
 		## copy over ~/.themes
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
-		sudo cp -r ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
+		#sudo cp -r ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
 		
 		## copy over ~/.fonts
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
@@ -597,7 +598,7 @@ create_build_env() {
 		sudo cp ${MOO_HOME}.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/Trolltech.conf
 		
 		## copy pavucontrol config
-		sudo cp ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
+		#sudo cp ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
 		
 		## copy over mosudo cp file
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc
@@ -686,13 +687,37 @@ create_build_env() {
 		sudo rm base.src
 		cd "$PWD"
 
+		## root stuff
+		## copy over kde files
+		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/color-schemes
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/kdenlive
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/dolphin/view_properties/global
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/kde4/services/ServiceMenus
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/konsole
+		sudo cp -r /root/.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/color-schemes
+		sudo cp ${MOO_TOOLS_PATH}misc/..directory ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/dolphin/view_properties/global/.directory
+		sudo cp /root/.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/konsolerc
+		sudo cp /root/.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/kservicemenurc
+		sudo cp -r /root/.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/konsole
+		sudo cp /root/.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/dolphinrc
+		sudo cp /root/.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/dolphin/dolphinui.rc
+		sudo cp /root/.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/gtkrc
+		sudo cp /root/.kde4/share/config/kcmdisplayrc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/kcmdisplayrc
+		sudo cp /root/.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/gtkrc-2.0
+
+		sudo cp /root/.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/root/.gtkrc-2.0
+		sudo cp /root/.nanorc ${ARCHLIVE}archlive/releng/root-image/root/.nanorc
+		sudo cp /root/.dialogrc ${ARCHLIVE}archlive/releng/root-image/root/.dialogrc
+		sudo cp /root/.wgetrc ${ARCHLIVE}archlive/releng/root-image/root/.wgetrc
+
 		## clean up files content
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf 
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0		
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
+		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 
 		## copy over hosts file (needed for LAN repos) TODO
 		#sudo cp /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts

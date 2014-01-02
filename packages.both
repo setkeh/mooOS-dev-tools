@@ -1,4 +1,3 @@
-aarchup
 abs
 acpi
 aide
@@ -165,6 +164,7 @@ mlocate
 mlt
 mlt-python-bindings
 moc
+moo-aarchup
 moo-scripts
 moo-tools
 moo-zsh

@@ -2,7 +2,7 @@
 Version=1.0
 Name=Update Notifier
 Comment=Deskop file for aarchup - mooOS
-Exec=/usr/bin/aarchup --loop-time 60 --aur --icon ~/.icons/pacman_icon_48x48.png &
+Exec=/usr/bin/aarchup --loop-time 60 --aur --icon --icon /usr/share/aarchup/archlogo.svg &
 Icon=update-manager
 Terminal=false
 Type=Application

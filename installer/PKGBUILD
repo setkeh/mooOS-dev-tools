@@ -1,7 +1,7 @@
 # Maintainer: pdq <pdq@localhost>
 pkgname=moo-tools
 pkgver=0.2
-pkgrel=3
+pkgrel=5
 pkgdesc="Installer and various tools for mooOS."
 arch=(any)
 url="https://github.com/idk/mooOS-dev-tools.git"
@@ -47,6 +47,7 @@ package() {
 	install -Dm644 "applications/canto_curses.desktop" "$pkgdir/usr/share/applications/canto_curses.desktop"
 	install -Dm644 "applications/cpu_frequency.desktop" "$pkgdir/usr/share/applications/cpu_frequency.desktop"
 	install -Dm644 "applications/cpus_temp.desktop" "$pkgdir/usr/share/applications/cpus_temp.desktop"
+	install -Dm644 "applications/gkrellm.desktop" "$pkgdir/usr/share/applications/gkrellm.desktop"
 	install -Dm644 "applications/GPU_nvidia.desktop" "$pkgdir/usr/share/applications/GPU_nvidia.desktop"
 	install -Dm644 "applications/man_mooOS.desktop" "$pkgdir/usr/share/applications/man_mooOS.desktop"
 	install -Dm644 "applications/moo_os_installer.desktop" "$pkgdir/usr/share/applications/moo_os_installer.desktop"
