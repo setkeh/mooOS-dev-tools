@@ -76,7 +76,7 @@ fi
 #${TERM_USED} $NAME"Screencaster" $TITLE""Screencaster -e ffmpeg -f alsa -ac 2 -i pulse -f x11grab -r 30 -s 1920x1080 -i :0.0 -acodec pcm_s16le -vcodec libx264 -preset ultrafast -crf 0 -threads 0 startx.mkv
 
 ## Start drop down urxvtc terminal console
-[ -z "$(pidof yeahconsole)" ] && yeahconsole &
+#[ -z "$(pidof yeahconsole)" ] && yeahconsole &
 
 ## Start system information display
 #[ -z "$(pidof conky)" ] && conky -d -c "$HOME"/.config/conky/.conkye17 &
@@ -117,7 +117,7 @@ ${TERM_USED}${BG3} $NAME"Term" $TITLE"Term"
 ${TERM_USED}${BG7} $NAME"tERM" $TITLE"tERM"
 
 ## Start system logs
-${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
+#${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 
 ## Start top (terminal task manager)
 [ -z "$(pidof htop)" ] && ${TERM_USED} $NAME"HTOP" $TITLE"HTOP" -e htop
@@ -162,7 +162,7 @@ ${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 #[ -z "$(pidof youtube-viewer)" ] && ${TERM_USED}${BG6} $NAME"youtube" $TITLE"youtube" -e youtube-viewer --prefer-https --prefer-webm --use-colors --quiet -7 -S -C --mplayer="/usr/bin/vlc" --mplayer-args="-q"
 
 ## Start Arch Linux update notifier
-[ -z "$(pidof aarchup)" ] && /usr/bin/aarchup --loop-time 60 --aur --icon /usr/share/aarchup/archlogo.svg &
+#[ -z "$(pidof aarchup)" ] && /usr/bin/aarchup --loop-time 60 --aur --icon /usr/share/aarchup/archlogo.svg &
 
 ## Start sillyness
 #[ -z "$(pidof cmatrix)" ] && ${TERM_USED} $NAME"Shall we play a game" $TITLE"Shall we play a game" -e cmatrix -C cyan
