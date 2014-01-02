@@ -178,14 +178,15 @@ is_mnt_is_device_is_freespace() {
                 freespace_left=$(echo $avail | grep -o '[0-9]*')
                 #echo $freespace_left
                 hu_freespace=$(human_filesize $((1024 * $freespace_left)))
+                hu_minspace=$(human_filesize $((1024 * $min_space_required)))
                 if [ $freespace_left -lt $min_space_required ] && [ $min_space_required -ne 0 ]; then
-                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device.\n\n$fs is mounted at $chosen_device\n\nMinimum freespace required: $min_space_required kilobytes.\n\nActual freespace on device/mount: $hu_freespace.\n\nReturning to menu..." 20 70
+                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device.\n\n$fs is mounted at $chosen_device\n\nMinimum freespace required: $hu_minspace.\n\nActual freespace on device/mount: $hu_freespace.\n\nReturning to menu..." 20 70
                     return 0
                 else
                     if [ $min_space_required -eq 0 ]; then
                         mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nActual freespace on device/mount: $hu_freespace.\n\nContinuing..."
                     else
-                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $min_space_required bytes.\n\nActual freespace on device/mount: $hu_freespace.\n\nContinuing..."
+                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $hu_minspace.\n\nActual freespace on device/mount: $hu_freespace.\n\nContinuing..."
                     fi
                     $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "$mnt_msg" 20 70
                     return 1
@@ -603,11 +604,15 @@ initial_install() {
                 #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
                 sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
 
+                ## root stuffs
+                mkdir -p /mnt/root
+                cp -r /root/ /mnt/root
+
                 cp /etc/psd.conf /mnt/etc/psd.conf
-                cp /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
-                cp /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
                 cp /etc/resolv.conf /mnt/etc/resolv.conf
                 cp /etc/resolv.conf.head /mnt/etc/resolv.conf.head
+                cp /etc/dnsmasq.conf /mnt/etc/dnsmasq.conf
+                cp /etc/dhcpcd.conf /mnt/etc/dhcpcd.conf
                 mkdir -p /mnt/etc/tor
                 cp -r /etc/tor/* /mnt/etc/tor/
                 cp -r /etc/systemd/system/* /mnt/etc/systemd/system/

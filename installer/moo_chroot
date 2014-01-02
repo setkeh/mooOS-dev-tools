@@ -322,11 +322,11 @@ if [ $(id -u) -eq 0 ]; then
         fi
 
         #passwd
-        rootpassword=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --inputbox "Please choose your root password:\n\n" 10 70 2>&1 >/dev/tty)
-        rootpassword2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --inputbox "Please re-type your rootpassword:\n\n" 10 70 2>&1 >/dev/tty)
+        rootpassword=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --passwordbox "Please choose your root password:\n\n" 10 70 2>&1 >/dev/tty)
+        rootpassword2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --passwordbox "Please re-type your rootpassword:\n\n" 10 70 2>&1 >/dev/tty)
         if [ "$rootpassword" = "$rootpassword2" ]; then
             # add the user
-            echo "$rootpassword" | passwd root --stdin
+            echo -e "$rootpassword\n$rootpassword" | passwd root
             password=
             usermod -s /usr/bin/zsh root
             echo "set" > $TMP/rootpasswd
