@@ -165,17 +165,17 @@ repackage_this() {
 	do
 		wget "$urls" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Grabbing package" --progressbox 20 70
 	done
-	if [ "$package_type" == "x86_64" ] || [ "$package_type" == "any" ]; then
+	if [ "$package_type" = "x86_64" ] || [ "$package_type" = "any" ]; then
 		makepkg -sf$package_install --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Repackaging package" --progressbox 20 70
 	fi
-	if [ "$package_type" == "i686" ] || [ "$package_type" == "any" ]; then
+	if [ "$package_type" = "i686" ] || [ "$package_type" = "any" ]; then
 		schroot -p -- makepkg -sf$package_install --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Repackaging package" --progressbox 20 70
 	fi
 	cd "$PWD"
 }
 
 create_custom_packages() {
-	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages? (moo-tools/moo-scripts/moo-zsh/moo-wallpapers/gh/vb-pdq)" 10 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\n(moo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngh\nvb-pdq)" 10 30
 	if [ $? = 0 ] ; then
 		## moo-scripts
 		delete_custom_package_caches "moo-scripts"
