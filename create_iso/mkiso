@@ -187,8 +187,7 @@ create_custom_packages() {
 
 		## moo-aarchup
 		delete_custom_package_caches "moo-aarchup"
-		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "i686" i
-		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "x86_64" i
+		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "any" i
 		
 		## moo-zsh
 		delete_custom_package_caches "moo-zsh"
