@@ -61,7 +61,7 @@ if [ $(id -u) -eq 0 ]; then
     _TEMP=/tmp/chanswer$$
     mkdir -p /tmp/tmp 2>/dev/null
     TMP=/tmp/tmp 2>/dev/null
-    echo "unset" > $TMP/rootpasswd
+    #echo "unset" > $TMP/rootpasswd
 
     _CURRENT=/tmp/current
     echo "8" > $_CURRENT
@@ -321,10 +321,20 @@ if [ $(id -u) -eq 0 ]; then
             return 0
         fi
 
-        passwd
-        echo "set" > $TMP/rootpasswd
-        usermod -s /usr/bin/zsh root
-        $DIALOG --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "root password set!" 10 30
+        #passwd
+        rootpassword=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --inputbox "Please choose your root password:\n\n" 10 70 2>&1 >/dev/tty)
+        rootpassword2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --inputbox "Please re-type your rootpassword:\n\n" 10 70 2>&1 >/dev/tty)
+        if [ "$rootpassword" = "$rootpassword2" ]; then
+            # add the user
+            echo "$rootpassword" | passwd root --stdin
+            password=
+            usermod -s /usr/bin/zsh root
+            echo "set" > $TMP/rootpasswd
+            $DIALOG --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "root password set!" 10 30
+        else
+            echo "unset" > $TMP/rootpasswd
+            $DIALOG --clear --backtitle "$upper_title" --title "[ ROOT PASSWD ]" --msgbox "Error.\n\nroot passwords did not match!" 10 30
+        fi
         current_selection 5
     }
 
@@ -340,89 +350,99 @@ if [ $(id -u) -eq 0 ]; then
             $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --inputbox "Please choose your username:\n\n" 10 70 2> $TMP/puser
             puser=$(cat $TMP/puser)
             if [ "$puser" != "" ]; then
-                useradd -m -g users -s /usr/bin/zsh $puser
-            #fi
-        #fi
+                egrep -w "^$puser" /etc/passwd >/dev/null
+                if [ $? -eq 0 ]; then
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Error.\n\n$puser exists already!" 10 30
+                else
+                    password=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --passwordbox "Please choose your password:\n\n" 10 70 2>&1 >/dev/tty)
+                    password2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --passwordbox "Please re-type your password:\n\n" 10 70 2>&1 >/dev/tty)
 
-        #puser=$(cat $TMP/puser)
+                    if [ "$password" = "$password2" ]; then
+                        # add the user
+                        pass=$(perl -e 'print crypt($ARGV[0], "password")' $password)
+                        useradd -m -p $pass -g users -s /usr/bin/zsh $puser
+                        if [ $? -eq 0 ]; then
+                            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Success.\n\nUser: $puser has been added to the system!" 10 30
+                        else
+                            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Error.\n\nFailed to add user to the system: $puser!" 10 30
+                        fi
+                    else
+                        $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Error.\n\nUser: $puser passwords did not match!" 10 30
+                    fi
 
-        #if [ "$puser" != "" ]; then
-            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Next step is to add password for $puser [ ESC to return to menu ]" 10 30
-            if [ $? = 255 ] ; then
-                chroot_menu
-                return 0
-            fi
+                    ## clear these vars just in case
+                    password=
+                    password2=
+                    pass=
+       
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --yesno "Require no password for sudo? [suggested: Yes]" 10 30
+                    if [ $? = 0 ] ; then
+                        cp /etc/sudoers /etc/sudoers.bak
+                        sh -c "echo '$puser ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
+                        npasswd="no password required"
+                    else
+                        cp /etc/sudoers /etc/sudoers.bak
+                        sh -c "echo '$puser ALL=(ALL) ALL' >>  /etc/sudoers"
+                        npasswd="password required"
+                    fi
 
-            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --yesno "Create/Edit password for $puser? [suggested: Yes]" 10 30
-            if [ $? = 0 ] ; then
-                passwd $puser
-            fi
+                    ## user selected text editor
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ DEFAULT TEXT EDITOR ]" --yes-label "nano" --no-label "vim" --yesno "Please choose your text editor:\n\n" 20 70
+                    if [ "$?" -eq 0 ]; then
+                        txteditor=nano
+                        sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/nano:/usr/bin/vim:/usr/bin/vi\"
+        Defaults !tty_tickets' >>  /etc/sudoers"
+                    else
+                        txteditor=vim
+                        sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/vim:/usr/bin/vi:/usr/bin/nano\"
+        Defaults !tty_tickets' >>  /etc/sudoers"
+                        sed -i "s/nano/vim/g" /etc/skel/.zprofile
+                        sed -i "s/nano/vim/g" /etc/skel/.xinitrc
+                    fi
 
-            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --yesno "Require no password for sudo? [suggested: Yes]" 10 30
-            if [ $? = 0 ] ; then
-                cp /etc/sudoers /etc/sudoers.bak
-                sh -c "echo '$puser ALL=(ALL) NOPASSWD: ALL' >>  /etc/sudoers"
-                npasswd="no password required"
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --defaultno --yesno "Confirm/view sudoers?" 10 30
+                    if [ $? = 0 ] ; then
+                        EDITOR=$txteditor visudo
+                    fi
+
+                    ## patch config files for username
+                    if [ -f /usr/bin/eet ]; then
+                        PWD=$(pwd)
+                        cd /etc/skel/.e/e/config/standard
+                        for NEW_FILE in e.*
+                        do
+                            EWW_FILE=${NEW_FILE/.cfg/.src}
+
+                            eet -d $NEW_FILE config $EWW_FILE
+                            sed -i "s/moo/$puser/g" $EWW_FILE
+                            rm $NEW_FILE
+                            eet -e $NEW_FILE config $EWW_FILE 1
+                            rm $EWW_FILE
+                        done
+                        cd $PWD
+                    fi
+
+                    ## clean up files content
+                    sed -i "s/moo/$puser/g" /etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+                    sed -i "s/moo/$puser/g" /etc/skel/.config/transmission-daemon/settings.json
+                    sed -i "s/moo/$puser/g" /etc/skel/.moc/config
+                    sed -i "s/moo/$puser/g" /etc/skel/.kde4/share/config/dolphinrc
+                    sed -i "s/moo/$puser/g" /etc/psd.conf
+                    sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
+
+                    ## add moo keys
+                    #pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
+                    #pacman-key --lsign-key E73F68F6
+
+                    update-mirrorlist > /dev/null 2>&1
+                    pacman -Syyu --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --progressbox 20 70
+
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npasswd for sudo." 10 30
+                fi
             else
-                cp /etc/sudoers /etc/sudoers.bak
-                sh -c "echo '$puser ALL=(ALL) ALL' >>  /etc/sudoers"
-                npasswd="password required"
+                $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Error.\n\nUser cannot be empty!" 10 30
             fi
-
-            ## user selected text editor
-            $DIALOG --clear --backtitle "$upper_title" --title "[ DEFAULT TEXT EDITOR ]" --yes-label "nano" --no-label "vim" --yesno "Please choose your text editor:\n\n" 20 70
-            if [ "$?" -eq 0 ]; then
-                txteditor=nano
-                sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/nano:/usr/bin/vim:/usr/bin/vi\"
-Defaults !tty_tickets' >>  /etc/sudoers"
-            else
-                txteditor=vim
-                sh -c "echo 'Defaults timestamp_timeout=-1,insults,!env_editor,editor=\"/usr/bin/vim:/usr/bin/vi:/usr/bin/nano\"
-Defaults !tty_tickets' >>  /etc/sudoers"
-                sed -i "s/nano/vim/g" /etc/skel/.zprofile
-                sed -i "s/nano/vim/g" /etc/skel/.xinitrc
-            fi
-
-            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --defaultno --yesno "Confirm/view sudoers?" 10 30
-            if [ $? = 0 ] ; then
-                EDITOR=$txteditor visudo
-            fi
-
-            ## patch config files for username
-            if [ -f /usr/bin/eet ]; then
-                PWD=$(pwd)
-                cd /etc/skel/.e/e/config/standard
-                for NEW_FILE in e.*
-                do
-                    EWW_FILE=${NEW_FILE/.cfg/.src}
-
-                    eet -d $NEW_FILE config $EWW_FILE
-                    sed -i "s/moo/$puser/g" $EWW_FILE
-                    rm $NEW_FILE
-                    eet -e $NEW_FILE config $EWW_FILE 1
-                    rm $EWW_FILE
-                done
-                cd $PWD
-            fi
-
-            ## clean up files content
-            sed -i "s/moo/$puser/g" /etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
-            sed -i "s/moo/$puser/g" /etc/skel/.config/transmission-daemon/settings.json
-            sed -i "s/moo/$puser/g" /etc/skel/.moc/config
-            sed -i "s/moo/$puser/g" /etc/skel/.kde4/share/config/dolphinrc
-            sed -i "s/moo/$puser/g" /etc/psd.conf
-            sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
-
-            ## add moo keys
-            #pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
-            #pacman-key --lsign-key E73F68F6
-
-            update-mirrorlist > /dev/null 2>&1
-            pacman -Syyu --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --programbox 20 70
-
-            $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npasswd for sudo." 10 30
         fi
-    fi
         current_selection 6
     }
 

@@ -105,6 +105,10 @@ current_selection() {
     echo "$1" > $_CURRENT
 }
 
+human_filesize() { 
+  awk -v sum="$1" ' BEGIN {hum[1024^3]="Gb"; hum[1024^2]="Mb"; hum[1024]="Kb"; for (x=1024^3; x>=1024; x/=1024) { if (sum>=x) { printf "%.2f %s\n",sum/x,hum[x]; break; } } if (sum<1024) print "1kb"; } '
+}
+
 installer_menu() {
 
     CUR=$(cat $_CURRENT)
@@ -173,14 +177,15 @@ is_mnt_is_device_is_freespace() {
             if [[ $avail ]] ; then
                 freespace_left=$(echo $avail | grep -o '[0-9]*')
                 #echo $freespace_left
+                hu_freespace=$(human_filesize $((1024 * $freespace_left)))
                 if [ $freespace_left -lt $min_space_required ] && [ $min_space_required -ne 0 ]; then
-                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device.\n\n$fs is mounted at $chosen_device\n\nMinimum freespace required: $min_space_required kilobytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nReturning to menu..." 20 70
+                    $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "Not enough freespace left on the target device.\n\n$fs is mounted at $chosen_device\n\nMinimum freespace required: $min_space_required kilobytes.\n\nActual freespace on device/mount: $hu_freespace.\n\nReturning to menu..." 20 70
                     return 0
                 else
                     if [ $min_space_required -eq 0 ]; then
-                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..."
+                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nActual freespace on device/mount: $hu_freespace.\n\nContinuing..."
                     else
-                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $min_space_required bytes.\n\nActual freespace on device/mount: $freespace_left kilobytes.\n\nContinuing..."
+                        mnt_msg="Sufficient freespace left on the target device.\n\n$fs is mounted at $chosen_device.\n\nMinimum freespace required: $min_space_required bytes.\n\nActual freespace on device/mount: $hu_freespace.\n\nContinuing..."
                     fi
                     $DIALOG --clear --backtitle "$upper_title" --title "SUCCESS" --msgbox "$mnt_msg" 20 70
                     return 1
