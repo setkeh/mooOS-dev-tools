@@ -322,8 +322,8 @@ if [ $(id -u) -eq 0 ]; then
         fi
 
         #passwd
-        rootpassword=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --passwordbox "Please choose your root password:\n\n" 10 70 2>&1 >/dev/tty)
-        rootpassword2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --passwordbox "Please re-type your rootpassword:\n\n" 10 70 2>&1 >/dev/tty)
+        rootpassword=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --insecure --passwordbox "Please choose your root password:\n\n" 10 70 2>&1 >/dev/tty)
+        rootpassword2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --insecure --passwordbox "Please re-type your rootpassword:\n\n" 10 70 2>&1 >/dev/tty)
         if [ "$rootpassword" = "$rootpassword2" ]; then
             # add the user
             echo -e "$rootpassword\n$rootpassword" | passwd root
@@ -354,8 +354,8 @@ if [ $(id -u) -eq 0 ]; then
                 if [ $? -eq 0 ]; then
                     $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Error.\n\n$puser exists already!" 10 30
                 else
-                    password=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --passwordbox "Please choose your password:\n\n" 10 70 2>&1 >/dev/tty)
-                    password2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --passwordbox "Please re-type your password:\n\n" 10 70 2>&1 >/dev/tty)
+                    password=$($DIALOG --clear --backtitle "$upper_title" --title "[ CREATE PASSWORD ]" --insecure --passwordbox "Please choose your password:\n\n" 10 70 2>&1 >/dev/tty)
+                    password2=$($DIALOG --clear --backtitle "$upper_title" --title "[ RE-TYPE PASSWORD ]" --insecure --passwordbox "Please re-type your password:\n\n" 10 70 2>&1 >/dev/tty)
 
                     if [ "$password" = "$password2" ]; then
                         # add the user
@@ -661,7 +661,7 @@ if [ $(id -u) -eq 0 ]; then
                 $DIALOG --clear --backtitle "$upper_title" --title "Internet" --inputbox "Please enter your SSID" 10 70 2> $TMP/pssid
                 pssid=$(cat $TMP/pssid)
 
-                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
+                $DIALOG --clear --backtitle "$upper_title" --title "Internet" --insecure --passwordbox "Please enter your wireless passphrase" 10 70 2> $TMP/ppassphrase
                 ppassphrase=$(cat $TMP/ppassphrase)
                 wpa_passphrase "$pssid" "$ppassphrase" >> /etc/wpa_supplicant.conf
                 wpa_supplicant -B -Dwext -i $my_networks -c /etc/wpa_supplicant.conf & >/dev/null
