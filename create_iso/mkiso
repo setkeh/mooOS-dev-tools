@@ -186,8 +186,8 @@ create_custom_packages() {
 		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any" i
 
 		## moo-aarchup
-		delete_custom_package_caches "moo-aarchup"
-		repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "any" i
+		#delete_custom_package_caches "moo-aarchup"
+		#repackage_this "moo-aarchup" "https://raw.github.com/idk/aarchup/master/PKGBUILD https://raw.github.com/idk/aarchup/master/aarchup.install" "any" i
 		
 		## moo-zsh
 		delete_custom_package_caches "moo-zsh"
@@ -456,14 +456,18 @@ umount_work_env() {
 	## unmount work env
 	meow=$1
 	$DIALOG --clear --backtitle "$upper_title" --title "Unmount work env" --yesno "Do you wish to unmount the $meow work env" 10 30
-	if [ $? = 0 ] ; then
+	if [ $? = 0 ] && [ "$WORK_DIR" != "" ] ; then
 		sudo umount $WORK_DIR/$meow/root-image/dev > /dev/null 2>&1
 		sudo umount $WORK_DIR/$meow/root-image/ > /dev/null 2>&1
-		sudo rm -r $WORK_DIR/$meow > /dev/null 2>&1
-		sudo rm $WORK_DIR/*$meow > /dev/null 2>&1
-		sudo rm -r $WORK_DIR/iso/$meow/$meow > /dev/null 2>&1
-		sudo rm $WORK_DIR/iso/$meow/*.$meow.* > /dev/null 2>&1
-		sudo rm -r $WORK_DIR/iso/$meow/boot/$meow > /dev/null 2>&1
+		sudo umount $WORK_DIR/$meow/ > /dev/null 2>&1
+		is_mounted=$(mountpoint -q $WORK_DIR/$meow/root-image && echo 1 || echo 0)
+    	if [ $is_mounted -ne 1 ]; then
+			sudo rm -r $WORK_DIR/$meow > /dev/null 2>&1
+			sudo rm $WORK_DIR/*$meow > /dev/null 2>&1
+			sudo rm -r $WORK_DIR/iso/$meow/$meow > /dev/null 2>&1
+			sudo rm $WORK_DIR/iso/$meow/*.$meow.* > /dev/null 2>&1
+			sudo rm -r $WORK_DIR/iso/$meow/boot/$meow > /dev/null 2>&1
+		fi
 	fi
 }
 
@@ -564,8 +568,8 @@ create_build_env() {
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
 		sudo cp -r ${MOO_HOME}.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
-		sudo cp ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
-		sudo cp ${MOO_TOOLS_PATH}misc/kdenliverc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliverc
+		#sudo cp ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
+		#sudo cp ${MOO_TOOLS_PATH}misc/kdenliverc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliverc
 		sudo cp ${MOO_TOOLS_PATH}misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
 		sudo cp ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
 		sudo cp ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
@@ -689,17 +693,13 @@ create_build_env() {
 
 		## root stuff
 		## copy over kde files
-		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/color-schemes
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/kdenlive
+		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/dolphin/view_properties/global
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/kde4/services/ServiceMenus
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/konsole
-		sudo cp -r /root/.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/color-schemes
-		sudo cp ${MOO_TOOLS_PATH}misc/..directory ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/dolphin/view_properties/global/.directory
+		sudo cp -r /root/.kde4/share/apps/color-schemes ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/
 		sudo cp /root/.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/konsolerc
 		sudo cp /root/.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/kservicemenurc
-		sudo cp -r /root/.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/konsole
+		sudo cp -r /root/.kde4/share/apps/konsole ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/
 		sudo cp /root/.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/dolphinrc
 		sudo cp /root/.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/apps/dolphin/dolphinui.rc
 		sudo cp /root/.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/root/.kde4/share/config/gtkrc
@@ -710,6 +710,9 @@ create_build_env() {
 		sudo cp /root/.nanorc ${ARCHLIVE}archlive/releng/root-image/root/.nanorc
 		sudo cp /root/.dialogrc ${ARCHLIVE}archlive/releng/root-image/root/.dialogrc
 		sudo cp /root/.wgetrc ${ARCHLIVE}archlive/releng/root-image/root/.wgetrc
+
+		## copy Trolltech config
+		sudo cp /root/.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/root/.config/Trolltech.conf
 
 		## clean up files content
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
