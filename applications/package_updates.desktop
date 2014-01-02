@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-Name=Update Repo Packages
+Name=Update Packages
 Comment=Desktop file for package updates - mooOS
 Exec=urxvtc -name "Updates" -e pacupdater
 Icon=update-manager
