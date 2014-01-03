@@ -606,7 +606,7 @@ initial_install() {
 
                 ## root stuffs
                 mkdir -p /mnt/root
-                cp -r /root/ /mnt/root
+                cp -r /root/.* /mnt/root/
 
                 cp /etc/psd.conf /mnt/etc/psd.conf
                 cp /etc/resolv.conf /mnt/etc/resolv.conf
