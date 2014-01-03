@@ -75,10 +75,11 @@ if [ $? = 255 ] ; then
 fi
 
 $DIALOG --clear --backtitle "$upper_title" --title "Architecture type" --yes-label "$archtype" --no-label "$not_archtype" --yesno "Double check. [Select Arch type]" 20 70
+
 if [ $? = 0 ] ; then
-        archtype=$archtype
-    else
-        archtype=$not_archtype
+    archtype=$archtype
+else
+    archtype=$not_archtype
 fi
 
 setterm -blank 0
@@ -152,7 +153,6 @@ clean_return() {
 }
 
 list_partitions() {
-    #partition_list=`blkid | grep -i 'TYPE="ext[234]"' | cut -d ' ' -f 1 | grep -i '^/dev/' | grep -v '/dev/loop' | grep -v '/dev/mapper' | sed "s/://g"`
     fdisk -l | grep Linux | cut -b 1-9 > $TMP/pout 2>/dev/null
     partition_list=$(cat $TMP/pout)
     if [ "$partition_list" = "" ] ; then
@@ -171,12 +171,10 @@ is_mnt_is_device_is_freespace() {
     chosen_device="$1"
     min_space_required="$2"
     is_mounted=$(mountpoint -q $chosen_device && echo 1 || echo 0)
-
     if [ $is_mounted -eq 1 ]; then
         df "$chosen_device" | tail -n+2 | while read fs size used avail use mount ; do
             if [[ $avail ]] ; then
                 freespace_left=$(echo $avail | grep -o '[0-9]*')
-                #echo $freespace_left
                 hu_freespace=$(human_filesize $((1024 * $freespace_left)))
                 hu_minspace=$(human_filesize $((1024 * $min_space_required)))
                 if [ $freespace_left -lt $min_space_required ] && [ $min_space_required -ne 0 ]; then
@@ -202,20 +200,23 @@ is_mnt_is_device_is_freespace() {
 check_valid_packages() {
     chosen_packages="$1"
     success=1
-    for pkg in $chosen_packages
-    do
-        pacman -Sdp "$pkg"
-        if [ $? -ne 0 ]; then
-            $DIALOG --backtitle "$upper_title" --title "Custom Packages" --msgbox "$pkg not found. Please re-try and remove this package from your custom package choices." 20 70
-            success=0
-            break
+    if [ "$chosen_packages" != "" ]; then
+        for pkg in $chosen_packages
+        do
+            pacman -Sdp "$pkg"
+            if [ $? -ne 0 ]; then
+                $DIALOG --backtitle "$upper_title" --title "Custom Packages" --msgbox "$pkg not found. Please re-try and remove this package from your custom package choices." 20 70
+                success=0
+                break
+            fi
+        done
+        if [ $success -eq 1 ]; then
+            $DIALOG --backtitle "$upper_title" --title "Custom Packages" --msgbox "All the custom packages you have chosen will now be installed alongside the default mooOS packages." 20 70
+            return 1
+        else
+            return 0
         fi
-    done
-    if [ $success -eq 1 ]; then
-        $DIALOG --backtitle "$upper_title" --title "Custom Packages" --msgbox "All the custom packages you have chosen will now be installed alongside the default mooOS packages." 20 70
         return 1
-    else
-        return 0
     fi
 }
 
@@ -237,7 +238,6 @@ partition_editor() {
         ch_part=$(cat $TMP/ch_part)
         cfdisk $ch_part
     fi
-
     current_selection 3
 }
 
@@ -413,7 +413,7 @@ make_filesystems() {
 }
 
 make_internet() {
-    $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Test/configure internet connection" 10 70
+    $DIALOG --clear --backtitle "$upper_title" --title "Internet" --msgbox "Placeholder. Suggestions welcome!" 10 70
     clean_return
 
     # $DIALOG --clear --backtitle "$upper_title" --title "Internet" --yesno "Configure wired connection?" 10 70
@@ -516,16 +516,6 @@ initial_install() {
     $DIALOG --clear --backtitle "$upper_title" --title "Initial install" --msgbox "Install packages" 10 30
     clean_return
 
-    # is_mounted=$(mountpoint -q /mnt && echo 1 || echo 0)
-    # if [ $is_mounted ]; then
-    #      update-mirrorlist
-    # else
-    #     $DIALOG --clear --backtitle "$upper_title" --title "WARNING" --msgbox "No Mounted Partition detected on /mnt\n\nReturning to menu..." 20 70
-    #     current_selection 3
-    #     installer_menu
-    #     return 0 
-    # fi
-
     if [ "$archtype" = "x86_64" ]; then
         mainpkgs="${MOO_TOOLS_PATH}packages.x86_64"
     else
@@ -580,7 +570,6 @@ initial_install() {
                     # fi
 
                     update-mirrorlist > /dev/null 2>&1
-
                     pacstrap -C /mnt/etc/pacman.conf /mnt sudo git rsync wget dialog xdialog zsh$ppkgs $(cat $basepkgs) $(cat $mainpkgs) $(cat $extrapkgs) 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Installing mooOS and custom packages" --ok-label "Continue" --programbox 20 70
 
                 $DIALOG --clear --backtitle "$upper_title" --title "Step B) completed" --msgbox "Proceed" 10 30
@@ -644,18 +633,11 @@ initial_install() {
                 mkdir -p /mnt/usr/share/enlightenment/data/backgrounds
                 cp /usr/share/enlightenment/data/backgrounds/mooOS* /mnt/usr/share/enlightenment/data/backgrounds
 
-                #mkdir -p /mnt/usr/share/enlightenment/data/themes
-                #cp /usr/share/enlightenment/data/themes/* /mnt/usr/share/enlightenment/data/themes
-
                 #mv -v /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
                 #cp ${dev_directory}etc/httpd.conf /etc/httpd/conf/httpd.conf
                 #cp ${dev_directory}etc/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
                 #mv -v /etc/php/php.ini /etc/php/php.ini.bak
                 #cp ${dev_directory}etc/php.ini /etc/php/php.ini
-
-                # copy over custom .desktop files
-                #mkdir -p /mnt/usr/share/applications
-                #cp /usr/share/applications/*.desktop /mnt/usr/share/applications/
 
                 ## https://github.com/dmatarazzo/Sublime-Text-2-Icon
                 cp /usr/share/icons/HighContrast/16x16/apps/sublime-text.png /mnt/usr/share/icons/HighContrast/16x16/apps/sublime-text.png
@@ -794,7 +776,7 @@ chroot_configuration() {
         if [ -f /mnt/usr/bin/moo_chroot ]; then
             export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $pout"
         else
-                $DIALOG --clear --backtitle "$upper_title" --title "mooOS warning" --msgbox "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!" 10 30
+            $DIALOG --clear --backtitle "$upper_title" --title "mooOS warning" --msgbox "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!" 10 30
             exit 0
         fi
 
