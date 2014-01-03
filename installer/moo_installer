@@ -216,6 +216,7 @@ check_valid_packages() {
         else
             return 0
         fi
+    else
         return 1
     fi
 }
