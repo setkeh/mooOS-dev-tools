@@ -31,6 +31,7 @@ lib32-libdrm
 lib32-libffi
 lib32-libgcrypt
 lib32-libgpg-error
+lib32-libjpeg6
 lib32-libjpeg-turbo
 lib32-libldap
 lib32-libogg
