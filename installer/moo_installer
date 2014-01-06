@@ -595,8 +595,16 @@ initial_install() {
                 sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
 
                 ## root stuffs
-                mkdir -p /mnt/root
-                cp -r /root/.* /mnt/root/
+                mkdir -p /mnt/root/.config
+                mkdir -p /mnt/root/.kde4
+                cp -r /root/.config/* /mnt/root/
+                cp -r /root/.kde4/* /mnt/root/
+
+                cp /root/.dialogrc /mnt/root/dialogrc
+                cp /root/.gtkrc-2.0 /mnt/root/.gtkrc-2.0
+                cp /root/.nanorc /mnt/root/.nanorc
+                cp /root/.wgetrc /mnt/root/.wgetrc
+                cp /root/.zlogin /mnt/root/.zlogin
 
                 cp /etc/psd.conf /mnt/etc/psd.conf
                 cp /etc/resolv.conf /mnt/etc/resolv.conf
