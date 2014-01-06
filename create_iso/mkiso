@@ -465,11 +465,11 @@ umount_work_env() {
 		sudo umount $WORK_DIR/$meow/ 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Unmounting work dirs" --ok-label "Continue" --programbox 20 70
 		is_mounted=$(mountpoint -q $WORK_DIR/$meow/root-image && echo 1 || echo 0)
     	if [ $is_mounted -ne 1 ]; then
-			#sudo rm -r $WORK_DIR/$meow > /dev/null 2>&1
-			#sudo rm $WORK_DIR/*$meow > /dev/null 2>&1
-			#sudo rm -r $WORK_DIR/iso/$meow/$meow > /dev/null 2>&1
-			#sudo rm $WORK_DIR/iso/$meow/*.$meow.* > /dev/null 2>&1
-			#sudo rm -r $WORK_DIR/iso/$meow/boot/$meow > /dev/null 2>&1
+			sudo rm -r $WORK_DIR/$meow > /dev/null 2>&1
+			sudo rm $WORK_DIR/*$meow > /dev/null 2>&1
+			sudo rm -r $WORK_DIR/iso/$meow/$meow > /dev/null 2>&1
+			sudo rm $WORK_DIR/iso/$meow/*.$meow.* > /dev/null 2>&1
+			sudo rm -r $WORK_DIR/iso/$meow/boot/$meow > /dev/null 2>&1
 			echo "sudo rm -r $WORK_DIR/iso/$meow/boot/$meow > /dev/null 2>&1"
 		fi
 	fi
