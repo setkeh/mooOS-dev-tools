@@ -1,3 +1,4 @@
+0ad
 abs
 acpi
 aide
@@ -51,8 +52,8 @@ eggdrop
 elementary-git-debug
 elementary-icon-theme
 encfs
-enlightenment17-git
-enlightenment17-git-debug
+enlightenment-git
+enlightenment-git-debug
 etrophy
 evas_generic_loaders-git
 evas_generic_loaders-git-debug
@@ -200,6 +201,7 @@ phonon-vlc
 pkg-config
 pkgcacheclean
 pkgfile
+playonlinux
 pngcrush
 polipo
 ppp

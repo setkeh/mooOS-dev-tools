@@ -725,6 +725,8 @@ create_build_env() {
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
+		sudo sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
+		sudo sed -i "s/xOffset: 2123/xOffset: 123/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
 
 		## copy over hosts file (needed for LAN repos) TODO
 		#sudo cp /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
@@ -754,12 +756,12 @@ create_build_env() {
 		fi
 
 		## new method
-		if [ -d "$ISO_DIR" ]; then
-			sudo rm -r "$ISO_DIR"
-		fi
-		if [ -d "$WORK_DIR" ]; then
-			sudo rm -r "$WORK_DIR"
-		fi
+		#if [ -d "$ISO_DIR" ]; then
+		#	sudo rm -r "$ISO_DIR"
+		#fi
+		#if [ -d "$WORK_DIR" ]; then
+		#	sudo rm -r "$WORK_DIR"
+		#fi
 
 		## create pacman.conf for build
 		sudo mkdir -p "$WORK_DIR" && sudo cp ${MOO_TOOLS_PATH}misc/pacman.conf ${WORK_DIR}/pacman.conf
