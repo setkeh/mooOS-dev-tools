@@ -109,11 +109,11 @@ check_repos() {
 			curl -s -o "/dev/null" "$1"
 		fi
 		if [ $? -ne 0 ] ; then
-			$DIALOG --clear --backtitle "$upper_title" --title $check_repos_title --msgbox "Error occurred getting URL $1: rechecking in 10 seconds" 10 40
+			$DIALOG --clear --backtitle "$upper_title" --title "${check_repos_title}" --msgbox "Error occurred getting URL $1: rechecking in 10 seconds" 10 40
 		elif [ $? -eq 6 ]; then
-			$DIALOG --clear --backtitle "$upper_title" --title $check_repos_title --msgbox "Unable to resolve host: rechecking in 10 seconds" 10 40
+			$DIALOG --clear --backtitle "$upper_title" --title "${check_repos_title}" --msgbox "Unable to resolve host: rechecking in 10 seconds" 10 40
 		elif [ $? -eq 7 ]; then
-			$DIALOG --clear --backtitle "$upper_title" --title $check_repos_title --msgbox "Unable to connect to host: rechecking in 10 seconds" 10 40
+			$DIALOG --clear --backtitle "$upper_title" --title "${check_repos_title}" --msgbox "Unable to connect to host: rechecking in 10 seconds" 10 40
 		else
 			break
 		fi

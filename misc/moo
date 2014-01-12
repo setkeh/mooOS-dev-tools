@@ -91,6 +91,9 @@ if [ $MOUNT_LAN1_FILESYSTEM -eq 1 ]; then
 	## Start SSH top (terminal task manager)
 	${TERM_USED}${BG2} $NAME"htop $LAN1" $TITLE"htop $LAN1" -e ssh -t $LAN1 -p$PORT1 htop
 
+	## Start SSH journalctl (systemlog)
+	${TERM_USED}${BG2} $NAME"Log $LAN1" $TITLE"Log $LAN1" -e ssh -t $LAN1 -p$PORT1 sudo journalctl -f
+
 	## Mount server filesystem to localhost
 	if [ ! -d "$PATH_TO_DATA/home" ] ; then
 		sshfs $USER1@$LAN1:/ $PATH_TO_DATA -C -p $PORT1
