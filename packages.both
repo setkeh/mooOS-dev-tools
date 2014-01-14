@@ -165,7 +165,6 @@ mlocate
 mlt
 mlt-python-bindings
 moc
-moo-aarchup
 moo-scripts
 moo-tools
 moo-zsh
@@ -317,6 +316,7 @@ xterm
 xvkbd
 yad
 yajl
+yaourt
 yeahconsole
 youtube-dl
 youtube-viewer-git
