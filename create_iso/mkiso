@@ -276,6 +276,19 @@ create_custom_packages() {
 		#TODO
 		#schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating hardinfo" --progressbox 20 70
 		cd "$PWD"
+
+		## octopi
+		delete_custom_package_caches "octopi"
+		cd ${MOO_HOME}abs
+		git clone git@github.com:aarnt/octopi.git
+		cd ${MOO_HOME}abs/octopi
+
+		sed -i "s/distro == ectn_ARCHBANGLINUX/distro == ectn_ARCHBANGLINUX || distro == ectn_MOOOSLINUX/g" ${MOO_HOME}abs/octopi/src/mainwindow_news.cpp
+
+		makepkg -sfi 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating octopi" --progressbox 20 70
+		schroot -p -- makepkg -sfi 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating octopi" --progressbox 20 70
+		cd "$PWD"
+
 		notify-send "Rebranded packages" -i "$MOO_ICON"
 	fi
 }
