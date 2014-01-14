@@ -823,8 +823,8 @@ create_mooos_repos() {
 			mv $(ls | grep "elementary-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "elementary_test-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "enlightenment17-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "enlightenment17-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "enlightenment-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "enlightenment-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "evas_generic_loaders-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
