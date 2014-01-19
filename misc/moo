@@ -13,7 +13,8 @@ fi
 #VID_QUEUE="/home/$USER/Videos/tempvideo"
 #VID_QUEUE="/home/$USER/Videos/movies"
 #VID_QUEUE="/home/$USER/Videos/Star Trek TNG"
-VID_QUEUE="/home/$USER/Videos/Sliders"
+VID_QUEUE="/home/$USER/Videos/Star Trek Voyager"
+#VID_QUEUE="/home/$USER/Videos/Sliders"
 
 #TERM_USED=terminology
 TERM_USED=urxvtc
