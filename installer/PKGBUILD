@@ -1,7 +1,7 @@
 # Maintainer: pdq <pdq@localhost>
 pkgname=moo-tools
 pkgver=0.3
-pkgrel=3
+pkgrel=4
 pkgdesc="Installer and various tools for mooOS."
 arch=(any)
 url="https://github.com/idk/mooOS-dev-tools.git"

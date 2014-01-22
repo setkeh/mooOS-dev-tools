@@ -190,6 +190,7 @@ omg-suite
 openssh
 p7zip-libre
 pacaur
+packagekit
 pacmatic
 pacserve
 patch
@@ -228,6 +229,7 @@ python2-xynehttpserver
 python3-aur
 python3-threaded_servers
 python3-xynexdg
+rabbitvcs
 rkhunter
 roccat-dkms
 rp-pppoe-libre
@@ -306,6 +308,7 @@ xf86-input-vmmouse
 xf86-input-void
 xf86-video-vesa
 xflux
+xonotic
 xorg-server
 xorg-server-utils
 xorg-utils
