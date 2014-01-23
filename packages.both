@@ -12,7 +12,6 @@ audio-convert-libre
 autoconf
 autocutsel
 automake
-autopsy
 baobab
 bison
 bitcoin-qt
@@ -32,7 +31,6 @@ cvs
 dansguardian
 ddd
 desksanity-git
-devede
 devtools
 dialog
 dkms
@@ -41,7 +39,6 @@ dmenu_mocp
 dmidecode
 dnsmasq
 dnsutils
-doomseeker
 dosfstools
 downgrade
 dtrx
@@ -54,7 +51,6 @@ elementary-icon-theme
 encfs
 enlightenment-git
 enlightenment-git-debug
-etrophy
 evas_generic_loaders-git
 evas_generic_loaders-git-debug
 fakeroot
@@ -82,7 +78,6 @@ gpac
 gparted
 grake
 groff
-grub
 gst-plugins-bad-libre
 gstreamer0.10-bad-libre-plugins
 gstreamer0.10-base-plugins
@@ -110,7 +105,6 @@ johnny
 k3b
 kde-servicemenus-meld-menu-extended
 kdebase-dolphin
-kdebase-kdialog
 kdebase-konsole
 kdebase-runtime-libre
 kdebase-workspace
@@ -168,7 +162,6 @@ moc
 moo-scripts
 moo-tools
 moo-zsh
-mplayer-libre
 mpv
 mtools
 multitail
@@ -183,7 +176,6 @@ ninvaders
 nmap
 ntfs-3g
 ntp
-ocenaudio
 octopi
 octopi-notifier
 omg-suite
@@ -229,7 +221,6 @@ python2-xynehttpserver
 python3-aur
 python3-threaded_servers
 python3-xynexdg
-rabbitvcs
 rkhunter
 roccat-dkms
 rp-pppoe-libre
@@ -241,7 +232,6 @@ scrot
 secure-delete
 simplescreenrecorder
 spectrwm-libre
-sqlmap-git
 squashfs-tools
 squid
 sshfs
@@ -308,7 +298,6 @@ xf86-input-vmmouse
 xf86-input-void
 xf86-video-vesa
 xflux
-xonotic
 xorg-server
 xorg-server-utils
 xorg-utils
@@ -323,7 +312,6 @@ yaourt
 yeahconsole
 youtube-dl
 youtube-viewer-git
-zandronum
 zenity
 zip
 zsh

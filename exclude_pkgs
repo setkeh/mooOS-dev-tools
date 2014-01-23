@@ -3,8 +3,10 @@ apache
 brutaldoom
 codecs
 codecs64
+doomseeker
 elementary_test-git
 elementary_test-git-debug
+grub
 lib32-atk
 lib32-attr
 lib32-cairo
@@ -32,8 +34,8 @@ lib32-libdrm
 lib32-libffi
 lib32-libgcrypt
 lib32-libgpg-error
-lib32-libjpeg6
 lib32-libjpeg-turbo
+lib32-libjpeg6
 lib32-libldap
 lib32-libogg
 lib32-libpciaccess
@@ -94,3 +96,5 @@ steam
 teamviewer
 virtualbox
 virtualbox-host-modules
+xonotic
+zandronum
