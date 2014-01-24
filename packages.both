@@ -22,6 +22,7 @@ ccache
 cclive
 cdrdao
 cheser-icon-theme
+cinnamon
 cmatrix
 cower
 cowsay
@@ -44,20 +45,19 @@ downgrade
 dtrx
 dvd+rw-tools
 efl-git
-efl-git-debug
 eggdrop
-elementary-git-debug
+elementary-git
 elementary-icon-theme
+emotion_generic_players-git
 encfs
 enlightenment-git
-enlightenment-git-debug
 evas_generic_loaders-git
-evas_generic_loaders-git-debug
 fakeroot
 feh
 ffmpeg
 filezilla
 flex
+fluxbox
 fontconfig
 fortune-mod
 frei0r-plugins
@@ -114,6 +114,7 @@ kdenlive
 kdepim-runtime
 kdepimlibs
 kdesdk-dolphin-plugins
+kdesdk-kcachegrind
 kdesdk-thumbnailers
 kdesudo
 kdeutils-ark-libre
@@ -245,7 +246,6 @@ tcpdump
 tcplay
 tcptraceroute
 terminology-git
-terminology-git-debug
 terminus-font
 tig
 tls
@@ -269,6 +269,7 @@ update-mirrorlist
 upx
 urxvt-font-size-git
 urxvt-perls
+valgrind
 vb-pdq
 vim
 vlc
