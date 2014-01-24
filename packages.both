@@ -88,7 +88,6 @@ hardinfo
 hddtemp
 hgsvn
 hicolor-icon-theme
-hotshots
 hsetroot
 html2text
 htop
@@ -105,7 +104,6 @@ kde-servicemenus-meld-menu-extended
 kdebase-dolphin
 kdebase-konsole
 kdebase-runtime-libre
-kdebase-workspace
 kdelibs-libre
 kdemultimedia-ffmpegthumbs
 kdenlive
@@ -151,7 +149,6 @@ md5deep
 mediadownloader
 mediainfo
 meld
-memcached
 memtest86+
 mencoder-libre
 mlocate
@@ -194,7 +191,6 @@ phonon-vlc
 pkg-config
 pkgcacheclean
 pkgfile
-playonlinux
 pngcrush
 polipo
 ppp
@@ -239,6 +235,7 @@ stardork
 strace
 sublime-text-dev
 sudo
+sxiv
 syslinux
 tcpdump
 tcplay
@@ -258,7 +255,6 @@ ttf-bitstream-vera
 ttf-envy-code-r
 ttf-liberation
 ttf-ms-fonts
-ttf-stylebats
 tty-clock-patched
 udevil
 unar
@@ -269,10 +265,8 @@ urxvt-font-size-git
 urxvt-perls
 valgrind
 vb-pdq
-vim
 vlc
 vorbis-tools
-w3m
 wavpack
 wayland
 webkitgtk2
@@ -304,8 +298,6 @@ xorg-xinit
 xorg-xkill
 xpdf
 xterm
-xvkbd
-yad
 yajl
 yaourt
 yeahconsole
