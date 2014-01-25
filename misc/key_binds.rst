@@ -1,4 +1,4 @@
-Enlightenment17 window manager
+Enlightenment window manager
 ==============================
 
 +------------------------------+---------------------------------------------+
@@ -19,6 +19,9 @@ Enlightenment17 window manager
 | - Alt + Tab                  | - Next Window                               |
 | - Alt + Escape               | - Show Everything Launcher                  |
 +------------------------------+---------------------------------------------+
+| - Ctrl + Escape              | - Focus IBar                                |
+| - Ctrl + KP_Enter            | - Restart Enlightenment                     |
++------------------------------+---------------------------------------------+
 | - Win + 1                    | - Switch to Desktop 1                       |
 | - Win + 2                    | - Switch to Desktop 2                       |
 | - Win + 3                    | - Switch to Desktop 3                       |
@@ -26,12 +29,16 @@ Enlightenment17 window manager
 | - Win + 5                    | - Switch to Desktop 5                       |
 | - Win + 6                    | - Switch to Desktop 6                       |
 | - Win + B                    | - Toggle Borderless State                   |
+| - Win + D                    | - Toggle Borderless State                   |
 | - Win + F                    | - Fullscreen Mode Toggle                    |
+| - Win + I                    | - Settings Panel                            |
 | - Win + M                    | - Iconic Mode Toggle (minimize)             |
 | - Win + O                    | - Command: /usr/bin/dmenu_mocp - p "MUSIC:" |
 | - Win + P                    | - Show Everything Launcher                  |
 | - Win + S                    | - Sticky Mode Toggle                        |
+| - Win + T                    | - Raise                                     |
 | - Win + X                    | - Kill                                      |
+| - Win + W                    | - Show Main Menu                            |
 +------------------------------+---------------------------------------------+
 | - Win + Up                   | - Maximize                                  |
 | - Win + Down                 | - Lower                                     |
@@ -47,7 +54,7 @@ Enlightenment17 window manager
 | - Win + Backspace            | - Close                                     |
 | - Win + KP_End               | - Command:    /usr/bin/dolphin              |
 | - Win + Return               | - Command:    /usr/bin/terminology          |
-| - Win + KP_Down              | - Command:    /usr/bin/firefox              |
+| - Win + KP_Down              | - Command:    /usr/bin/iceweasel            |
 +------------------------------+---------------------------------------------+
 | - Win + Shift + Return       | - Command:    /usr/bin/urcvtc               |
 +------------------------------+---------------------------------------------+
@@ -84,5 +91,5 @@ Enlightenment17 window manager
 | - KP_Insert                  | - Next Window                               |
 | - KP_Substract               | - Command: /usr/bin/subl3                   |
 +------------------------------+---------------------------------------------+
-|  - Shift + Win + L           | - Lock                                      |
+| - Shift + Win + L            | - Lock                                      |
 +------------------------------+---------------------------------------------+
