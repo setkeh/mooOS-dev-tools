@@ -833,6 +833,7 @@ create_mooos_repos() {
 			mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "emotion_generic_players-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "desksanity-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "efx-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			rm ${MOO_HOME}abs/mooOS-pkgs-$mm/*-git* > /dev/null 2>&1
