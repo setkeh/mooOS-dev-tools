@@ -117,6 +117,7 @@ kdeutils-ark-libre
 keepassx
 key-mon
 keychain
+lib32-qt4
 libavc1394
 libisoburn
 libkfbapi
@@ -152,8 +153,6 @@ meld
 memtest86+
 mencoder-libre
 mlocate
-mlt
-mlt-python-bindings
 moc
 moo-scripts
 moo-tools
@@ -225,6 +224,7 @@ rtmpdump
 rxvt-unicode
 schroot
 scrot
+sdl_mixer
 secure-delete
 simplescreenrecorder
 spectrwm-libre

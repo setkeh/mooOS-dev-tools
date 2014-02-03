@@ -338,7 +338,7 @@ rsync_iso_remote() {
 			flags=$(eval echo $(echo '${'_iso_sync[4]'}'))
 			src=$(eval echo $(echo '${'_iso_sync[2]'}'))
 			dest=$(eval echo $(echo '${'_iso_sync[3]'}'))
-			rsync -avcPh $flags -e "ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing iso" --ok-label "Continue" --programbox 20 70 # -n, --dry-run perform a trial run with no changes made
+			torsocks rsync -avcPh $flags -e "torsocks ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing iso" --ok-label "Continue" --programbox 20 70 # -n, --dry-run perform a trial run with no changes made
 		fi
 	fi
 	notify-send "${ARCH_ISO} synced" -i "$MOO_ICON"

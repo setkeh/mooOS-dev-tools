@@ -27,11 +27,21 @@ usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
 # fix missing icons in .desktop files
-sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
-sed -i "s/Exec=/Exec=kdesudo /g" /usr/share/applications/gparted.desktop
-sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /usr/share/applications/kde4/krandrtray.desktop
-sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /usr/share/applications/kde4/kinfocenter.desktop
-sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /usr/share/applications/johnny.desktop
+if [ -f /usr/share/applications/mediadownloader.desktop ]; then
+	sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
+fi
+if [ -f /usr/share/applications/gparted.desktop ]; then
+	sed -i "s/Exec=/Exec=kdesudo /g" /usr/share/applications/gparted.desktop
+fi
+if [ -f /usr/share/applications/kde4/krandrtray.desktop ]; then
+	sed -i "s/Icon=preferences-desktop-display-randr/Icon=preferences-desktop-display/g" /usr/share/applications/kde4/krandrtray.desktop
+fi
+if [ -f /usr/share/applications/kde4/kinfocenter.desktop ]; then
+	sed -i "s/Icon=hwinfo/Icon=preferences-system/g" /usr/share/applications/kde4/kinfocenter.desktop
+fi
+if [ -f /usr/share/applications/johnny.desktop ]; then
+	sed -i "s/Icon=\/opt\/johnny\/johnny-128.png/Icon=seahorse/g" /usr/share/applications/johnny.desktop
+fi
 
 if [ -f /usr/share/applications/kde4/nepomukcleaner.desktop ]; then
 	rm /usr/share/applications/kde4/nepomukcleaner.desktop
