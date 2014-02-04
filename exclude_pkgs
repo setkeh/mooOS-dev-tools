@@ -61,6 +61,7 @@ lib32-opencl-nvidia
 lib32-pango
 lib32-pcre
 lib32-pixman
+lib32-qt4
 lib32-systemd
 lib32-xz
 lwks
