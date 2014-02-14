@@ -12,6 +12,7 @@ audio-convert-libre
 autoconf
 autocutsel
 automake
+avidemux-libre-qt
 baobab
 bison
 bitcoin-qt
@@ -95,11 +96,13 @@ hub
 i7z
 iceweasel-libre
 iftop
+inkscape
 intrace
 iotop
 jhead
 johnny
 k3b
+kdbg
 kde-servicemenus-meld-menu-extended
 kdebase-dolphin
 kdebase-konsole
@@ -157,6 +160,7 @@ moo-scripts
 moo-tools
 moo-wallpapers
 moo-zsh
+mplayer-libre
 mpv
 mtools
 multitail
@@ -215,6 +219,7 @@ python2-xynehttpserver
 python3-aur
 python3-threaded_servers
 python3-xynexdg
+qtcreator
 rkhunter
 roccat-dkms
 rp-pppoe-libre
@@ -227,6 +232,7 @@ sdl_mixer
 secure-delete
 simplescreenrecorder
 spectrwm-libre
+speedcrunch
 squashfs-tools
 squid
 sshfs

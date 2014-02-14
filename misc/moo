@@ -182,7 +182,7 @@ if [ -d "$PATH_TO_DATA/home" ] || [ $PRIV_ENABLED -eq 0 ]; then
 	[ -z "$(pidof weechat)" ] && ${TERM_USED}${BG4} $NAME"IRC1" $TITLE"IRC1" -e weechat && ${TERM_USED}${BG8} $NAME"IRC2" $TITLE"IRC2" -e weechat -d ~/.weechat-priv
 
 	## Start custom keyboard shortcuts
-	[ -z "$(pidof xbindkeys)" ] && xbindkeys &
+	#[ -z "$(pidof xbindkeys)" ] && xbindkeys &
 
 	## Terminal applications
 
