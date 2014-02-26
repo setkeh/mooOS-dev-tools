@@ -496,7 +496,7 @@ create_build_env() {
 		sudo cp /etc/resolv.conf.head ${ARCHLIVE}archlive/releng/root-image/etc/resolv.conf.head
 		
 		## dnsmasq
-		sudo cp /etc/dnsmasq.conf ${ARCHLIVE}archlive/releng/root-image/etc/dnsmasq.conf
+		#sudo cp /etc/dnsmasq.conf ${ARCHLIVE}archlive/releng/root-image/etc/dnsmasq.conf
 		
 		## dhcpcd
 		sudo cp /etc/dhcpcd.conf ${ARCHLIVE}archlive/releng/root-image/etc/dhcpcd.conf
