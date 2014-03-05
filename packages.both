@@ -62,6 +62,7 @@ fortune-mod
 frei0r-plugins
 fslint
 fuseiso
+gbs
 gcolor2
 gdb
 getmail
@@ -180,7 +181,6 @@ octopi
 octopi-notifier
 omg-suite
 openssh
-opera
 p7zip-libre
 pacaur
 packagekit
