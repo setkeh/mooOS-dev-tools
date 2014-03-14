@@ -71,6 +71,7 @@ gimp
 git
 gkrellm
 glances
+gnuplot
 go-fuse
 go-sqlite3
 gource
@@ -163,7 +164,6 @@ moo-tools
 moo-wallpapers
 moo-zsh
 mplayer-libre
-mpv
 mtools
 multitail
 mumble
@@ -274,6 +274,7 @@ urxvt-perls
 valgrind
 vb-pdq
 vlc
+voglperf-git
 vorbis-tools
 wavpack
 wayland
