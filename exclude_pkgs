@@ -7,6 +7,8 @@ doomseeker
 elementary_test-git
 elementary_test-git-debug
 grub
+vogl-git
+voglperf-git
 lib32-atk
 lib32-attr
 lib32-cairo
@@ -92,6 +94,8 @@ roccat-tools-kovaplus
 roccat-tools-lua
 roccat-tools-pyra
 roccat-tools-savu
+sdl2
+lib32-sdl2
 sdl_ttf
 sdlmame
 steam
