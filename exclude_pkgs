@@ -66,6 +66,7 @@ lib32-pixman
 lib32-qt4
 lib32-systemd
 lib32-xz
+lib32-libsmpeg
 lwks
 mod_evasive
 mysql
