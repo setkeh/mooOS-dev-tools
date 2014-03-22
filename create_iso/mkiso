@@ -186,8 +186,8 @@ create_custom_packages() {
 		repackage_this "moo-tools" "https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install" "any" i
 
 		## moo-octopi
-		delete_custom_package_caches "moo-octopi"
-		repackage_this "moo-octopi" "https://raw.github.com/idk/moo-octopi/master/PKGBUILD https://raw.github.com/idk/moo-octopi/master/moo-octopi.install" "any" i
+		delete_custom_package_caches "octopi"
+		repackage_this "octopi" "https://raw.github.com/idk/moo-octopi/master/PKGBUILD https://raw.github.com/idk/moo-octopi/master/moo-octopi.install" "any" i
 
 		## moo-aarchup
 		#delete_custom_package_caches "moo-aarchup"
