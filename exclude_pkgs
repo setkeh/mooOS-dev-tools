@@ -7,8 +7,6 @@ doomseeker
 elementary_test-git
 elementary_test-git-debug
 grub
-vogl-git
-voglperf-git
 lib32-atk
 lib32-attr
 lib32-cairo
@@ -42,6 +40,7 @@ lib32-libldap
 lib32-libogg
 lib32-libpciaccess
 lib32-libpulse
+lib32-libsmpeg
 lib32-libsndfile
 lib32-libtiff
 lib32-libtxc_dxtn
@@ -64,9 +63,9 @@ lib32-pango
 lib32-pcre
 lib32-pixman
 lib32-qt4
+lib32-sdl2
 lib32-systemd
 lib32-xz
-lib32-libsmpeg
 lwks
 mod_evasive
 mysql
@@ -80,8 +79,8 @@ nvidia-utils-full-beta
 opencl-nvidia
 opencl-nvidia-full-beta
 php
-python2-sqlalchemy
 playonlinux
+python2-sqlalchemy
 qmc2
 roccat-tools-arvo
 roccat-tools-common
@@ -95,9 +94,6 @@ roccat-tools-kovaplus
 roccat-tools-lua
 roccat-tools-pyra
 roccat-tools-savu
-sdl2
-lib32-sdl2
-sdl_ttf
 sdlmame
 steam
 teamviewer

@@ -7,6 +7,8 @@ set -e -u
 sed -i 's/#\(en_US\.UTF-8\)/\1/' /etc/locale.gen
 locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+ln -sf /usr/bin/meld /usr/bin/vimdiff
+ln -sf /usr/bin/vogleditor64 /usr/bin/vogleditor
 
 ## figure out architecture type
 archtype="$(uname -m)"

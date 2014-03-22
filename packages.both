@@ -64,8 +64,8 @@ fslint
 fuseiso
 gcolor2
 gdb
+geeh
 getmail
-gh
 gimp
 git
 gkrellm
@@ -230,6 +230,7 @@ rxvt-unicode
 schroot
 scrot
 sdl_mixer
+sdl_ttf
 secure-delete
 simplescreenrecorder
 spectrwm-libre
@@ -275,6 +276,8 @@ vb-pdq
 virtualbox-guest-modules
 virtualbox-guest-utils
 vlc
+vogl-git
+voglperf-git
 vorbis-tools
 wavpack
 wayland
