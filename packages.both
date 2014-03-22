@@ -214,6 +214,7 @@ python2-xynehttpserver
 python3-aur
 python3-threaded_servers
 python3-xynexdg
+qt5-examples
 qtcreator
 rkhunter
 roccat-dkms
@@ -270,8 +271,6 @@ vb-pdq
 virtualbox-guest-modules
 virtualbox-guest-utils
 vlc
-vogl-git
-voglperf-git
 vorbis-tools
 wavpack
 wayland

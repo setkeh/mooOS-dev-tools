@@ -9,6 +9,7 @@ locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -sf /usr/bin/meld /usr/bin/vimdiff
 ln -sf /usr/bin/vogleditor64 /usr/bin/vogleditor
+chown -Rv moo:users /usr/share/doc/qt/examples/   
 
 ## figure out architecture type
 archtype="$(uname -m)"
