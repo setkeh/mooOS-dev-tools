@@ -2,7 +2,7 @@
 Version=1.0
 Name=TTY Clock
 Comment=Deskop file for TTY Clock - mooOS
-Exec=urxvtc -name "Clock" -e tty-clock -tc
+Exec=urxvtc -title "Clock" -name "Clock" -e tty-clock -tc
 Icon=preferences-system-time
 Terminal=false
 Type=Application

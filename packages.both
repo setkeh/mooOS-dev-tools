@@ -85,6 +85,7 @@ gstreamer0.10-ffmpeg
 gstreamer0.10-good
 gstreamer0.10-ugly
 gstreamer0.10-ugly-plugins
+gtk-engines
 gtmsu_servicemenu
 hardinfo
 hddtemp

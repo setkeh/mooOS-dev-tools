@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Sublime Text 3 Dev - root
+Name=(sudo)Sublime Text 3 Dev
 GenericName=Text Editor
 Comment=Sophisticated text editor for code, markup and prose
 Exec=kdesudo subl3 %F

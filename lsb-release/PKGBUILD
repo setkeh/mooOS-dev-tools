@@ -5,8 +5,8 @@
 
 pkgname=lsb-release
 pkgver=1.4
-pkgrel=14
-pkgdesc="LSB version query program"
+pkgrel=14.3
+pkgdesc="LSB version query program (mooOS rebranded)"
 arch=('any')
 url="http://www.linuxbase.org/"
 license=('GPL2')

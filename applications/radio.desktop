@@ -2,7 +2,7 @@
 Version=1.0
 Name=Radio
 Comment=Deskop file for pyradio - mooOS
-Exec=urxvtc -name "Radio" -e pyradio
+Exec=urxvtc -title "Radio" -name "Radio" -e pyradio
 Icon=xfce-radio
 Terminal=false
 Type=Application

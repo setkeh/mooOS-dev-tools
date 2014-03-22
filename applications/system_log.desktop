@@ -2,7 +2,7 @@
 Version=1.0
 Name=System Log
 Comment=Deskop file for journalctl log - mooOS
-Exec=urxvtc -name "Logs" -e sudo journalctl -f
+Exec=urxvtc -title "Logs" -name "Logs" -e sudo journalctl -f
 Icon=logview
 Terminal=false
 Type=Application

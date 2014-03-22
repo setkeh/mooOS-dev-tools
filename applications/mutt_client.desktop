@@ -2,7 +2,7 @@
 Version=1.0
 Name=Mutt Email Client
 Comment=Deskop file for mutt - mooOS
-Exec=urxvtc -name "Mail" -e torsocks mutt
+Exec=urxvtc -name "Mail" -title "Mail" -e torsocks mutt
 Icon=evolution
 Terminal=false
 Type=Application

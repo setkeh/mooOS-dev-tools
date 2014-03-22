@@ -240,18 +240,18 @@ create_custom_packages() {
 		cd "$PWD"
 
 		## GRUB
-		delete_custom_package_caches "grub"
-		cp -r /var/abs/testing/grub ${MOO_HOME}abs/grub
-		sed -i "s/\"Arch\"/\"mooOS\"/g" ${MOO_HOME}abs/grub/grub.default
-		sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
-		GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
-		GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
-		sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
-		sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
-		cd ${MOO_HOME}abs/grub
-		makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating grub" --progressbox 20 70
-		schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating grub" --progressbox 20 70
-		cd "$PWD"
+		# delete_custom_package_caches "grub"
+		# cp -r /var/abs/testing/grub ${MOO_HOME}abs/grub
+		# sed -i "s/\"Arch\"/\"mooOS\"/g" ${MOO_HOME}abs/grub/grub.default
+		# sed -i "s/Arch Linux/mooOS GNU\/Linux/g" ${MOO_HOME}abs/grub/grub.cfg
+		# GRUB_HASH=$(md5sum ${MOO_HOME}abs/grub/grub.default | awk '{print $1}')
+		# GRUB_HASH2=$(md5sum ${MOO_HOME}abs/grub/grub.cfg | awk '{print $1}')
+		# sed -i "s/a03ffd56324520393bf574cefccb893d/$GRUB_HASH/g" ${MOO_HOME}abs/grub/PKGBUILD
+		# sed -i "s/c8b9511586d57d6f2524ae7898397a46/$GRUB_HASH2/g" ${MOO_HOME}abs/grub/PKGBUILD
+		# cd ${MOO_HOME}abs/grub
+		# makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating grub" --progressbox 20 70
+		# schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating grub" --progressbox 20 70
+		# cd "$PWD"
 
 		## SYSLINUX
 		delete_custom_package_caches "syslinux"
