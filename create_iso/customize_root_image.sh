@@ -16,7 +16,6 @@ archtype="$(uname -m)"
 if [ "$archtype" = "x86_64" ]; then
 	rm /etc/pacman.conf /etc/pacman-i686.conf
 	mv /etc/pacman-x86_64.conf /etc/pacman.conf
-	ln -sf /usr/bin/vogleditor64 /usr/bin/vogleditor
 else
 	rm /etc/pacman-i686.conf /etc/pacman-x86_64.conf
 fi
