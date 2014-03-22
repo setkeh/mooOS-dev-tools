@@ -112,8 +112,6 @@ kdebase-runtime-libre
 kdelibs-libre
 kdemultimedia-ffmpegthumbs
 kdenlive
-kdepim-runtime
-kdepimlibs
 kdesdk-dolphin-plugins
 kdesdk-kcachegrind
 kdesdk-thumbnailers
@@ -122,11 +120,9 @@ kdeutils-ark-libre
 keepassx
 key-mon
 keychain
+libaio
 libavc1394
 libisoburn
-libkfbapi
-libkgapi
-libkolab
 libmodplug
 libpng12
 libpulse
