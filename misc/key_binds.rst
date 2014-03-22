@@ -56,7 +56,7 @@ Enlightenment window manager
 | - Win + Return               | - Command:    /usr/bin/terminology          |
 | - Win + KP_Down              | - Command:    /usr/bin/iceweasel            |
 +------------------------------+---------------------------------------------+
-| - Win + Shift + Return       | - Command:    /usr/bin/urcvtc               |
+| - Win + Shift + Return       | - Command:    /usr/bin/urxvtc               |
 +------------------------------+---------------------------------------------+
 | - Ctrl + Shift + Left        | - Send Mouse Back 1 Screen                  |
 | - Ctrl + Shift + Right       | - Send Mouse Forward 1 Screen               |
