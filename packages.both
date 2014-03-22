@@ -44,6 +44,7 @@ dosfstools
 downgrade
 dtrx
 dvd+rw-tools
+dvdauthor
 efl-git
 eggdrop
 elementary-git
@@ -56,7 +57,6 @@ fakeroot
 feh
 ffmpeg
 filezilla
-firefox
 flex
 fontconfig
 fortune-mod
@@ -96,6 +96,7 @@ html2text
 htop
 hub
 i7z
+iceweasel-libre
 iftop
 inkscape
 intrace
@@ -271,6 +272,8 @@ urxvt-font-size-git
 urxvt-perls
 valgrind
 vb-pdq
+virtualbox-guest-modules
+virtualbox-guest-utils
 vlc
 vorbis-tools
 wavpack
