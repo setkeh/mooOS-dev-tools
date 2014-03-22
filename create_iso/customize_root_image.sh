@@ -8,7 +8,6 @@ sed -i 's/#\(en_US\.UTF-8\)/\1/' /etc/locale.gen
 locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -sf /usr/bin/meld /usr/bin/vimdiff
-ln -sf /usr/bin/vogleditor64 /usr/bin/vogleditor
 chown -Rv moo:users /usr/share/doc/qt/examples/   
 
 ## figure out architecture type
@@ -17,6 +16,7 @@ archtype="$(uname -m)"
 if [ "$archtype" = "x86_64" ]; then
 	rm /etc/pacman.conf /etc/pacman-i686.conf
 	mv /etc/pacman-x86_64.conf /etc/pacman.conf
+	ln -sf /usr/bin/vogleditor64 /usr/bin/vogleditor
 else
 	rm /etc/pacman-i686.conf /etc/pacman-x86_64.conf
 fi

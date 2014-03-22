@@ -14,6 +14,9 @@ if [ ! -f /usr/bin/dialog ]; then
     exit 0 
 fi
 
+## figure out architecture type
+archtype="$(uname -m)"
+
 # dialog --clear --backtitle "$upper_title" --title "Preferences" --yes-label "Text Mode" --no-label "Graphical Mode" --yesno "Chose the Installer Type." 20 70
 # if [ $? = 0 ] ; then
       DIALOG=${DIALOG=dialog}
@@ -1089,8 +1092,13 @@ if [ $(id -u) -eq 0 ]; then
 
                     sed -i "s/alice/$GEN_HOSTNAME/g" /etc/squid/squid.conf
                     chmod -R 777 /run/transmission > /dev/null 2>&1
-                    chown -R $puser /run/transmission > /dev/null 2>&1
+                    chown -R $puser:users /run/transmission/ > /dev/null 2>&1
                     
+                    ln -sf /usr/bin/meld /usr/bin/vimdiff
+                    chown -R $puser:users /usr/share/doc/qt/examples/ > /dev/null 2>&1
+                    if [ "$archtype" = "x86_64" ]; then
+                        ln -sf /usr/bin/vogleditor64 /usr/bin/vogleditor
+                    fi
                     PWD=$(pwd)
                     ## patch config files for username
                     cd /home/$puser/.e/e/config/standard
