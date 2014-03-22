@@ -1,7 +1,7 @@
 # Maintainer: pdq <pdq@localhost>
 pkgname=moo-tools
 pkgver=0.3
-pkgrel=9
+pkgrel=10
 pkgdesc="Installer and various tools for mooOS."
 arch=(any)
 url="https://github.com/idk/mooOS-dev-tools.git"
@@ -63,6 +63,7 @@ package() {
 	install -Dm644 "applications/tty_clock.desktop" "$pkgdir/usr/share/applications/tty_clock.desktop"
 	install -Dm644 "applications/vimb.desktop" "$pkgdir/usr/share/applications/vimb.desktop"
 	install -Dm644 "applications/vimb_proxy.desktop" "$pkgdir/usr/share/applications/vimb_proxy.desktop"
+	install -Dm644 "applications/vogleditor.desktop" "$pkgdir/usr/share/applications/vogleditor.desktop"
 	install -Dm644 "applications/weechat.desktop" "$pkgdir/usr/share/applications/weechat.desktop"
 	install -Dm644 "applications/yeah.desktop" "$pkgdir/usr/share/applications/yeah.desktop"
 	install -Dm644 "applications/yt_viewer.desktop" "$pkgdir/usr/share/applications/yt_viewer.desktop"
