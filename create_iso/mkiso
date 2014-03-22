@@ -175,7 +175,7 @@ repackage_this() {
 }
 
 create_custom_packages() {
-	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngh\nvb-pdq" 20 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngeeh\nvb-pdq" 20 30
 	if [ $? = 0 ] ; then
 		## moo-scripts
 		delete_custom_package_caches "moo-scripts"
@@ -198,8 +198,8 @@ create_custom_packages() {
 		repackage_this "moo-zsh" "https://raw.github.com/idk/zsh/master/PKGBUILD https://raw.github.com/idk/zsh/master/moo-zsh.install" "any" i
 	
 		## github wrapper
-		delete_custom_package_caches "gh"
-		repackage_this "gh" "https://raw.github.com/idk/gh/master/PKGBUILD" "any" i
+		delete_custom_package_caches "geeh"
+		repackage_this "geeh" "https://raw.github.com/idk/geeh/master/PKGBUILD" "any" i
 
 		## install custom mooOS wallpapers
 		#delete_custom_package_caches "moo-wallpapers"
