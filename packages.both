@@ -56,6 +56,8 @@ fakeroot
 feh
 ffmpeg
 filezilla
+firefox
+firefox-beta-bin
 flex
 fontconfig
 fortune-mod
@@ -96,7 +98,6 @@ html2text
 htop
 hub
 i7z
-iceweasel-libre
 iftop
 intrace
 iotop
@@ -284,6 +285,7 @@ wireshark-gtk
 wpa_supplicant_gui
 x264
 xbindkeys
+xbmc-libre
 xboxdrv
 xclip
 xcursor-shere-khan-x

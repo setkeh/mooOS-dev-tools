@@ -1,6 +1,6 @@
 [Desktop Entry]
 Hidden=false
-Exec=urxvtc -name "man mooOS" -e man mooOS
+Exec=urxvtc -title "man mooOS" -name "man mooOS" -e man mooOS
 Icon=gnome-robots
 Type=Application
 Version=1.0
