@@ -712,6 +712,7 @@ if [ $(id -u) -eq 0 ]; then
                 systemctl enable preload.service > /dev/null 2>&1
                 systemctl enable polipo.service > /dev/null 2>&1
                 systemctl enable cronie.service > /dev/null 2>&1
+                systemctl enable lightdm.service > /dev/null 2>&1
                 systemctl enable dhcpcd.service > /dev/null 2>&1
 
                 # $DIALOG --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
