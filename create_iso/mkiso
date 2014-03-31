@@ -688,10 +688,19 @@ create_build_env() {
 		done
 		cd "$PWD"
 
+		## autostart/gnome
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/autostart
+		sudo cp -r ${MOO_HOME}.config/autostart/*.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/autostart/
+	
 		## compiz/unity
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/dconf
-		sudo cp -r ${MOO_HOME}.config/dconf/user ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/docnf/user
+		sudo cp -r ${MOO_HOME}.config/dconf/user ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/dconf/user
 	
+		## gtk3
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/gtk-3.0
+		sudo cp -r ${MOO_HOME}.config/gtk-3.0/settings.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/gtk-3.0/settings.ini
+		sudo cp -r ${MOO_HOME}.config/gtk-3.0/gtk.css ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/gtk-3.0/gtk.css
+
 		## terminology
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard
 		sudo cp -r ${MOO_HOME}.config/terminology/config/standard/base.cfg ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/base.cfg
@@ -888,14 +897,14 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/i686/gnome-session-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/gnome-settings-daemon-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/grail-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/gsettings-desktop-schemas-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/gsettings-desktop-schemas-ubuntu-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/gtk2-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/gtk3-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/hud-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/indicator-application-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/indicator-appmenu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/indicator-datetime-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/indicator-remindor-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/indicator-remindor-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/indicator-session-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/indicator-sound-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/indicator-sync-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
@@ -906,7 +915,7 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/i686/libindicate-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicate-gtk2-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicate-gtk3-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/libindicate-qt-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/libindicate-qt-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicator-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicator3-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/liboverlay-scrollbar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
@@ -920,13 +929,11 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/i686/lightdm-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/lightdm-unity-greeter-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/metacity-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/my-weather-indicator-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/network-manager-applet-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/nux-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/overlay-scrollbar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/plasma-widget-menubar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/pocketsphinx-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/power-commands-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python-keyring-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python-pyside-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python-regex-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
@@ -970,7 +977,7 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/gnome-session-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/gnome-settings-daemon-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/grail-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/gsettings-desktop-schemas-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/gsettings-desktop-schemas-ubuntu-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/gtk2-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/gtk3-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/hud-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
@@ -988,7 +995,7 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/libindicate-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicate-gtk2-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicate-gtk3-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/libindicate-qt-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/libindicate-qt-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicator-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicator3-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/liboverlay-scrollbar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
@@ -1002,30 +1009,28 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/lightdm-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/lightdm-unity-greeter-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/metacity-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/my-weather-indicator-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/network-manager-applet-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/nux-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/overlay-scrollbar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/plasma-widget-menubar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/pocketsphinx-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/power-commands-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python-keyring-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python-keyring-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python-pyside-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python-regex-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python-shiboken-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python2-keyring-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python2-magic-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python2-oauth2-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python2-pyside-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python2-keyring-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python2-magic-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python2-oauth2-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python2-pyside-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-regex-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-shiboken-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-unity-singlet-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python3-pycurl-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/qt4-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/remindor-common-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/remindor-qt-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/remindor-common-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/remindor-qt-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/sni-qt-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/sphinx-voxforge-en-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/sphinx-voxforge-en-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/sphinxbase-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/ubuntu-default-settings-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/unity-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
@@ -1119,8 +1124,8 @@ bump_moo() {
 
 ######### EXECUTE SCRIPT START #########
 ## check repos are up
-check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
-check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
+#check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
+#check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
 
 # utility execution
 while true
