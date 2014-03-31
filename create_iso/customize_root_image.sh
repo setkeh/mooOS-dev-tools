@@ -116,5 +116,6 @@ systemctl enable privoxy.service
 systemctl enable preload.service
 systemctl enable polipo.service
 systemctl enable cronie.service
+systemctl enable lightdm.service
 
 exit 0

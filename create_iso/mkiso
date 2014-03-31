@@ -687,6 +687,10 @@ create_build_env() {
 			sudo rm $EWW_FILE
 		done
 		cd "$PWD"
+
+		## compiz/unity
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/dconf
+		sudo cp -r ${MOO_HOME}.config/dconf/user ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/docnf/user
 	
 		## terminology
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard
