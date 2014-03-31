@@ -830,27 +830,21 @@ create_mooos_repos() {
 		for mm in $arches
 		do
 			cd ${MOO_HOME}abs/mooOS-pkgs-$mm/
-			mv $(ls | grep "efl-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			#mv $(ls | grep "efl-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "elementary-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			#mv $(ls | grep "elementary-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			#mv $(ls | grep "elementary_test-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "enlightenment-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			#mv $(ls | grep "enlightenment-git-debug" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			#mv $(ls | grep "evas_generic_loaders-git-debug-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "efl-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "elementary-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "elementary_test-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "enlightenment-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "pyradio-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			#mv $(ls | grep "sqlmap-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "emotion_generic_players-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "desksanity-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "efx-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "emotion_generic_players-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "desksanity-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			# mv $(ls | grep "efx-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "urxvt-font-size-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "youtube-viewer-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "vogl-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
-			mv $(ls | grep "voglperf-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			#mv $(ls | grep "vogl-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			#mv $(ls | grep "voglperf-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			rm ${MOO_HOME}abs/mooOS-pkgs-$mm/*-git* > /dev/null 2>&1
 			mv ${MOO_HOME}abs/staging_$mm/* ${MOO_HOME}abs/mooOS-pkgs-$mm/
 			cd "$PWD"
@@ -915,7 +909,7 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/i686/libindicate-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicate-gtk2-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicate-gtk3-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/libindicate-qt-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/libindicate-qt-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicator-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/libindicator3-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/liboverlay-scrollbar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
@@ -934,32 +928,32 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/i686/overlay-scrollbar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/plasma-widget-menubar-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/pocketsphinx-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/python-keyring-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/python-keyring-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python-pyside-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python-regex-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python-shiboken-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/python2-keyring-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/python2-magic-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/python2-oauth2-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/python2-keyring-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/python2-magic-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/python2-oauth2-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python2-pyside-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python2-regex-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python2-shiboken-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/python2-unity-singlet-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/python2-unity-singlet-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/python3-pycurl-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/qt4-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/remindor-common-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/remindor-qt-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/remindor-common-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/remindor-qt-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/sni-qt-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/sphinx-voxforge-en-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/sphinx-voxforge-en-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/sphinxbase-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/ubuntu-default-settings-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/ubuntu-default-settings-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/unity-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/unity-asset-pool-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/unity-asset-pool-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/unity-gtk-module-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/unity-lens-applications-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/unity-scope-home-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/unity-scopes-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
-		cp ${MOO_HOME}abs/i686/unity-tweak-tool-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/unity-scopes-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/i686/unity-tweak-tool-*-any* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/xpathselect-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/i686/zeitgeist-ubuntu-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 
@@ -984,7 +978,7 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/indicator-application-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/indicator-appmenu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/indicator-datetime-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/indicator-remindor-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/indicator-remindor-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/indicator-session-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/indicator-sound-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/indicator-sync-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
@@ -995,7 +989,7 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/libindicate-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicate-gtk2-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicate-gtk3-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/libindicate-qt-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/libindicate-qt-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicator-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/libindicator3-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/liboverlay-scrollbar-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
@@ -1021,10 +1015,10 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/python2-keyring-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-magic-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-oauth2-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python2-pyside-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python2-pyside-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-regex-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python2-shiboken-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/python2-unity-singlet-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/python2-unity-singlet-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/python3-pycurl-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/qt4-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/remindor-common-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
@@ -1032,14 +1026,14 @@ create_mooos_repos() {
 		cp ${MOO_HOME}abs/x86_64/sni-qt-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/sphinx-voxforge-en-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/sphinxbase-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/ubuntu-default-settings-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/ubuntu-default-settings-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/unity-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/unity-asset-pool-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/unity-asset-pool-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/unity-gtk-module-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/unity-lens-applications-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/unity-scope-home-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/unity-scopes-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
-		cp ${MOO_HOME}abs/x86_64/unity-tweak-tool-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/unity-scopes-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
+		cp ${MOO_HOME}abs/x86_64/unity-tweak-tool-*-any* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/xpathselect-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 		cp ${MOO_HOME}abs/x86_64/zeitgeist-ubuntu-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
@@ -1124,7 +1118,7 @@ bump_moo() {
 
 ######### EXECUTE SCRIPT START #########
 ## check repos are up
-#check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
+check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
 #check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
 
 # utility execution
