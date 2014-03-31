@@ -121,7 +121,7 @@ ${TERM_USED}${BG3} $NAME"Term" $TITLE"Term"
 ${TERM_USED}${BG7} $NAME"tERM" $TITLE"tERM"
 
 ## Start system logs
-#${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
+${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 
 ## Start top (terminal task manager)
 [ -z "$(pidof htop)" ] && ${TERM_USED} $NAME"HTOP" $TITLE"HTOP" -e htop
@@ -151,7 +151,7 @@ ${TERM_USED}${BG7} $NAME"tERM" $TITLE"tERM"
 #[ -z "$(pidof transmission-remote-cli)" ] && ${TERM_USED} $NAME"Transmission" $TITLE"Transmission" -e transmission-remote-cli -c 192.168.0.10:9091 
 
 ## Start system monitor
-[ -z "$(pidof gkrellm)" ] && gkrellm &
+#[ -z "$(pidof gkrellm)" ] && gkrellm &
 
 ## Start Internet radio player
 #[ -z "$(pidof pyradio)" ] && ${TERM_USED} $NAME"Radio" $TITLE"Radio" -e pyradio 
@@ -160,7 +160,7 @@ ${TERM_USED}${BG7} $NAME"tERM" $TITLE"tERM"
 #[ -z "$(pidof dolphin)" ] && dolphin &
 
 ## Start steam
-#[ -z "$(pidof steam)" ] && steam &
+[ -z "$(pidof steam)" ] && steam &
 
 ## Start youtube viewer
 #[ -z "$(pidof youtube-viewer)" ] && ${TERM_USED}${BG6} $NAME"youtube" $TITLE"youtube" -e youtube-viewer --prefer-https --prefer-webm --use-colors --quiet -7 -S -C --mplayer="/usr/bin/vlc" --mplayer-args="-q"
@@ -207,7 +207,7 @@ if [ -d "$PATH_TO_DATA/home" ] || [ $PRIV_ENABLED -eq 0 ]; then
 	#[ -z "$(pidof kdenlive)" ] && kdenlive &
 
 	## Start web browser
-	[ -z "$(pidof iceweasel)" ] && iceweasel &
+	[ -z "$(pidof firefox)" ] && firefox &
 	#if [ -z "$(pidof vimb)" ]; then
 	#	vb -u "https://wiki.archlinux.org/index.php/User:Pdq" &
 	#	vbp -u "https://www.linuxdistrocommunity.com/forums/index.php" &
