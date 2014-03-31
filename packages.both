@@ -81,7 +81,6 @@ gnome-screensaver-ubuntu
 gnome-screenshot
 gnome-session-ubuntu
 gnome-settings-daemon-ubuntu
-gnome-tweak-tool
 gnuplot
 go-fuse
 go-sqlite3
@@ -101,7 +100,6 @@ gstreamer0.10-ugly
 gstreamer0.10-ugly-plugins
 gtk-engines
 gtk-theme-config
-gtk-theme-numix-green
 gtk2-ubuntu
 gtk3-ubuntu
 gtmsu_servicemenu
@@ -285,14 +283,10 @@ python3-aur
 python3-pycurl
 python3-threaded_servers
 python3-xynexdg
-pywapi
 qgifer
 qt4-ubuntu
-qt5-examples
-qtcreator
 remindor-common
 remindor-qt
-remote-login-service
 rkhunter
 roccat-dkms
 rp-pppoe-libre
@@ -304,7 +298,6 @@ scrot
 sdl_mixer
 sdl_ttf
 secure-delete
-signon-keyring-extension
 simplescreenrecorder
 sni-qt
 spectrwm-libre
@@ -325,7 +318,6 @@ tcpdump
 tcplay
 tcptraceroute
 terminus-font
-thin-client-config-agent
 tig
 tls
 tor
