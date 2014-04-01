@@ -8,7 +8,7 @@ sed -i 's/#\(en_US\.UTF-8\)/\1/' /etc/locale.gen
 locale-gen
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -sf /usr/bin/meld /usr/bin/vimdiff
-chown -Rv moo:users /usr/share/doc/qt/examples/   
+#chown -Rv moo:users /usr/share/doc/qt/examples/   
 
 ## figure out architecture type
 archtype="$(uname -m)"
