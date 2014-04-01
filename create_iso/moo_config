@@ -33,7 +33,7 @@ ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down" ## directroy where iso is cp 
 ## change these
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"
 REPO_LOCAL="http://repo.mooos.pdq"
-REPO_REMOTE="http://repos.mooos.org"
+REPO_REMOTE="https://sourceforge.net"
 
 ## (no need to change these)
 REPO_LOG_TEMP="/tmp/repo_renew"
@@ -55,15 +55,15 @@ REPO_CREDS=/mnt/linux-pdq/media/truecrypt1/private/repo_creds
 # _now=$(date +"%m_%d_%Y")
 
 # #32-local -> 32-remote
-# _remote1[1]=22 # port
-# _remote1[2]="/home/pdq/abs/mooOS-pkgs-32"
-# _remote1[3]="example@127.0.0.1:/path/to/mooOS/public_html/repos"
+# _remote1[1]=22
+# _remote1[2]="/home/pdq/abs/mooOS-pkgs-32/"
+# _remote1[3]="pdq@frs.sourceforge.net:/home/pfs/project/r/re/repos.mooos.p/i686"
 # _remote1[4]="--delete --stats"
 
 # #64-local -> 64-remote
-# _remote2[1]=22 # port
-# _remote2[2]="/home/pdq/abs/mooOS-pkgs-64"
-# _remote2[3]="example@127.0.0.1:/path/to/mooOS/public_html/repos"
+# _remote2[1]=22
+# _remote2[2]="/home/pdq/abs/mooOS-pkgs-64/"
+# _remote2[3]="pdq@frs.sourceforge.net:/home/pfs/project/r/re/repos.mooos.p/x86_64"
 # _remote2[4]="--delete --stats"
 
 # #iso-local -> iso-remote

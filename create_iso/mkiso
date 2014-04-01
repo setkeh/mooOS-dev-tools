@@ -1081,7 +1081,7 @@ create_mooos_repos() {
 }
 
 update_remote() {
-	$DIALOG --clear --backtitle "$upper_title" --title "mooOS repos" --yesno "Sync remote mooOS repo?" 10 30
+	$DIALOG --clear --backtitle "$upper_title" --title "mooOS repos" --yesno "Sync remote mooOS repo (sourceforge)?" 10 30
 	if [ $? = 0 ] ; then
 		## include login credentials:
 		if [ -f "$REPO_CREDS" ] ; then
@@ -1142,7 +1142,7 @@ bump_moo() {
 ######### EXECUTE SCRIPT START #########
 ## check repos are up
 check_repos "$REPO_LOCAL" 0  # 1/0 use torsocks
-#check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
+check_repos "$REPO_REMOTE" 1 # 1/0 use torsocks
 
 # utility execution
 while true
