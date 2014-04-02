@@ -684,6 +684,21 @@ create_build_env() {
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/128x128/apps
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/128x128/apps/mooOS.png
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/16x16/apps
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-16.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/16x16/apps/mooOS.png
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps/mooOS.png
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/mooOS.png
+		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/mooOS.png
+		
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix//apps/mooOS.png
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/16x16/apps/mooOS.png
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps/mooOS.png
+		sudo ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/mooOS.png
+		sudo ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/mooOS.png
 		
 		## copy vlc files
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
