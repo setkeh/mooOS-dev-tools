@@ -9,11 +9,11 @@ fi
 ## run moo from command line or Everything Launcher/dmenu/etc
 
 ## Path to video directory queue
-#VID_QUEUE="/home/$USER/Videos/24 Complete Series DVDRip XviD"
+VID_QUEUE="/home/$USER/Videos/24 Complete Series DVDRip XviD/Season.06/24.S06E17.DVDRip.XviD-MEDiEVAL"
 #VID_QUEUE="/home/$USER/Videos/tempvideo"
 #VID_QUEUE="/home/$USER/Videos/movies"
 #VID_QUEUE="/home/$USER/Videos/Star Trek TNG"
-VID_QUEUE="/home/$USER/Videos/Star Trek Voyager"
+#VID_QUEUE="/home/$USER/Videos/Star Trek Voyager"
 #VID_QUEUE="/home/$USER/Videos/Sliders"
 
 #TERM_USED=terminology
