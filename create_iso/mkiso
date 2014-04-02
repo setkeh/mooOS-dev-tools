@@ -321,10 +321,10 @@ create_custom_packages() {
 delete_package_caches() {
 	#sudo pkgcacheclean -v 1
 	schroot -p -- sudo pkgcacheclean -v 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/i686 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/x86_64 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v --cachedir=${MOO_HOME}abs/i686 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v --cachedir=${MOO_HOME}abs/x86_64 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
 	mv ${ABS_BASE_DIR}mooOS-pkgs-32/*nvidia* ${ABS_BASE_DIR}nonfree/
 	mv ${ABS_BASE_DIR}mooOS-pkgs-64/*nvidia* ${ABS_BASE_DIR}nonfree/
 }
@@ -900,7 +900,8 @@ create_mooos_repos() {
 		## make RMS happy :D
 		## unzip-libre unar spectrwm-libre sdl-libre rp-pppoe-libre p7zip-libre openexr-libre mplayer-libre mozilla-searchplugins mencoder-libre mcomix-libre mc-libre lirc-libre-utils kdeutils-ark-libre kdelibs-libre kdebase-runtime-libre iceweasel-libre gstreamer0.10-bad-libre-plugins gstreamer0.10-bad-libre gst-plugins-bad-libre ghostscript-libre cpupower-libre cdrkit-libre bitlbee-libre-nonprism audio-convert-libre 
 
-		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/*-libre-* > /dev/null 2>&1
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-32/*-libre-* > /dev/null 2>&1
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-64/*-libre-* > /dev/null 2>&1
 		cp ${MOO_HOME}abs/i686/*-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/x86_64/*-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
@@ -931,6 +932,26 @@ create_mooos_repos() {
 		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/p7zip-libre-* > /dev/null 2>&1
 		cp ${MOO_HOME}abs/i686/p7zip-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
 		cp ${MOO_HOME}abs/x86_64/p7zip-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/xbmc-libre-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/xbmc-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/xbmc-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/mc-libre-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/mc-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/mc-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/kdeutils-ark-libre-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/kdeutils-ark-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/kdeutils-ark-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+        rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/iceweasel-libre-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/iceweasel-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/iceweasel-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
+
+		rm -f ${ABS_BASE_DIR}mooOS-pkgs-*/kdebase-runtime-libre-* > /dev/null 2>&1
+		cp ${MOO_HOME}abs/i686/kdebase-runtime-libre-*-i686* ${ABS_BASE_DIR}mooOS-pkgs-32/
+		cp ${MOO_HOME}abs/x86_64/kdebase-runtime-libre-*-x86_64* ${ABS_BASE_DIR}mooOS-pkgs-64/
 
 		## moonity
 		# i686
