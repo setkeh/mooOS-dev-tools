@@ -1090,6 +1090,8 @@ if [ $(id -u) -eq 0 ]; then
                     sh -c "echo 'autologin-user=$puser
 autologin-user-timeout=0' >>  /etc/lightdm/lightdm.conf"
 
+                    sudo sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
+
                     sed -i "s/alice/$GEN_HOSTNAME/g" /etc/squid/squid.conf
                     chmod -R 777 /run/transmission > /dev/null 2>&1
                     chown -R $puser:users /run/transmission/ > /dev/null 2>&1

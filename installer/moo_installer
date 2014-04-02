@@ -705,8 +705,8 @@ initial_install() {
                 cp /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/Numix/48x48/apps/mooOS.png
 
                 ## copy moonity branding
-                cp ${MOO_TOOLS_PATH}images/launcher_bfb.png /usr/share/unity/icons/launcher_bfb.png
-                cp ${MOO_TOOLS_PATH}images/ubuntu_badge.png /usr/share/unity-greeter/ubuntu_badge.png
+                cp ${MOO_TOOLS_PATH}images/launcher_bfb.png /mnt/usr/share/unity/icons/launcher_bfb.png
+                cp ${MOO_TOOLS_PATH}images/ubuntu_badge.png /mnt/usr/share/unity-greeter/ubuntu_badge.png
             
                 # create ~/Github and all repos
                 rm -rf /mnt/etc/skel/Github > /dev/null 2>&1

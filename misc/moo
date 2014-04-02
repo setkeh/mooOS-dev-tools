@@ -9,7 +9,7 @@ fi
 ## run moo from command line or Everything Launcher/dmenu/etc
 
 ## Path to video directory queue
-VID_QUEUE="/home/$USER/Videos/24 Complete Series DVDRip XviD/Season.06/24.S06E17.DVDRip.XviD-MEDiEVAL"
+VID_QUEUE="/home/$USER/Videos/24 Complete Series DVDRip XviD/Season.07"
 #VID_QUEUE="/home/$USER/Videos/tempvideo"
 #VID_QUEUE="/home/$USER/Videos/movies"
 #VID_QUEUE="/home/$USER/Videos/Star Trek TNG"
@@ -127,10 +127,10 @@ ${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 [ -z "$(pidof htop)" ] && ${TERM_USED} $NAME"HTOP" $TITLE"HTOP" -e htop
 
 ## Start CPU frequency monitor
-[ -z "$(pidof cpu_freq)" ] && ${TERM_USED}${BG1} $NAME"CPU Freq" $TITLE"CPU Freq" -e cpu_freq
+#[ -z "$(pidof cpu_freq)" ] && ${TERM_USED}${BG1} $NAME"CPU Freq" $TITLE"CPU Freq" -e cpu_freq
 
 ## Start GPU monitor
-[ -z "$(pidof nvidia-smi)" ] && ${TERM_USED}${BG14} $NAME"GPU" $TITLE"GPU" -e nvidia-smi -l 5 -q -d "MEMORY,TEMPERATURE"
+#[ -z "$(pidof nvidia-smi)" ] && ${TERM_USED}${BG14} $NAME"GPU" $TITLE"GPU" -e nvidia-smi -l 5 -q -d "MEMORY,TEMPERATURE"
 
 ## Start RSS reader
 [ -z "$(pidof canto-curses)" ] && ${TERM_USED}${BG15} $NAME"RSS" $TITLE"RSS" -e canto-curses
@@ -145,7 +145,7 @@ ${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 #[ -z "$(pidof tty-clock)" ] && ${TERM_USED} $NAME"Clock" $TITLE"Clock" -e tty-clock -tc
 
 ## Start CPU temperature monitor
-[ -z "$(pidof cpus_temp)" ] && ${TERM_USED}${BG13} $NAME"CPUS" $TITLE"CPUS" -e cpus_temp
+#[ -z "$(pidof cpus_temp)" ] && ${TERM_USED}${BG13} $NAME"CPUS" $TITLE"CPUS" -e cpus_temp
 
 ## Start torrent client
 #[ -z "$(pidof transmission-remote-cli)" ] && ${TERM_USED} $NAME"Transmission" $TITLE"Transmission" -e transmission-remote-cli -c 192.168.0.10:9091 
@@ -160,7 +160,7 @@ ${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 #[ -z "$(pidof dolphin)" ] && dolphin &
 
 ## Start steam
-[ -z "$(pidof steam)" ] && steam &
+#[ -z "$(pidof steam)" ] && steam &
 
 ## Start youtube viewer
 #[ -z "$(pidof youtube-viewer)" ] && ${TERM_USED}${BG6} $NAME"youtube" $TITLE"youtube" -e youtube-viewer --prefer-https --prefer-webm --use-colors --quiet -7 -S -C --mplayer="/usr/bin/vlc" --mplayer-args="-q"
@@ -187,7 +187,7 @@ if [ -d "$PATH_TO_DATA/home" ] || [ $PRIV_ENABLED -eq 0 ]; then
 	## Terminal applications
 
 	## Start music on console player
-	${TERM_USED}${BG9} $NAME"MOCP" $TITLE"MOCP" -e mocp
+	#${TERM_USED}${BG9} $NAME"MOCP" $TITLE"MOCP" -e mocp
 
 	## Start local logs
 	#[ -d "$PATH_TO_DATA/media/truecrypt1/private/transmission-daemon" ] && [ -z "$(pidof multitail)" ] && ${TERM_USED}${BG11} $NAME"More Logs" $TITLE"More Logs" -e multitail -ci red -n 6 -f "$PATH_TO_DATA/media/truecrypt1/private/transmission-daemon/posttorrent.log"
@@ -207,7 +207,7 @@ if [ -d "$PATH_TO_DATA/home" ] || [ $PRIV_ENABLED -eq 0 ]; then
 	#[ -z "$(pidof kdenlive)" ] && kdenlive &
 
 	## Start web browser
-	[ -z "$(pidof firefox)" ] && firefox &
+	#[ -z "$(pidof firefox)" ] && firefox &
 	#if [ -z "$(pidof vimb)" ]; then
 	#	vb -u "https://wiki.archlinux.org/index.php/User:Pdq" &
 	#	vbp -u "https://www.linuxdistrocommunity.com/forums/index.php" &

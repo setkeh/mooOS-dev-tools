@@ -536,7 +536,7 @@ create_build_env() {
 		
 		## nano config
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/nano
-		sudo cp /usr/share/nano/pkgbuild.nanorc ${ARCHLIVE}archlive/releng/root-image//usr/share/nano/pkgbuild.nanorc
+		sudo cp /usr/share/nano/pkgbuild.nanorc ${ARCHLIVE}archlive/releng/root-image/usr/share/nano/pkgbuild.nanorc
 		
 		## e17 backgrounds
 		sudo cp /usr/share/enlightenment/data/backgrounds/mooOS* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/backgrounds
@@ -684,6 +684,7 @@ create_build_env() {
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/mooOS.png
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/mooOS.png
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/mooOS.png
+		
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/128x128/apps
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/128x128/apps/mooOS.png
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/16x16/apps
@@ -694,11 +695,12 @@ create_build_env() {
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/mooOS.png
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/mooOS.png
 		
-		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix//apps/mooOS.png
-		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/16x16/apps/mooOS.png
-		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps/mooOS.png
-		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/mooOS.png
-		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/mooOS.png
+		## sublime
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/128x128/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/apps/sublime-text.png
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/16x16/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/16x16/apps/sublime-text.png
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps/sublime-text.png
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/sublime-text.png
+		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/sublime-text.png
 		
 		## copy vlc files
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
@@ -803,6 +805,7 @@ create_build_env() {
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 		sudo sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
 		sudo sed -i "s/xOffset: 2123/xOffset: 123/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
+		sudo sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
 
 		## copy over hosts file (needed for LAN repos) TODO
 		#sudo cp /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
