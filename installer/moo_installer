@@ -687,7 +687,27 @@ initial_install() {
                 cp ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/oxygen/256x256/apps/mooOS.png
                 cp ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/oxygen/32x32/apps/mooOS.png
                 cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png
+
+                mkdir -p /mnt/usr/share/icons/Numix/128x128/apps
+                cp ${MOO_TOOLS_PATH}images/mooOS-128.png /mnt/usr/share/icons/Numix/128x128/apps/mooOS.png
+                mkdir -p /mnt/usr/share/icons/Numix/16x16/apps
+                cp ${MOO_TOOLS_PATH}images/mooOS-16.png /mnt/usr/share/icons/Numix/16x16/apps/mooOS.png
+                mkdir -p /mnt/usr/share/icons/Numix/256x256/apps
+                cp ${MOO_TOOLS_PATH}images/mooOS-256.png /mnt/usr/share/icons/Numix/256x256/apps/mooOS.png
+                mkdir -p /mnt/usr/share/icons/Numix/32x32/apps
+                cp ${MOO_TOOLS_PATH}images/mooOS-32.png /mnt/usr/share/icons/Numix/32x32/apps/mooOS.png
+                cp ${MOO_TOOLS_PATH}images/mooOS-48.png /mnt/usr/share/icons/Numix/48x48/apps/mooOS.png
                 
+                cp /usr/share/icons/oxygen/128x128/apps/sublime-text.png /mnt/usr/share/icons/Numix//apps/mooOS.png
+                cp /usr/share/icons/oxygen/16x16/apps/sublime-text.png /mnt/usr/share/icons/Numix/16x16/apps/mooOS.png
+                cp /usr/share/icons/oxygen/256x256/apps/sublime-text.png /mnt/usr/share/icons/Numix/256x256/apps/mooOS.png
+                cp /usr/share/icons/oxygen/32x32/apps/sublime-text.png /mnt/usr/share/icons/Numix/32x32/apps/mooOS.png
+                cp /usr/share/icons/oxygen/48x48/apps/sublime-text.png /mnt/usr/share/icons/Numix/48x48/apps/mooOS.png
+
+                ## copy moonity branding
+                cp ${MOO_TOOLS_PATH}images/launcher_bfb.png /usr/share/unity/icons/launcher_bfb.png
+                cp ${MOO_TOOLS_PATH}images/ubuntu_badge.png /usr/share/unity-greeter/ubuntu_badge.png
+            
                 # create ~/Github and all repos
                 rm -rf /mnt/etc/skel/Github > /dev/null 2>&1
                 mkdir -p /mnt/etc/skel/Github
