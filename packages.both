@@ -57,6 +57,7 @@ fakeroot
 feh
 ffmpeg
 filezilla
+firefox
 flex
 fontconfig
 fortune-mod
@@ -113,7 +114,6 @@ htop
 hub
 hud
 i7z
-iceweasel-libre
 ido
 iftop
 indicator-application
@@ -181,6 +181,7 @@ lightdm-unity-greeter
 linux-api-headers
 linux-firmware
 linux-headers
+lirc-utils
 livestreamer
 lm_sensors
 logstalgia
