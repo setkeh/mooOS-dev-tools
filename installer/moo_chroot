@@ -1087,10 +1087,11 @@ if [ $(id -u) -eq 0 ]; then
                     sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
                     sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
                     sed -i "s/moo/$puser/g" /etc/psd.conf
-                    sh -c "echo 'autologin-user=$puser
-autologin-user-timeout=0' >>  /etc/lightdm/lightdm.conf"
+    
+                    sed -i "s/#autologin-user=/autologin-user=$puser/g" /etc/lightdm/lightdm.conf
+                    sed -i "s/#autologin-user-timeout=0/autologin-user-timeout=0/g" /etc/lightdm/lightdm.conf
 
-                    sudo sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
+                    sudo sed -i "s/=gnome,hicolor/=Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
 
                     sed -i "s/alice/$GEN_HOSTNAME/g" /etc/squid/squid.conf
                     chmod -R 777 /run/transmission > /dev/null 2>&1

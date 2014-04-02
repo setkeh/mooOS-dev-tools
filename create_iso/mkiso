@@ -805,7 +805,8 @@ create_build_env() {
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 		sudo sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
 		sudo sed -i "s/xOffset: 2123/xOffset: 123/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
-		sudo sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
+		sudo cp /usr/share/icons/Numix/index.theme ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
+		#sudo sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
 
 		## copy over hosts file (needed for LAN repos) TODO
 		#sudo cp /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
