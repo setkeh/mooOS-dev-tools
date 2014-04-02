@@ -46,7 +46,7 @@ check_repos() {
     done
 }
 
-check_repos "$MOO_URL" 1
+check_repos "$REPO_REMOTE" 1
 
 upper_title="Welcome to mooOS Installer $archtype"
 
