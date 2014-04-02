@@ -124,9 +124,9 @@ indicator-sensors
 indicator-session
 indicator-sound
 indicator-sync
-intrace
 iotop
 jhead
+john
 johnny
 k3b
 kdbg
@@ -296,7 +296,6 @@ schroot
 scrot
 sdl_mixer
 sdl_ttf
-secure-delete
 simplescreenrecorder
 sni-qt
 spectrwm-libre
@@ -306,7 +305,6 @@ sphinxbase
 squashfs-tools
 squid
 sshfs
-ssldump
 stardork
 strace
 sublime-text-dev
