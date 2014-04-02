@@ -1080,6 +1080,11 @@ create_mooos_repos() {
 		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/*.pkg.tar.xz 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Creating i686 repository" --progressbox 20 70
 		repo-add -k $GPGKEY ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/*.pkg.tar.xz 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Creating x86_64 repository" --progressbox 20 70
 
+		rm ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db
+		cp ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-64/moo.db
+		rm ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db
+		cp ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db.tar.gz ${ABS_BASE_DIR}mooOS-pkgs-32/moo.db
+
 		notify-send "Repos created!" -i "$MOO_ICON"
 
 		## clean up stable repos
