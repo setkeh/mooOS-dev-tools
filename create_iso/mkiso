@@ -791,10 +791,15 @@ create_build_env() {
 		sudo cp /root/.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/root/.config/Trolltech.conf
 
 		## copy moonity branding
+		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/backgrounds
 		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/unity/icons
 		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter
 		sudo cp /usr/share/moo-tools/images/launcher_bfb.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity/icons/launcher_bfb.png
 		sudo cp /usr/share/moo-tools/images/ubuntu_badge.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/ubuntu_badge.png
+		sudo cp /usr/share/moo-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/cof.png
+		sudo cp /usr/share/moo-wallpapers/wallpaper48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/backgrounds/warty-final-ubuntu.png
+
+		sudo cp /usr/share/moo-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/logo.png
 
 		## clean up files content
 		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
@@ -829,6 +834,7 @@ create_build_env() {
 	 	sudo cp ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
 	 	sudo cp ${MOO_TOOLS_PATH}misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
 	 	sudo cp ${MOO_TOOLS_PATH}misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
+
 
 		## deprecated method
 		if [ -d "${ARCHLIVE}archlive/releng/work" ]; then
