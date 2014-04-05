@@ -905,6 +905,7 @@ create_mooos_repos() {
 			mv $(ls | grep "evas_generic_loaders-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "pulseaudio-mixer-cli-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "pyradio-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
+			mv $(ls | grep "steam-session-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "terminology-git-0" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "emotion_generic_players-git-1" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
 			mv $(ls | grep "desksanity-git" | sort -r | head -2) ${MOO_HOME}abs/staging_$mm/
