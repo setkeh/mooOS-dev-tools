@@ -1082,21 +1082,39 @@ if [ $(id -u) -eq 0 ]; then
                     #fi
 
                     squid -z > /dev/null 2>&1 &
-                    systemctl daemon-reload > /dev/null 2>&1
+
+                    ## login options
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ LOGIN SETTINGS ]" --defaultno --yesno "Default Autologin to X/LightDM?" 10 30
+                    if [ $? = 0 ] ; then
+                        sed -i "s/#autologin-user=/autologin-user=$puser/g" /etc/lightdm/lightdm.conf
+                        sed -i "s/#autologin-user-timeout=0/autologin-user-timeout=0/g" /etc/lightdm/lightdm.conf
+                    fi
+
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ LOGIN SETTINGS ]" --defaultyes --yesno "Default Autologin to Virtual Console/tty?" 10 30
+                    if [ $? = 0 ] ; then
+                        systemctl disable autologin@tty
+                        systemctl enable getty@tty
+                    else
+                        rm /etc/systemd/system/getty@tty1.service.d/autologin.conf
+                    fi
+
+                    ## create skeleton files for possible future use case
                     sed -i "s/moo/$puser/g" /etc/systemd/system/getty@tty1.service.d/autologin.conf
                     sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
+
                     sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
                     sed -i "s/moo/$puser/g" /etc/psd.conf
-    
-                    sed -i "s/#autologin-user=/autologin-user=$puser/g" /etc/lightdm/lightdm.conf
-                    sed -i "s/#autologin-user-timeout=0/autologin-user-timeout=0/g" /etc/lightdm/lightdm.conf
 
-                    sudo sed -i "s/=gnome,hicolor/=Cheser,gnome,hicolor/g" /usr/share/icons/Numix/index.theme
+                    sed -i "s/=gnome,hicolor/=Cheser,gnome,hicolor/g" /usr/share/icons/Numix/index.theme
 
                     sed -i "s/alice/$GEN_HOSTNAME/g" /etc/squid/squid.conf
                     chmod -R 777 /run/transmission > /dev/null 2>&1
                     chown -R $puser:users /run/transmission/ > /dev/null 2>&1
+
+                    ## cleanup
+                    systemctl daemon-reload > /dev/null 2>&1
                     
+                    ## misc
                     ln -sf /usr/bin/meld /usr/bin/vimdiff
                     chown -R $puser:users /usr/share/doc/qt/examples/ > /dev/null 2>&1
        
@@ -1121,38 +1139,6 @@ if [ $(id -u) -eq 0 ]; then
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.moc/config"
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.kde4/share/config/dolphinrc"
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.gtkrc-2.0"
-
-                    # su $puser -c "vb \"https://wiki.archlinux.org/index.php/Installation_Guide#Video_driver\" &"
-                    # $DIALOG --clear --backtitle "$upper_title" --title "Video Driver" --defaultno --yesno "Do you wish to install a video driver now?" 20 70
-                    # if [ $? = 0 ] ; then
-                    #     su $puser -c "urxvt -name 'Video Driver' -title 'Video Driver' -e"
-                    # fi
-
-                    # $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Enable automatic login to virtual console?" 10 30
-                    # if [ $? = 0 ] ; then
-                    #     systemctl disable getty@tty1
-                    #     systemctl enable autologin@tty1
-                    #     systemctl start autologin@tty1
-                    # fi
-                    
-                    # not needed anymore since zsh shell is set via chroot script run previously
-                    # $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Ok, setup is complete... the next screen will prompt you for your user password..." 10 40
-                    # chsh -s $(which zsh)
-
-              #       if [ "$archtype" = "x86_64" ]; then
-              #       $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "exiting install script...\n\nIf complete, type: sudo reboot (you may also want to search, chose and install a video driver now.\n\npacaur XXXX\n\nReplacing XXXX with:\n'lib32-ati-dri: for open source ATI driver users'
-              # 'lib32-catalyst-utils: for AMD Catalyst users'
-              # 'lib32-intel-dri: for open source Intel driver users'
-              # 'lib32-nouveau-dri: for Nouveau users'
-              # 'lib32-nvidia-utils-bumblebee: for NVIDIA + Bumblebee users'
-              # 'lib32-nvidia-utils: for NVIDIA proprietary blob users'" 30 70
-                  #  else
-          #    fi
-                #$DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "w00t!" 30 70
-               # fi
-            #fi
-
-        #fi
     else
          $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --msgbox "Create a user 1st (Step 5)" 30 70
     fi

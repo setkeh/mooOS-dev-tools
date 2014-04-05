@@ -310,7 +310,7 @@ create_custom_packages() {
 			cd ${MOO_HOME}abs/hardinfo
 			makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating hardinfo" --progressbox 20 70
 			#TODO
-			#schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating hardinfo" --progressbox 20 70
+			schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating hardinfo" --progressbox 20 70
 			cd "$PWD"
 		fi
 

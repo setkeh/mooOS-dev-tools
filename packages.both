@@ -48,9 +48,15 @@ dosfstools
 downgrade
 dtrx
 dvd+rw-tools
+efl-git
+efx-git
 eggdrop
+elementary-git
 elementary-icon-theme
+emotion_generic_players-git
 encfs
+enlightenment-git
+evas_generic_loaders-git
 evemu
 evolution-data-server-nonprism
 fakeroot
@@ -315,6 +321,7 @@ syslinux
 tcpdump
 tcplay
 tcptraceroute
+terminology-git
 terminus-font
 tig
 tls
