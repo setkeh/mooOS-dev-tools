@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Clipboard Syncronizer
+Comment=Deskop file for Clipboard Syncronizer - mooOS
+Exec=autocutsel_launcher
+Icon=copy
+Terminal=false
+Type=Application
+Categories=Utility;Application;
