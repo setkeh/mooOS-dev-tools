@@ -1090,7 +1090,7 @@ if [ $(id -u) -eq 0 ]; then
                     done
 
                     my_desktops=$($DIALOG --stdout --backtitle "$upper_title" --title 'Desktop/Window Manager' --cancel-label "Go Back" \
-                    --default-item "${my_desktops}" --menu "Choose or <Go Back> to return" 16 45 23 ${desktop_list} "Exit" "-" || echo "${my_desktops}")
+                    --default-item "ubuntu.desktop" --menu "Choose or <Go Back> to return" 16 45 23 ${desktop_list} "Exit" "-" || echo "${my_desktops}")
 
                     if [ "$my_desktops" = "" ] || [ $? = 255 ] || [ "$my_desktops" = "Exit" ] ; then
                         chroot_menu
