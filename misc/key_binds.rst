@@ -4,30 +4,15 @@ Enlightenment window manager
 +------------------------------+---------------------------------------------+
 | Keybinding                   | Description                                 |
 +==============================+=============================================+
-| - Alt + F1                   | - Switch to Desktop 0                       |
-| - Alt + F2                   | - Switch to Desktop 1                       |
-| - Alt + F3                   | - Switch to Desktop 2                       |
-| - Alt + F4                   | - Switch to Desktop 3                       |
-| - Alt + F5                   | - Switch to Desktop 4                       |
-| - Alt + F6                   | - Switch to Desktop 5                       |
-| - Alt + F7                   | - Switch to Desktop 6                       |
-| - Alt + F8                   | - Switch to Desktop 7                       |
-| - Alt + F9                   | - Switch to Desktop 8                       |
-| - Alt + F10                  | - Switch to Desktop 9                       |
-| - Alt + F11                  | - Switch to Desktop 10                      |
-| - Alt + F12                  | - Switch to Desktop 11                      |
-| - Alt + Tab                  | - Next Window                               |
 | - Alt + Escape               | - Show Everything Launcher                  |
+| - Alt + F2                   | - Show Everything Launcher                  |
+| - Alt + F3                   | - Focus IBar                                |
+| - Alt + Tab                  | - Next Window                               |
 +------------------------------+---------------------------------------------+
-| - Ctrl + Escape              | - Focus IBar                                |
-| - Ctrl + KP_Enter            | - Restart Enlightenment                     |
-+------------------------------+---------------------------------------------+
-| - Win + 1                    | - Switch to Desktop 1                       |
-| - Win + 2                    | - Switch to Desktop 2                       |
-| - Win + 3                    | - Switch to Desktop 3                       |
-| - Win + 4                    | - Switch to Desktop 4                       |
-| - Win + 5                    | - Switch to Desktop 5                       |
-| - Win + 6                    | - Switch to Desktop 6                       |
+| - Win + 1                    | - Switch to Desktop 0                       |
+| - Win + 2                    | - Switch to Desktop 1                       |
+| - Win + 3                    | - Switch to Desktop 2                       |
+| - Win + 4                    | - Switch to Desktop 3                       |
 | - Win + B                    | - Toggle Borderless State                   |
 | - Win + D                    | - Toggle Borderless State                   |
 | - Win + F                    | - Fullscreen Mode Toggle                    |
@@ -51,11 +36,9 @@ Enlightenment window manager
 | - Win + L                    | - Maximize Right                            |
 +------------------------------+---------------------------------------------+
 | - Win + Grave                | - Close                                     |
-| - Win + Backspace            | - Close                                     |
-| - Win + KP_End               | - Command:    /usr/bin/dolphin              |
-| - Win + Return               | - Command:    /usr/bin/terminology          |
-| - Win + KP_Down              | - Command:    /usr/bin/iceweasel            |
+| - Win + Backspace            | - Close                                     
 +------------------------------+---------------------------------------------+
+| - Win + Return               | - Command:    /usr/bin/terminology          |
 | - Win + Shift + Return       | - Command:    /usr/bin/urxvtc               |
 +------------------------------+---------------------------------------------+
 | - Ctrl + Shift + Left        | - Send Mouse Back 1 Screen                  |
