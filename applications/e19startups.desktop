@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Enlightenment startup daemons etc
+Comment=Desktop file for startup applications - mooOS
+Exec=e19_startups
+Icon=mooOS.png
+Terminal=false
+Type=Application
+Categories=Other;Terminals

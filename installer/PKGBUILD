@@ -69,6 +69,7 @@ package() {
 	install -Dm644 "applications/weechat.desktop" "$pkgdir/usr/share/applications/weechat.desktop"
 	install -Dm644 "applications/yeah.desktop" "$pkgdir/usr/share/applications/yeah.desktop"
 	install -Dm644 "applications/yt_viewer.desktop" "$pkgdir/usr/share/applications/yt_viewer.desktop"
+	install -Dm644 "applications/e19startups.desktop" "$pkgdir/usr/share/applications/e19startups.desktop"
 	install -Dm644 "applications/zandronum.desktop" "$pkgdir/usr/share/applications/zandronum.desktop"
 	gzip -f "$pkgdir/usr/local/man/man1/mooOS.1"
 }
