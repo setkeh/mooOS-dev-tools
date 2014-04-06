@@ -693,6 +693,7 @@ create_build_env() {
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-256.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps/mooOS.png
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-32.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/mooOS.png
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps
 		sudo cp ${MOO_TOOLS_PATH}images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/mooOS.png
 		
 		## sublime
