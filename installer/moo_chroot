@@ -1105,15 +1105,15 @@ if [ $(id -u) -eq 0 ]; then
                         sed -i "s/#autologin-user-timeout=0/autologin-user-timeout=0/g" /etc/lightdm/lightdm.conf
                     fi
 
-                    $DIALOG --clear --backtitle "$upper_title" --title "[ LOGIN SETTINGS ]" --defaultyes --yesno "Default Autologin to Virtual Console/tty?" 10 30
+                    $DIALOG --clear --backtitle "$upper_title" --title "[ LOGIN SETTINGS ]" --yesno "Default Autologin to Virtual Console/tty?" 10 30
                     if [ $? != 0 ] ; then
-                        systemctl disable autologin@tty
-                        systemctl enable getty@tty
+                        systemctl disable autologin@tty > /dev/null 2>&1
+                        systemctl enable getty@tty1 > /dev/null 2>&1
                         rm /etc/systemd/system/getty@tty1.service.d/autologin.conf
+                    else
+                        ## create skeleton files for possible future use case
+                        sed -i "s/moo/$puser/g" /etc/systemd/system/getty@tty1.service.d/autologin.conf
                     fi
-
-                    ## create skeleton files for possible future use case
-                    sed -i "s/moo/$puser/g" /etc/systemd/system/getty@tty1.service.d/autologin.conf
                     sed -i "s/moo/$puser/g" /etc/systemd/system/autologin@.service
 
                     sed -i "s/moo/$puser/g" /etc/systemd/system/transmission.service
@@ -1146,6 +1146,16 @@ if [ $(id -u) -eq 0 ]; then
                         rm $EWW_FILE
                     done
                     cd $PWD
+
+                    ## copy moonity branding
+                    mkdir -p /usr/share/backgrounds
+                    mkdir -p /usr/share/unity/icons
+                    mkdir -p /usr/share/unity-greeter
+                    cp /usr/share/moo-tools/images/launcher_bfb.png /usr/share/unity/icons/launcher_bfb.png
+                    cp /usr/share/moo-tools/images/ubuntu_badge.png /usr/share/unity-greeter/ubuntu_badge.png
+                    cp /usr/share/moo-tools/images/mooOS-48.png /usr/share/unity-greeter/cof.png
+                    cp /usr/share/moo-wallpapers/wallpaper48.png /usr/share/backgrounds/warty-final-ubuntu.png
+                    cp /usr/share/moo-tools/images/mooOS-128.png /usr/share/unity-greeter/logo.png
 
                     ## clean up files content
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini"
