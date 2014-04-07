@@ -28,6 +28,18 @@ sed -i "s/CacheDir/#CacheDir/g" /etc/pacman.conf
 usermod -s /usr/bin/zsh root
 cp -aT /etc/skel/.zshrc.root /root/.zshrc
 
+## bug fixes -
+## Unity Greeter has purple backgroundcolor before the background image is loaded 
+## https://bugs.launchpad.net/ubuntu/+source/unity-greeter/+bug/970024
+## Enabling or disabling grid (or any other option) doesn't work for users through dconf-editor or gsettings command 
+## https://bugs.launchpad.net/ubuntu/+source/unity-greeter/+bug/981335
+## Setting gnome.settings-daemon.plugins.background to inactive prevents the use of custom background in unity-greeter 
+## https://bugs.launchpad.net/ubuntu/+source/ubuntu-settings/+bug/1122619
+xhost +SI:localuser:lightdm
+su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter draw-grid false"
+su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter background-color '#222222'"
+su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter background /usr/share/backgrounds/warty-final-ubuntu.png"
+
 # fix missing icons in .desktop files
 if [ -f /usr/share/applications/mediadownloader.desktop ]; then
 	sed -i "s/Icon=mediadownloader/Icon=mplayer/g" /usr/share/applications/mediadownloader.desktop
