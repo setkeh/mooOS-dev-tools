@@ -36,9 +36,9 @@ cp -aT /etc/skel/.zshrc.root /root/.zshrc
 ## Setting gnome.settings-daemon.plugins.background to inactive prevents the use of custom background in unity-greeter 
 ## https://bugs.launchpad.net/ubuntu/+source/ubuntu-settings/+bug/1122619
 #xhost +SI:localuser:lightdm
-su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter draw-grid false"
-su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter background-color '#222222'"
-su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter background /usr/share/backgrounds/warty-final-ubuntu.png"
+#su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter draw-grid false"
+#su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter background-color '#222222'"
+#su lightdm -s /bin/bash -c "gsettings set com.canonical.unity-greeter background /usr/share/backgrounds/warty-final-ubuntu.png"
 
 # fix missing icons in .desktop files
 if [ -f /usr/share/applications/mediadownloader.desktop ]; then
