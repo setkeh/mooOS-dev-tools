@@ -1193,7 +1193,7 @@ update_remote() {
 				flags=$(eval echo $(echo '${'_remote$i[4]'}'))
 				src=$(eval echo $(echo '${'_remote$i[2]'}'))
 				dest=$(eval echo $(echo '${'_remote$i[3]'}'))
-				rsync -avzrcPh $flags -e "ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing remote repository" --progressbox 20 70 # -n, --dry-run perform a trial run with no changes made
+				torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing remote repository" --progressbox 20 70 # -n, --dry-run perform a trial run with no changes made
 				#torsocks rsync -avzrcPh $flags -e "torsocks ssh -p $port" $src $dest 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing remote repository" --progressbox 20 70 # -n, --dry-run perform a trial run with no changes made
 			done
 			notify-send "Repos synced to remote server!" -i "$MOO_ICON"

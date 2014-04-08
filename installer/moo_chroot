@@ -434,8 +434,13 @@ if [ $(id -u) -eq 0 ]; then
                     #pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
                     #pacman-key --lsign-key E73F68F6
 
+                    ## reset pacaur db
+                    pacman -R erminology-git
+                    su $puser -c "pacaur -Syua --noconfirm --noedit terminology-git"
+
                     update-mirrorlist > /dev/null 2>&1
                     pacman -Syyu --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --progressbox 20 70
+
 
                     $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npasswd for sudo." 10 30
                 fi
