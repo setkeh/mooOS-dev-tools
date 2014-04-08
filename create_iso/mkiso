@@ -175,7 +175,7 @@ repackage_this() {
 }
 
 create_custom_packages() {
-	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngeeh\nvb-pdq" 20 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngeeh" 20 30
 	if [ $? = 0 ] ; then
 		## moo-scripts
 		$DIALOG --clear --backtitle "$upper_title" --title "moo-scripts" --yesno "Rebrand moo-scripts" 10 30
@@ -221,11 +221,11 @@ create_custom_packages() {
 		#repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
 		
 		## vimb web browser and tabbed, patched!
-		$DIALOG --clear --backtitle "$upper_title" --title "vb-pdq" --yesno "Rebrand vb-pdq" 10 30
-		if [ $? = 0 ] ; then
-			delete_custom_package_caches "vb-pdq"
-			repackage_this "vb-pdq" "https://raw.github.com/idk/vb-pdq/master/PKGBUILD https://raw.github.com/idk/vb-pdq/master/vb-pdq.install" "any"
-		fi
+		# $DIALOG --clear --backtitle "$upper_title" --title "vb-pdq" --yesno "Rebrand vb-pdq" 10 30
+		# if [ $? = 0 ] ; then
+		# 	delete_custom_package_caches "vb-pdq"
+		# 	repackage_this "vb-pdq" "https://raw.github.com/idk/vb-pdq/master/PKGBUILD https://raw.github.com/idk/vb-pdq/master/vb-pdq.install" "any"
+		# fi
 	fi
 
 	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages? (filesystem/grub/lsb-release/syslinux/hardinfo)" 10 30
