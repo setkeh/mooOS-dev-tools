@@ -582,6 +582,7 @@ create_build_env() {
 		## copy over firefox files
 		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
+		sudo rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/
 		sudo cp -r ${MOO_HOME}info/firefox/qrtww0pl.Default-User/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
 		
 		## copy over ~/.local files
