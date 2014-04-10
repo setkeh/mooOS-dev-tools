@@ -616,7 +616,11 @@ initial_install() {
                 cp -r /etc/systemd/system/* /mnt/etc/systemd/system/
                 
                 mkdir -p /mnt/etc/privoxy
-                sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
+                #sh -c "echo 'forward-socks5 / localhost:9050 .' > /mnt/etc/privoxy/config"
+                cp /etc/privoxy/config /mnt/etc/privoxy/config
+                cp /etc/privoxy/user.action /mnt/etc/privoxy/user.action
+                mkdir -p /mnt/etc/conf.d
+                cp /etc/conf.d/privoxy-blacklist /mnt/etc/conf.d/privoxy-blacklist
 
                 mkdir -p /mnt/etc/dansguardian
                 cp /etc/dansguardian/dansguardian.conf /mnt/etc/dansguardian/dansguardian.conf

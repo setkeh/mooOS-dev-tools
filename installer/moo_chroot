@@ -1086,7 +1086,7 @@ if [ $(id -u) -eq 0 ]; then
                        #sleep 3s
                     #fi
 
-                    squid -z > /dev/null 2>&1 &
+                    #squid -z > /dev/null 2>&1 &
 
                     ## login options
                     local desktop_list mydesktop

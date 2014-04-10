@@ -117,7 +117,7 @@ sed -i "s/#Server/Server/g" /etc/pacman.d/mirrorlist
 sed -i 's/#\(Storage=\)auto/\1volatile/' /etc/systemd/journald.conf
 
 ## create the required squid cache directories
-squid -z &
+#squid -z &
 
 ## systemd stuffs
 systemctl disable iptables.service cpupower.service

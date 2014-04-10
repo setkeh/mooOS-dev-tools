@@ -547,7 +547,12 @@ create_build_env() {
 		
 		## privoxy config
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/privoxy
-		sudo sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
+		sudo cp /etc/privoxy/config ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config
+		sudo cp /etc/privoxy/user.action ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/user.action
+		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/conf.d
+		sudo cp /etc/conf.d/privoxy-blacklist ${ARCHLIVE}archlive/releng/root-image/etc/conf.d/privoxy-blacklist
+	
+		#sudo sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
 		
 		## dansguardian config
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/dansguardian
