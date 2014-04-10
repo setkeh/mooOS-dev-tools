@@ -551,7 +551,9 @@ create_build_env() {
 		sudo cp /etc/privoxy/user.action ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/user.action
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/conf.d
 		sudo cp /etc/conf.d/privoxy-blacklist ${ARCHLIVE}archlive/releng/root-image/etc/conf.d/privoxy-blacklist
-	
+		sudo chown privoxy:privoxy ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config
+		sudo chown privoxy:privoxy ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/user.action
+
 		#sudo sh -c "echo 'forward-socks5 / localhost:9050 .' > ${ARCHLIVE}archlive/releng/root-image/etc/privoxy/config"
 		
 		## dansguardian config
@@ -580,6 +582,7 @@ create_build_env() {
 		sudo cp ${MOO_HOME}.canto-ng/conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/conf
 		
 		## copy over firefox files
+		sudo rm -rf ${MOO_HOME}info/firefox/qrtww0pl.Default-User/
 		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/* ${MOO_HOME}info/firefox/qrtww0pl.Default-User
 		sudo rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User

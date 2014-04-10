@@ -10,6 +10,13 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -sf /usr/bin/meld /usr/bin/vimdiff
 #chown -Rv moo:users /usr/share/doc/qt/examples/   
 
+## polipo fixes
+#cp /etc/polipo/config.sample /etc/polipo/config
+touch /var/log/polipo.log
+groupadd -r polipo
+useradd -d /var/cache/polipo -g polipo -r -s /bin/false polipo
+chown -R polipo:polipo /var/log/polipo.log /var/cache/polipo
+
 ## figure out architecture type
 archtype="$(uname -m)"
 

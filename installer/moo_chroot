@@ -695,14 +695,15 @@ if [ $(id -u) -eq 0 ]; then
                 # chown -R tor:tor /usr/share/tor/hidden_service3
                 # chown -R tor:tor /usr/share/tor/hidden_service4
 
+                ## polipo
                 groupadd -r polipo > /dev/null 2>&1
                 useradd -d /var/cache/polipo -g polipo -r -s /bin/false polipo > /dev/null 2>&1
                 touch /var/log/polipo.log > /dev/null 2>&1
                 chown -R polipo:polipo /var/log/polipo.log /var/cache/polipo > /dev/null 2>&1
 
-                #sh -c "echo .include /usr/lib/systemd/system/polipo.service
-    #[Service]
-    #User=polipo  > /etc/systemd/system/polipo.service"
+                ## privoxy
+                chown privoxy:privoxy /etc/privoxy/config > /dev/null 2>&1
+                chown privoxy:privoxy /etc/privoxy/user.action > /dev/null 2>&1
 
                 #systemctl enable dhcpcd@eth0.service
                 #systemctl enable NetworkManager.service
@@ -719,6 +720,11 @@ if [ $(id -u) -eq 0 ]; then
                 systemctl enable cronie.service > /dev/null 2>&1
                 systemctl enable lightdm.service > /dev/null 2>&1
                 systemctl enable dhcpcd.service > /dev/null 2>&1
+
+                $DIALOG --clear --backtitle "$upper_title" --title "[ SSHD SETTINGS ]" --defaultno --yesno "Enable SSH Daemon with default config on port 22?" 10 30
+                if [ $? = 0 ] ; then
+                    systemctl enable sshd.service > /dev/null 2>&1
+                fi
 
                 # $DIALOG --clear --backtitle "$upper_title" --title "Extra" --defaultno --yesno "Install foo and bar?" 10 30
 
