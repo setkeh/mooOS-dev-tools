@@ -5,6 +5,6 @@ Type=Application
 Name=Zandronum (Doom)
 Comment=Doom client
 Exec=zandronum
-Icon=gnome-robots
+Icon=zotero
 Terminal=false
 Categories=Game

@@ -1,0 +1,45 @@
+# Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Original Maintainer: György Balló <ballogy@freestart.hu>
+# Contributor: thn81 <root@scrat>
+
+pkgname=unity-asset-pool
+_actual_ver=0.8.24
+_extra_ver=daily13.06.10
+pkgver=${_actual_ver}.${_extra_ver}
+pkgrel=101
+pkgdesc="Design assets for Unity"
+arch=('any')
+url="https://launchpad.net/unity-asset-pool"
+license=('GPL')
+depends=('gnome-icon-theme')
+makedepends=('icon-naming-utils')
+groups=('unity')
+source=("https://launchpad.net/ubuntu/+archive/primary/+files/unity-asset-pool_${_actual_ver}${_extra_ver}.orig.tar.gz"
+        'mooOS-22.png'
+        'mooOS-24.png')
+sha512sums=('52e100598fddb3f0b5d81123667d1693d09c44c96617af1e10a86027e85550be85dea1059459df9df3da73536afe722dd6d8fb5f8e2400b8394b6b9870325ce4'
+            '368403ca1429815deb55fd6b5e6db38ce2e50605e3461afc13186fe3abea2c4ef1f9b56f53f661f29c173d44f98e0950997cbbd5ab5e8b3bb5de38fce290c0a3'
+            '115960ff74830e0d104d0c924887a566d77871f8d42372a5bda294e77bc55bd6555a58eaa9c824f596f94b6b8074d7235f72645d58bfd7036417ec33a970972a')
+
+package() {
+  cd "${srcdir}/${pkgname}-${_actual_ver}${_extra_ver}"
+
+  install -dm755 "${pkgdir}/usr/share/unity/themes/"
+  install -m644 launcher/* "${pkgdir}/usr/share/unity/themes/"
+  install -m644 panel/* "${pkgdir}/usr/share/unity/themes/"
+
+  install -dm755 "${pkgdir}/usr/share/icons/"
+  find unity-icon-theme/ -type f -exec install -Dm644 {} "${pkgdir}"/usr/share/icons/{} \;
+  install -m644 "${srcdir}/mooOS-22.png" "${pkgdir}/usr/share/icons/unity-icon-theme/places/22/distributor-logo.png"
+  install -m644 "${srcdir}/mooOS-24.png" "${pkgdir}/usr/share/icons/unity-icon-theme/places/24/distributor-logo.png"
+
+  # From debian/rules
+  for i in $(find "${pkgdir}/usr/share/icons" -mindepth 2 -maxdepth 2 -type d); do
+    cd "${i}"
+    for j in *; do
+      /usr/lib/icon-naming-utils/icon-name-mapping -c "${j}"
+    done
+  done
+}
+
+# vim:set ts=2 sw=2 et:

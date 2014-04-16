@@ -1,7 +1,7 @@
 [Desktop Entry]
 Hidden=false
 Exec=urxvtc -title "man mooOS" -name "man mooOS" -e man mooOS
-Icon=gnome-robots
+Icon=application-default-icon
 Type=Application
 Version=1.0
 StartupNotify=false
