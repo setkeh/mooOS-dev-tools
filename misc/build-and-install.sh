@@ -114,7 +114,7 @@ for package in "${packages[@]}"; do
 
 	if [ "$NOCONFIRM" == "true" ];then
 		$MAKEPKG --nocheck -fsic --noconfirm
-	elif [ "$NOINSTALL" == "true" ]; then
+	elif [ "$NOINSTALL" == "true" ] || [ "$ARCH" == "i686" ]; then
 		$MAKEPKG --nocheck -fc
 	elif [ "$DOWNLOAD" == "true" ]; then
 		echo "Downloading ${package}..."

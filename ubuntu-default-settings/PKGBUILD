@@ -1,4 +1,5 @@
 # Maintainer: Xiao-Long Chen <chenxiaolong@cxl.epac.to>
+# Patch for mooOS by: pdq
 
 pkgname=ubuntu-default-settings
 pkgver=14.04.5
