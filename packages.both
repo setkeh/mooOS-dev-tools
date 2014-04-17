@@ -32,7 +32,6 @@ compiz-ubuntu
 cower
 cowsay
 cpupower-libre
-cursetheweather
 cvs
 ddd
 dee-qt
@@ -70,7 +69,7 @@ flex
 fontconfig
 fortune-mod
 frame
-freetype2
+freetype2-ubuntu
 frei0r-plugins
 fslint
 fsv2
@@ -266,7 +265,6 @@ pkgcacheclean
 pkgfile
 pngcrush
 polipo
-power-commands
 ppp
 preload
 privoxy
