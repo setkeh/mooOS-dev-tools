@@ -320,11 +320,11 @@ create_custom_packages() {
 
 delete_package_caches() {
 	#sudo pkgcacheclean -v 1
-	schroot -p -- sudo pkgcacheclean -v 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v --cachedir=${MOO_HOME}abs/i686 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
-	sudo pkgcacheclean -v --cachedir=${MOO_HOME}abs/x86_64 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	schroot -p -- sudo pkgcacheclean -v -k 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-32/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${ABS_BASE_DIR}mooOS-pkgs-64/ 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/i686 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
+	sudo pkgcacheclean -v -k --cachedir=${MOO_HOME}abs/x86_64 1 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Deleting old caches" --progressbox 20 70
 	mv ${ABS_BASE_DIR}mooOS-pkgs-32/*nvidia* ${ABS_BASE_DIR}nonfree/
 	mv ${ABS_BASE_DIR}mooOS-pkgs-64/*nvidia* ${ABS_BASE_DIR}nonfree/
 }

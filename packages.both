@@ -15,6 +15,7 @@ autoconf
 autocutsel
 automake
 avidemux-libre-qt
+awesome
 bamf
 baobab
 bison
@@ -72,6 +73,7 @@ frame
 freetype2
 frei0r-plugins
 fslint
+fsv2
 fuseiso
 gcolor2
 gdb
@@ -92,7 +94,6 @@ gnome-screenshot
 gnome-session-properties
 gnome-session-ubuntu
 gnome-settings-daemon-ubuntu
-gnome-tweak-tool
 gnuplot
 go-fuse
 go-sqlite3
@@ -308,7 +309,6 @@ sdl_ttf
 simplescreenrecorder
 sni-qt
 spectrwm-libre
-speedcrunch
 squashfs-tools
 sshfs
 stardork
@@ -338,7 +338,6 @@ ttf-liberation
 ttf-ms-fonts
 tty-clock-patched
 ubuntu-sounds
-ubuntu-wallpapers
 udevil
 unar
 unity
