@@ -34,3 +34,5 @@ kdebase-runtime-libre
 sdl-libre
 openexr-libre
 qtcreator
+wireshark-cli
+wireshark-gtk
