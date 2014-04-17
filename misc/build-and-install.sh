@@ -75,10 +75,12 @@ exit 1
 fi
 
 if [ "${ARCH}" == "i686" ]; then
-	MAKEPKG="schroot -p --"
+	MAKEPKG="schroot -p -- makepkg"
 else
 	MAKEPKG="makepkg"
 fi
+
+MAKEPKG="schroot -p -- makepkg"
 
 packages=($(./What_can_I_update\?.py -l | grep -v qt4-ubuntu))
 for package in "${packages[@]}"; do
@@ -107,14 +109,19 @@ for package in "${packages[@]}"; do
 		cp -rv ~/github/mooOS-dev-tools/unity/* ${package}/
 	elif [ "${package}" == "unity-asset-pool" ]; then
 		cp -rv ~/github/mooOS-dev-tools/unity-asset-pool/* ${package}/
+	elif [ "${package}" == "unity-control-center" ]; then
+		cp -rv ~/github/mooOS-dev-tools/unity-control-center/* ${package}/
 	fi
 
 	cd "${package}"
 	rm -rf src
 
 	if [ "$NOCONFIRM" == "true" ];then
-		$MAKEPKG --nocheck -fsic --noconfirm
-	elif [ "$NOINSTALL" == "true" ] || [ "$ARCH" == "i686" ]; then
+		## i686
+		$MAKEPKG --nocheck -sfc --noconfirm
+		## x86_64
+		#$MAKEPKG --nocheck -sfic --noconfirm
+	elif [ "$NOINSTALL" == "true" ]; then
 		$MAKEPKG --nocheck -fc
 	elif [ "$DOWNLOAD" == "true" ]; then
 		echo "Downloading ${package}..."

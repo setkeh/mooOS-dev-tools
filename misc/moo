@@ -90,10 +90,10 @@ if [ $MOUNT_LAN1_FILESYSTEM -eq 1 ]; then
 	${TERM_USED}${BG1} $NAME"ssh $LAN1" $TITLE"ssh $LAN1" -e ssh $LAN1 -p$PORT1
 
 	## Start SSH top (terminal task manager)
-	${TERM_USED}${BG2} $NAME"htop $LAN1" $TITLE"htop $LAN1" -e ssh -t $LAN1 -p$PORT1 htop
+	#${TERM_USED}${BG2} $NAME"htop $LAN1" $TITLE"htop $LAN1" -e ssh -t $LAN1 -p$PORT1 htop
 
 	## Start SSH journalctl (systemlog)
-	${TERM_USED}${BG2} $NAME"Log $LAN1" $TITLE"Log $LAN1" -e ssh -t $LAN1 -p$PORT1 sudo journalctl -f
+	#${TERM_USED}${BG2} $NAME"Log $LAN1" $TITLE"Log $LAN1" -e ssh -t $LAN1 -p$PORT1 sudo journalctl -f
 
 	## Mount server filesystem to localhost
 	if [ ! -d "$PATH_TO_DATA/home" ] ; then
@@ -121,10 +121,10 @@ ${TERM_USED}${BG3} $NAME"Term" $TITLE"Term"
 ${TERM_USED}${BG7} $NAME"tERM" $TITLE"tERM"
 
 ## Start system logs
-${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
+#${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 
 ## Start top (terminal task manager)
-[ -z "$(pidof htop)" ] && ${TERM_USED} $NAME"HTOP" $TITLE"HTOP" -e htop
+#[ -z "$(pidof htop)" ] && ${TERM_USED} $NAME"HTOP" $TITLE"HTOP" -e htop
 
 ## Start CPU frequency monitor
 #[ -z "$(pidof cpu_freq)" ] && ${TERM_USED}${BG1} $NAME"CPU Freq" $TITLE"CPU Freq" -e cpu_freq
@@ -133,7 +133,7 @@ ${TERM_USED}${BG5} $NAME"Logs" $TITLE"Logs" -e sudo journalctl -f
 #[ -z "$(pidof nvidia-smi)" ] && ${TERM_USED}${BG14} $NAME"GPU" $TITLE"GPU" -e nvidia-smi -l 5 -q -d "MEMORY,TEMPERATURE"
 
 ## Start RSS reader
-[ -z "$(pidof canto-curses)" ] && ${TERM_USED}${BG15} $NAME"RSS" $TITLE"RSS" -e canto-curses
+#[ -z "$(pidof canto-curses)" ] && ${TERM_USED}${BG15} $NAME"RSS" $TITLE"RSS" -e canto-curses
 
 ## Start RSS reader
 #[ -z "$(pidof glances)" ] && ${TERM_USED}${BG12} $NAME"Glances" $TITLE"Glances" -e glances -e
@@ -218,7 +218,7 @@ if [ -d "$PATH_TO_DATA/home" ] || [ $PRIV_ENABLED -eq 0 ]; then
 
 	## Start email client (start delay of 30 seconds to give proxy time to start)
 	#[ -z "$(pidof claws-mail)" ] && sleep 30s && usewithtor claws-mail &
-	[ -z "$(pidof mutt)" ] && sleep 1m && ${TERM_USED} $NAME"Mail" $TITLE"Mail" -e torsocks mutt
+	#[ -z "$(pidof mutt)" ] && sleep 1m && ${TERM_USED} $NAME"Mail" $TITLE"Mail" -e torsocks mutt
 fi
 
 exit 0
