@@ -1,0 +1,48 @@
+# $Id: PKGBUILD 207667 2014-03-12 23:35:44Z foutrelis $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer (Parabola): Márcio Silva <coadde@parabola.nu>
+# Maintainer (mooOS): pdq <pdq@riseup.net>
+
+_pkgname=gst-plugins-bad
+pkgname=$_pkgname-libre
+pkgver=1.2.3
+pkgrel=2
+pkgdesc="GStreamer Multimedia Framework Bad Plugins, without nonfree faac support"
+arch=('i686' 'x86_64' 'mips64el')
+license=('LGPL')
+url="http://gstreamer.freedesktop.org/"
+depends=('mjpegtools' 'gst-plugins-base-libs' 'curl' 'chromaprint' 'libmms' 'faad2' 'mpg123' 'celt' 'libdca' 'soundtouch' 'spandsp' 'libdvdnav' 'libmodplug' 'libgme' 'opus' 'wayland' 'neon' 'libofa' 'fluidsynth' 'openjpeg' 'libwebp' 'libsrtp' 'gnutls' 'wildmidi')
+makedepends=('schroedinger' 'libexif' 'libdvdread' 'libvdpau' 'libmpeg2' 'python' 'valgrind' 'wildmidi' 'librsvg'
+             'gobject-introspection' 'gtk-doc')
+provides=($_pkgname=$pkgver)
+conflicts=$_pkgname
+replaces=$_pkgname
+options=(!emptydirs)
+source=(${url}/src/$_pkgname/$_pkgname-$pkgver.tar.xz)
+sha256sums=('595d7911a9e6207dea37200587724bdbf841b81a5eb0730118be36976684278c')
+
+build() {
+  cd $_pkgname-$pkgver
+
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --disable-static --enable-experimental --enable-gtk-doc \
+    --with-package-name="GStreamer Bad Plugins (mooOS GNU/Linux-libre)" \
+    --with-package-origin="https://mooos.org/" \
+    --with-gtk=3.0
+
+  # https://bugzilla.gnome.org/show_bug.cgi?id=655517
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+check() {
+  cd $_pkgname-$pkgver
+  # don't have a camera for the camerabin test
+  make -k check || :
+}
+
+package() {
+  cd $_pkgname-$pkgver
+  make DESTDIR="${pkgdir}" install
+}
