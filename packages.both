@@ -31,7 +31,7 @@ cmatrix
 compiz-ubuntu
 cower
 cowsay
-cpupower-libre
+cpupower
 cvs
 ddd
 dee-qt
@@ -104,8 +104,9 @@ grake
 groff
 gsettings-desktop-schemas-ubuntu
 gsettings-qt
-gst-plugins-bad-libre
-gstreamer0.10-bad-libre-plugins
+gst-plugins-bad
+gstreamer0.10-bad
+gstreamer0.10-bad-plugins
 gstreamer0.10-base-plugins
 gstreamer0.10-ffmpeg
 gstreamer0.10-good
@@ -150,15 +151,14 @@ kdbg
 kde-servicemenus-meld-menu-extended
 kdebase-dolphin
 kdebase-konsole
-kdebase-runtime-libre
-kdelibs-libre
+kdebase-runtime
 kdemultimedia-ffmpegthumbs
 kdenlive
 kdesdk-dolphin-plugins
 kdesdk-kcachegrind
 kdesdk-thumbnailers
 kdesudo
-kdeutils-ark-libre
+kdeutils-ark
 keepassx
 key-mon
 keychain
@@ -246,9 +246,10 @@ nux
 octopi
 octopi-notifier
 omg-suite
+openexr
 openssh
 overlay-scrollbar
-p7zip-libre
+p7zip
 pacaur
 packagekit
 pacmatic
@@ -337,7 +338,6 @@ ttf-ms-fonts
 tty-clock-patched
 ubuntu-sounds
 udevil
-unar
 unity
 unity-asset-pool
 unity-gtk-module
@@ -350,7 +350,8 @@ unity-lens-video
 unity-scope-home
 unity-scopes
 unity-tweak-tool
-unzip-libre
+unrar
+unzip
 update-mirrorlist
 upower
 upx
@@ -371,7 +372,7 @@ whois
 wpa_supplicant_gui
 x264
 xbindkeys
-xbmc-libre
+xbmc
 xboxdrv
 xclip
 xcursor-shere-khan-x

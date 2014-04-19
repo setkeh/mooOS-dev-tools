@@ -6,10 +6,15 @@
 
 ARCH_SUPPORTED=('i686' 'x86_64')
 ARCH=""
-LIBRES="audio-convert-libre avidemux-libre cdrkit-libre cups-filters-libre kdelibs-libre mcomix-libre mesa-demos-libre mplayer-libre openexr-libre rp-pppoe-libre sdl-libre spectrwm-libre unzip-libre unar mozilla-searchplugins cpupower-libre p7zip-libre xbmc-libre mc-libre kdeutils-ark-libre iceweasel-libre kdebase-runtime-libre ghostscript-libre texlive-bin-libre"
+
+LIBRES="audio-convert-libre avidemux-libre cdrkit-libre cups-filters-libre mcomix-libre mesa-demos-libre mplayer-libre openexr-libre rp-pppoe-libre sdl-libre spectrwm-libre mozilla-searchplugins xbmc-libre mc-libre texlive-bin-libre"
+
 PRISMS="bitlbee-libre-nonprism evolution-data-server-nonprism gnome-online-accounts-nonprism"
+
 MOO="geeh moo-scripts moo-tools moo-wallpapers moo-zsh"
+
 UBU="bamf compiz-ubuntu dee-qt dee-ubuntu evemu frame gnome-control-center-ubuntu gnome-settings-daemon-ubuntu gsettings-qt hud ido indicator-application indicator-appmenu indicator-bluetooth indicator-cpufreq indicator-datetime indicator-keyboard indicator-messages indicator-power indicator-printers indicator-remindor indicator-session indicator-sound libappindicator libappindicator3 libcolumbus libdbusmenu-glib libdbusmenu-gtk2 libdbusmenu-gtk3 libdbusmenu-qt5 libindicate libindicate-gtk2 libindicate-gtk3 libindicate-qt libindicator libindicator3 libnautilus-extension-ubuntu liboverlay-scrollbar liboverlay-scrollbar3 libtimezonemap libunity libunity-misc lightdm-ubuntu lightdm-unity-greeter metacity-ubuntu nautilus-ubuntu numix-themes nux overlay-scrollbar properties-cpp python2-pyside python2-shiboken remindor-common remindor-qt sni-qt ubuntu-sounds unity unity-asset-pool unity-control-center unity-gtk-module unity-language-packs unity-lens-applications unity-lens-files unity-lens-music unity-lens-photos unity-lens-video unity-scope-home unity-scopes unity-tweak-tool xpathselect"
+
 PATCHED="gst-plugins-bad-libre gstreamer0.10-bad-libre"
 
 while getopts ednhbp:ais: opt; do
