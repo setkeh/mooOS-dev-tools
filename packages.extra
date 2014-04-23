@@ -29,10 +29,7 @@ xf86-video-sisusb
 xf86-video-vmware
 zd1211-firmware
 cdrkit-libre
-ghostscript-libre
-kdebase-runtime-libre
 sdl-libre
-openexr-libre
 qtcreator
 wireshark-cli
 wireshark-gtk
