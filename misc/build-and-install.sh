@@ -80,7 +80,8 @@ else
 	MAKEPKG="makepkg"
 fi
 
-MAKEPKG="schroot -p -- makepkg"
+#MAKEPKG="schroot -p -- makepkg"
+MAKEPKG="makepkg"
 
 packages=($(./What_can_I_update\?.py -l | grep -v qt4-ubuntu))
 for package in "${packages[@]}"; do
@@ -118,9 +119,9 @@ for package in "${packages[@]}"; do
 
 	if [ "$NOCONFIRM" == "true" ];then
 		## i686
-		$MAKEPKG --nocheck -sfc --noconfirm
+		#$MAKEPKG --nocheck -sfc --noconfirm
 		## x86_64
-		#$MAKEPKG --nocheck -sfic --noconfirm
+		$MAKEPKG --nocheck -sfic --noconfirm
 	elif [ "$NOINSTALL" == "true" ]; then
 		$MAKEPKG --nocheck -fc
 	elif [ "$DOWNLOAD" == "true" ]; then

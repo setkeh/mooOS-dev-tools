@@ -282,6 +282,8 @@ pyradio-git
 python
 python-feedparser
 python-gobject
+python-pyside
+python-shiboken
 python2-certifi
 python2-jsonschema
 python2-pynzb
@@ -400,7 +402,7 @@ xterm
 yajl
 yaourt
 youtube-dl
-youtube-viewer-git
+youtube-viewer
 zeitgeist-ubuntu
 zenity
 zip
