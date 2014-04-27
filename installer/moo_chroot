@@ -1158,15 +1158,8 @@ if [ $(id -u) -eq 0 ]; then
                     done
                     cd $PWD
 
-                    ## copy moonity branding
-                    mkdir -p /usr/share/backgrounds
-                    mkdir -p /usr/share/unity/icons
-                    mkdir -p /usr/share/unity-greeter
-                    cp /usr/share/moo-tools/images/launcher_bfb.png /usr/share/unity/icons/launcher_bfb.png
-                    cp /usr/share/moo-tools/images/ubuntu_badge.png /usr/share/unity-greeter/ubuntu_badge.png
-                    cp /usr/share/moo-tools/images/mooOS-48.png /usr/share/unity-greeter/cof.png
-                    cp /usr/share/moo-wallpapers/wallpaper48.png /usr/share/backgrounds/warty-final-ubuntu.png
-                    cp /usr/share/moo-tools/images/mooOS-128.png /usr/share/unity-greeter/logo.png
+                    sed -i "s,Server = file:///var/cache/moo,#Server = file:///var/cache/moo,g" /etc/pacman.conf
+                    sed -i "s,#Server = http://mooos.org/repos/moo,Server = http://mooos.org/repos/moo,g" /etc/pacman.conf
 
                     ## clean up files content
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini"
