@@ -2,11 +2,13 @@ ati-dri
 b43-fwcutter
 btrfs-progs
 cdrkit-libre
+cups-filters-libre
 cryptsetup
 cvs
 darkhttpd
 ethtool
 f2fs-tools
+gnome-online-accounts-nonprism
 haveged
 intel-dri
 ipw2100-fw
@@ -28,7 +30,6 @@ xf86-video-sis
 xf86-video-sisusb
 xf86-video-vmware
 zd1211-firmware
-cdrkit-libre
 sdl-libre
 qtcreator
 wireshark-cli

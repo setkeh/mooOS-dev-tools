@@ -433,14 +433,11 @@ if [ $(id -u) -eq 0 ]; then
                     ## add moo keys
                     #pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
                     #pacman-key --lsign-key E73F68F6
-
-                    ## reset pacaur db
-                    pacman -R terminology-git 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --progressbox 20 70
-                    su $puser -c "pacaur -Syua --noconfirm --noedit terminology-git" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --progressbox 20 70
-
+                
                     update-mirrorlist > /dev/null 2>&1
                     pacman -Syyu --noconfirm 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating mooOS" --ok-label "Continue" --progressbox 20 70
 
+                    pacman-key --lsign-key E73F68F6 > /dev/null 2>&1
 
                     $DIALOG --clear --backtitle "$upper_title" --title "[ CREATE USER ]" --msgbox "Added the user $puser with $npasswd for sudo." 10 30
                 fi
@@ -1159,7 +1156,7 @@ if [ $(id -u) -eq 0 ]; then
                     cd $PWD
 
                     sed -i "s,Server = file:///var/cache/moo,#Server = file:///var/cache/moo,g" /etc/pacman.conf
-                    sed -i "s,#Server = http://mooos.org/repos/moo,Server = http://mooos.org/repos/moo,g" /etc/pacman.conf
+                    sed -i "s,#Server = http://mooos.org/repos/moo/,Server = http://mooos.org/repos/moo/,g" /etc/pacman.conf
 
                     ## clean up files content
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini"
