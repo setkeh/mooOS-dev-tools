@@ -1022,8 +1022,8 @@ build_moo() {
 				$DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Do you wish to copy $moo pkgs to iso?" 10 30
 				if [ $? = 0 ] ; then
 			        ## copy packages to iso
-			        rm -rf ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/*
-					rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/$moo/ ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/$moo 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing $moo pkgs to iso" --progressbox 20 70
+			        sudo rm -rf ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/*
+					sudo rsync -avzrcpPh --delete --stats ${REPO_BASE_DIR}/$moo/ ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/$moo 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Syncing $moo pkgs to iso" --progressbox 20 70
 					## end
 				fi
 
