@@ -591,7 +591,9 @@ initial_install() {
                 cp -r /etc/skel /mnt/etc/
 
                 cp /etc/$pacman_conf /mnt/etc/pacman.conf
-                #sed -i "s/repo.mooOS.pdq/mooos.org\/repos/g" /mnt/etc/pacman.conf
+                sed -i "s,Server = file:///var/cache/moo,#Server = file:///var/cache/moo,g" /mnt/etc/pacman.conf
+                sed -i "s,#Server = http://mooos.org/repos/moo,Server = http://mooos.org/repos/moo,g" /mnt/etc/pacman.conf
+
                 sed -i "s/#CheckSpace/CheckSpace/g" /mnt/etc/pacman.conf
 
                 ## root stuffs
