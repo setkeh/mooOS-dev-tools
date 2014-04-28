@@ -217,9 +217,12 @@ create_custom_packages() {
 		fi
 
 		## install custom mooOS wallpapers
-		#delete_custom_package_caches "moo-wallpapers"
-		#repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
-		
+		$DIALOG --clear --backtitle "$upper_title" --title "mooOS-wallpapers" --yesno "Rebrand mooOS-wallpapers" 10 30
+		if [ $? = 0 ] ; then
+			delete_custom_package_caches "moo-wallpapers"
+			repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://repo.mooos.pdq/mooOS-wallpapers.tar.gz" "any"
+		fi
+
 		## vimb web browser and tabbed, patched!
 		# $DIALOG --clear --backtitle "$upper_title" --title "vb-pdq" --yesno "Rebrand vb-pdq" 10 30
 		# if [ $? = 0 ] ; then
