@@ -86,7 +86,6 @@ gimp
 git
 gkrellm
 glances
-glmark2
 gnome-control-center-ubuntu
 gnome-icon-theme
 gnome-icon-theme-extras
@@ -99,7 +98,6 @@ gnome-settings-daemon-ubuntu
 gnuplot
 go-fuse
 go-sqlite3
-google-webdesigner
 gource
 gpac
 gparted
