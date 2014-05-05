@@ -20,7 +20,6 @@ awesome
 bamf
 baobab
 bison
-bitcoin-qt
 bitlbee-libre-nonprism
 cairo-ubuntu
 canto-curses
@@ -54,6 +53,7 @@ dvd+rw-tools
 efl-git
 efx-git
 eggdrop
+electrum
 elementary-git
 elementary-icon-theme
 emotion_generic_players-git
@@ -96,6 +96,7 @@ gnome-session-properties
 gnome-session-ubuntu
 gnome-settings-daemon-ubuntu
 gnuplot
+go
 go-fuse
 go-sqlite3
 gource
@@ -263,7 +264,7 @@ pbget
 perl-lwp-protocol-https
 perl-umph-prompt
 pgl
-phonon-vlc
+phonon-qt4-vlc
 pkg-config
 pkgcacheclean
 pkgfile
