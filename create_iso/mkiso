@@ -1045,13 +1045,13 @@ build_moo() {
 			if [ $? = 0 ] ; then
 				umount_work_env $moo
 
-				$DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Do you wish to copy $moo pkgs to iso?" 10 30
-				if [ $? = 0 ] ; then
-			        ## copy packages to iso
-			        rm -rf ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/*
-					cp -r ${REPO_BASE_DIR}/$moo/ ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/$moo
-					## end
-				fi
+				# $DIALOG --clear --backtitle "$upper_title" --title "mooOS" --yesno "Do you wish to copy $moo pkgs to iso?" 10 30
+				# if [ $? = 0 ] ; then
+			 #        ## copy packages to iso
+			 #        rm -rf ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/*
+				# 	cp -r ${REPO_BASE_DIR}/$moo/ ${ARCHLIVE}archlive/releng/root-image/var/cache/moo/$moo
+				# 	## end
+				# fi
 
 				sudo ${MOO_TOOLS_PATH}create_iso/build.sh -v -a "$moo" -o "$ISO_DIR" -w "$WORK_DIR" -N "$ISO_NAME" -V "$ISO_VERSION" -L "$ISO_LABEL" 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Building $moo iso" --programbox 20 70
 			fi
