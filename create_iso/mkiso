@@ -192,11 +192,11 @@ create_custom_packages() {
 		fi
 
 		## moo-octopi
-		$DIALOG --clear --backtitle "$upper_title" --title "moo-octopi" --yesno "Rebrand moo-octopi" 10 30
-		if [ $? = 0 ] ; then
-			delete_custom_package_caches "octopi"
-			repackage_this "octopi" "https://raw.github.com/idk/moo-octopi/master/PKGBUILD https://raw.github.com/idk/moo-octopi/master/moo-octopi.install" "any" i
-		fi
+		# $DIALOG --clear --backtitle "$upper_title" --title "moo-octopi" --yesno "Rebrand moo-octopi" 10 30
+		# if [ $? = 0 ] ; then
+		# 	delete_custom_package_caches "octopi"
+		# 	repackage_this "octopi" "https://raw.github.com/idk/moo-octopi/master/PKGBUILD https://raw.github.com/idk/moo-octopi/master/moo-octopi.install" "any" i
+		# fi
 
 		## moo-aarchup
 		#delete_custom_package_caches "moo-aarchup"
@@ -231,7 +231,7 @@ create_custom_packages() {
 		# fi
 	fi
 
-	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages? (filesystem/grub/lsb-release/syslinux/hardinfo)" 10 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages? (filesystem/grub/lsb-release/syslinux/hardinfo/xorg-xinit)" 10 30
 	if [ $? = 0 ] ; then
 		## sync ABS
 		sudo abs 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating ABS" --progressbox 20 70
