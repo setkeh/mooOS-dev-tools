@@ -589,103 +589,7 @@ create_build_env() {
 		#mv /etc/php/php.ini /etc/php/php.ini.bak
 		#sudo cp ${dev_directory}etc/php.ini /etc/php/php.ini
 
-		## copy over pentadactyl files
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
-		sudo cp -r ${MOO_HOME}.pentadactyl/colors/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/colors
-		sudo cp -r ${MOO_HOME}.pentadactyl/plugins/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactyl/plugins
-		
-		## copy over rss reader files
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng
-		sudo cp ${MOO_HOME}.canto-ng/conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.canto-ng/conf
-		
-		## copy over firefox files
-		sudo rm -rf ${MOO_HOME}info/firefox/qrtww0pl.Default-User
-		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User ${MOO_HOME}info/firefox/
-		sudo rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User
-		sudo cp -r ${MOO_HOME}info/firefox/qrtww0pl.Default-User ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/
-		
-		## copy over ~/.local files
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications
-		sudo cp ${MOO_HOME}.local/applications/defaults.list ${ARCHLIVE}archlive/releng/root-image/etc/skel/.local/applications/defaults.list
-
-		## copy over ~/.* (dotfiles)
-		sudo cp ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
-		#sudo cp ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
-		sudo cp ${MOO_HOME}.zshrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.zshrc
-		sudo cp ${MOO_HOME}.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
-		sudo cp ${MOO_HOME}.nanorc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.nanorc
-		sudo cp ${MOO_HOME}.pentadactylrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.pentadactylrc
-		sudo cp ${MOO_HOME}.dialogrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.dialogrc
-		sudo cp ${MOO_HOME}.wgetrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.wgetrc
-		sudo cp ${MOO_HOME}.curlrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.curlrc
-		
-		## copy over ~/.themes
-		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
-		#sudo cp -r ${MOO_HOME}.themes/Black/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.themes/Black
-		
-		## copy over ~/.fonts
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
-		sudo cp -r ${MOO_HOME}.fonts/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.fonts
-		
-		## copy over kde files
-		sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
-		sudo cp -r ${MOO_HOME}.kde4/share/apps/color-schemes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/color-schemes
-		#sudo cp ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
-		#sudo cp ${MOO_TOOLS_PATH}misc/kdenliverc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kdenliverc
-		sudo cp ${MOO_TOOLS_PATH}misc/..directory ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
-		sudo cp ${MOO_HOME}.kde4/share/config/startupconfig ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/startupconfig
-		sudo cp ${MOO_HOME}.kde4/share/config/konsolerc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/konsolerc
-		sudo cp ${MOO_HOME}.kde4/share/config/kservicemenurc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kservicemenurc
-		sudo cp -r ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/kde4/services/ServiceMenus
-		sudo cp -r ${MOO_HOME}.kde4/share/apps/konsole/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/konsole
-		sudo cp ${MOO_HOME}.kde4/share/config/dolphinrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
-		sudo cp ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/apps/dolphin/dolphinui.rc
-		sudo cp ${MOO_HOME}.kde4/share/config/gtkrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc
-		sudo cp ${MOO_HOME}.kde4/share/config/kcmdisplayrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/kcmdisplayrc
-		sudo cp ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/gtkrc-2.0
-		
-		## copy over ~/.gnupg
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg
-		sudo cp ${MOO_HOME}.gnupg/gpg-agent.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg-agent.conf
-		sudo cp ${MOO_HOME}.gnupg/gpg.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gnupg/gpg.conf
-
-		## copy over transmission file
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon
-		sudo cp ${MOO_TOOLS_PATH}misc/settings.json ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
-		
-		## copy over key-mon config
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon
-		sudo cp ${MOO_HOME}.config/key-mon/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/key-mon/config
-		
-		## copy lxtask config
-		sudo cp ${MOO_HOME}.config/lxtask.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/lxtask.conf
-
-		## copy Trolltech config
-		sudo cp ${MOO_HOME}.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/Trolltech.conf
-		
-		## copy pavucontrol config
-		#sudo cp ${MOO_HOME}.config/pavucontrol.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/pavucontrol.ini
-		
-		## copy over mosudo cp file
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc
-		sudo cp ${MOO_HOME}.moc/config ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
-		
-		## copy htop file
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop
-		sudo cp ${MOO_HOME}.config/htop/htoprc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/htop/htoprc
-		
-		## copy sublime text 3 files
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
-		sudo cp -r ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
-		sudo cp ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
-		## as above but root
+			## as above but root
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/User
 		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/Theme\ -\ Nil
 		sudo cp -r ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${ARCHLIVE}archlive/releng/root-image/root/.config/sublime-text-3/Packages/Theme\ -\ Nil/
@@ -728,71 +632,174 @@ create_build_env() {
 		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/256x256/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/256x256/apps/sublime-text.png
 		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/32x32/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/32x32/apps/sublime-text.png
 		sudo cp ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/oxygen/48x48/apps/sublime-text.png ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/48x48/apps/sublime-text.png
+
+		## create moo-skel (/etc/skel/)
+		## copy over pentadactyl files
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.pentadactyl/colors
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.pentadactyl/plugins
+		cp -r ${MOO_HOME}.pentadactyl/colors/* ${MOO_HOME}github/moo-skel/skel/.pentadactyl/colors
+		cp -r ${MOO_HOME}.pentadactyl/plugins/* ${MOO_HOME}github/moo-skel/skel/.pentadactyl/plugins
+		
+		## copy over rss reader files
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.canto-ng
+		cp ${MOO_HOME}.canto-ng/conf ${MOO_HOME}github/moo-skel/skel/.canto-ng/conf
+		
+		#TODO
+		## copy over firefox files
+		#rm -rf ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User
+		#cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/
+		
+		## copy over ~/.local files
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.local/applications
+		cp ${MOO_HOME}.local/applications/defaults.list ${MOO_HOME}github/moo-skel/skel/.local/applications/defaults.list
+
+		## copy over ~/.* (dotfiles)
+		cp ${MOO_HOME}.Xdefaults ${MOO_HOME}github/moo-skel/skel/.Xdefaults
+		#cp ${MOO_HOME}.xinitrc ${MOO_HOME}github/moo-skel/skel/.xinitrc
+		cp ${MOO_HOME}.zshrc ${MOO_HOME}github/moo-skel/skel/.zshrc
+		cp ${MOO_HOME}.gtkrc-2.0 ${MOO_HOME}github/moo-skel/skel/.gtkrc-2.0
+		cp ${MOO_HOME}.nanorc ${MOO_HOME}github/moo-skel/skel/.nanorc
+		cp ${MOO_HOME}.pentadactylrc ${MOO_HOME}github/moo-skel/skel/.pentadactylrc
+		cp ${MOO_HOME}.dialogrc ${MOO_HOME}github/moo-skel/skel/.dialogrc
+		cp ${MOO_HOME}.wgetrc ${MOO_HOME}github/moo-skel/skel/.wgetrc
+		cp ${MOO_HOME}.curlrc ${MOO_HOME}github/moo-skel/skel/.curlrc
+		
+		## copy over ~/.themes
+		#mkdir -p ${MOO_HOME}github/moo-skel/skel/.themes/Black
+		#cp -r ${MOO_HOME}.themes/Black/* ${MOO_HOME}github/moo-skel/skel/.themes/Black
+		
+		## copy over ~/.fonts
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.fonts
+		cp -r ${MOO_HOME}.fonts/* ${MOO_HOME}github/moo-skel/skel/.fonts
+		
+		## copy over kde files
+		mkdir -p  ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/color-schemes
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/kdenlive
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/dolphin/view_properties/global
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.kde4/share/config
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.kde4/share/kde4/services/ServiceMenus
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/konsole
+		cp -r ${MOO_HOME}.kde4/share/apps/color-schemes/* ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/color-schemes
+		#cp ${MOO_HOME}.kde4/share/apps/kdenlive/kdenliveui.rc ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/kdenlive/kdenliveui.rc
+		#cp ${MOO_TOOLS_PATH}misc/kdenliverc ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/kdenliverc
+		cp ${MOO_TOOLS_PATH}misc/..directory ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/dolphin/view_properties/global/.directory
+		cp ${MOO_HOME}.kde4/share/config/startupconfig ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/startupconfig
+		cp ${MOO_HOME}.kde4/share/config/konsolerc ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/konsolerc
+		cp ${MOO_HOME}.kde4/share/config/kservicemenurc ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/kservicemenurc
+		cp -r ${MOO_HOME}.kde4/share/kde4/services/ServiceMenus/* ${MOO_HOME}github/moo-skel/skel/.kde4/share/kde4/services/ServiceMenus
+		cp -r ${MOO_HOME}.kde4/share/apps/konsole/* ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/konsole
+		cp ${MOO_HOME}.kde4/share/config/dolphinrc ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/dolphinrc
+		cp ${MOO_HOME}.kde4/share/apps/dolphin/dolphinui.rc ${MOO_HOME}github/moo-skel/skel/.kde4/share/apps/dolphin/dolphinui.rc
+		cp ${MOO_HOME}.kde4/share/config/gtkrc ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/gtkrc
+		cp ${MOO_HOME}.kde4/share/config/kcmdisplayrc ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/kcmdisplayrc
+		cp ${MOO_HOME}.kde4/share/config/gtkrc-2.0 ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/gtkrc-2.0
+		
+		## copy over ~/.gnupg
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.gnupg
+		cp ${MOO_HOME}.gnupg/gpg-agent.conf ${MOO_HOME}github/moo-skel/skel/.gnupg/gpg-agent.conf
+		cp ${MOO_HOME}.gnupg/gpg.conf ${MOO_HOME}github/moo-skel/skel/.gnupg/gpg.conf
+
+		## copy over transmission file
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/transmission-daemon
+		cp ${MOO_TOOLS_PATH}misc/settings.json ${MOO_HOME}github/moo-skel/skel/.config/transmission-daemon/settings.json
+		
+		## copy over key-mon config
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/key-mon
+		cp ${MOO_HOME}.config/key-mon/config ${MOO_HOME}github/moo-skel/skel/.config/key-mon/config
+		
+		## copy lxtask config
+		cp ${MOO_HOME}.config/lxtask.conf ${MOO_HOME}github/moo-skel/skel/.config/lxtask.conf
+
+		## copy Trolltech config
+		cp ${MOO_HOME}.config/Trolltech.conf ${MOO_HOME}github/moo-skel/skel/.config/Trolltech.conf
+		
+		## copy pavucontrol config
+		#cp ${MOO_HOME}.config/pavucontrol.ini ${MOO_HOME}github/moo-skel/skel/.config/pavucontrol.ini
+		
+		## copy over mocp file
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.moc
+		cp ${MOO_HOME}.moc/config ${MOO_HOME}github/moo-skel/skel/.moc/config
+		
+		## copy htop file
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/htop
+		cp ${MOO_HOME}.config/htop/htoprc ${MOO_HOME}github/moo-skel/skel/.config/htop/htoprc
+		
+		## copy sublime text 3 files
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/sublime-text-3/Packages/User
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil
+		cp -r ${MOO_HOME}.config/sublime-text-3/Packages/Theme\ -\ Nil/* ${MOO_HOME}github/moo-skel/skel/.config/sublime-text-3/Packages/Theme\ -\ Nil/
+		cp ${MOO_HOME}.config/sublime-text-3/Packages/User/Preferences.sublime-settings ${MOO_HOME}github/moo-skel/skel/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
 		
 		## copy vlc files
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc
-		sudo cp ${MOO_TOOLS_PATH}misc/vlc-qt-interface.conf ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlc-qt-interface.conf
-		sudo cp ${MOO_HOME}.config/vlc/vlcrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/vlc/vlcrc
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/vlc
+		cp ${MOO_TOOLS_PATH}misc/vlc-qt-interface.conf ${MOO_HOME}github/moo-skel/skel/.config/vlc/vlc-qt-interface.conf
+		cp ${MOO_HOME}.config/vlc/vlcrc ${MOO_HOME}github/moo-skel/skel/.config/vlc/vlcrc
 		
 		## copy over window manager files
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
-		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
-		#sudo rm -r ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
-		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images
-		sudo cp -r ${MOO_HOME}.e/e/applications/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/applications
-		#sudo cp -r ${MOO_HOME}.e/e/backgrounds/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/backgrounds
-		sudo cp -r ${MOO_HOME}.e/e/config/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config
-		#sudo cp -r ${MOO_HOME}.e/e/themes/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/themes
-		#sudo cp ${MOO_HOME}.e/e/images/tw_cache_images.eet ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/images/tw_cache_images.eet
-		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.everything.cache.*
-		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/exehist.*
-		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/evry_exebuf_cache.*
-		sudo rm ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard/module.forecasts.*
-		#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
-		#sudo cp -r /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.e/e/applications
+		#mkdir -p ${MOO_HOME}github/moo-skel/skel/.e/e/backgrounds
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.e/e/config
+		#rm -r ${MOO_HOME}github/moo-skel/skel/.e/e/themes
+		#mkdir -p ${MOO_HOME}github/moo-skel/skel/.e/e/images
+		cp -r ${MOO_HOME}.e/e/applications/* ${MOO_HOME}github/moo-skel/skel/.e/e/applications
+		#cp -r ${MOO_HOME}.e/e/backgrounds/* ${MOO_HOME}github/moo-skel/skel/.e/e/backgrounds
+		cp -r ${MOO_HOME}.e/e/config/* ${MOO_HOME}github/moo-skel/skel/.e/e/config
+		#cp -r ${MOO_HOME}.e/e/themes/* ${MOO_HOME}github/moo-skel/skel/.e/e/themes
+		#cp ${MOO_HOME}.e/e/images/tw_cache_images.eet ${MOO_HOME}github/moo-skel/skel/.e/e/images/tw_cache_images.eet
+		rm ${MOO_HOME}github/moo-skel/skel/.e/e/config/standard/module.everything.cache.*
+		rm ${MOO_HOME}github/moo-skel/skel/.e/e/config/standard/exehist.*
+		rm ${MOO_HOME}github/moo-skel/skel/.e/e/config/standard/evry_exebuf_cache.*
+		rm ${MOO_HOME}github/moo-skel/skel/.e/e/config/standard/module.forecasts.*
+		#mkdir -p ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
+		#cp -r /usr/share/enlightenment/data/themes/* ${ARCHLIVE}archlive/releng/root-image/usr/share/enlightenment/data/themes
 
 		## patch config files for username
-		cd ${ARCHLIVE}archlive/releng/root-image/etc/skel/.e/e/config/standard
+		cd ${MOO_HOME}github/moo-skel/skel/.e/e/config/standard
 		for NEW_FILE in e.*
 		do
 			EWW_FILE=${NEW_FILE/.cfg/.src}
-			sudo eet -d $NEW_FILE config $EWW_FILE
-			sudo sed -i "s/$MOO_USER/moo/g" $EWW_FILE
-			sudo rm $NEW_FILE
-			sudo eet -e $NEW_FILE config $EWW_FILE 1
-			sudo rm $EWW_FILE
+			eet -d $NEW_FILE config $EWW_FILE
+			sed -i "s/$MOO_USER/moo/g" $EWW_FILE
+			rm $NEW_FILE
+			eet -e $NEW_FILE config $EWW_FILE 1
+			rm $EWW_FILE
 		done
 		cd "$PWD"
 
 		## autostart/gnome
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/autostart
-		sudo cp -r ${MOO_HOME}.config/autostart/*.desktop ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/autostart/
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/autostart
+		cp -r ${MOO_HOME}.config/autostart/*.desktop ${MOO_HOME}github/moo-skel/skel/.config/autostart/
 	
 		## compiz/unity
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/dconf
-		sudo cp -r ${MOO_HOME}.config/dconf/user ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/dconf/user
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/dconf
+		cp -r ${MOO_HOME}.config/dconf/user ${MOO_HOME}github/moo-skel/skel/.config/dconf/user
 	
 		## gtk3
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/gtk-3.0
-		sudo cp -r ${MOO_HOME}.config/gtk-3.0/settings.ini ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/gtk-3.0/settings.ini
-		sudo cp -r ${MOO_HOME}.config/gtk-3.0/gtk.css ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/gtk-3.0/gtk.css
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/gtk-3.0
+		cp -r ${MOO_HOME}.config/gtk-3.0/settings.ini ${MOO_HOME}github/moo-skel/skel/.config/gtk-3.0/settings.ini
+		cp -r ${MOO_HOME}.config/gtk-3.0/gtk.css ${MOO_HOME}github/moo-skel/skel/.config/gtk-3.0/gtk.css
 
 		## nitrogen
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/nitrogen
-		sudo cp -r ${MOO_HOME}.config/nitrogen/* ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/nitrogen/
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/nitrogen
+		cp -r ${MOO_HOME}.config/nitrogen/* ${MOO_HOME}github/moo-skel/skel/.config/nitrogen/
 
 		## terminology
-		sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard
-		sudo cp -r ${MOO_HOME}.config/terminology/config/standard/base.cfg ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/base.cfg
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/terminology/config/standard
+		cp -r ${MOO_HOME}.config/terminology/config/standard/base.cfg ${MOO_HOME}github/moo-skel/skel/.config/terminology/config/standard/base.cfg
 		## patch config files for username
-		cd  ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/terminology/config/standard/
-		sudo eet -d base.cfg config base.src
-		sudo sed -i "s/$MOO_USER/moo/g" base.src
-		sudo rm base.cfg
-		sudo eet -e base.cfg config base.src 1
-		sudo rm base.src
+		cd  ${MOO_HOME}github/moo-skel/skel/.config/terminology/config/standard/
+		eet -d base.cfg config base.src
+		sed -i "s/$MOO_USER/moo/g" base.src
+		rm base.cfg
+		eet -e base.cfg config base.src 1
+		rm base.src
+
+		cd ${MOO_HOME}github/moo-skel
+		git add .
+		git commit -m "latest build pushed"
+		git push origin master
 		cd "$PWD"
+
 
 		## root stuff
 		## copy over kde files
@@ -818,49 +825,50 @@ create_build_env() {
 		sudo cp /root/.config/Trolltech.conf ${ARCHLIVE}archlive/releng/root-image/root/.config/Trolltech.conf
 
 		## copy moonity branding
-		#sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/backgrounds
-		#sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/unity/icons
-		#sudo mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter
-		#sudo cp /usr/share/moo-tools/images/launcher_bfb.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity/icons/launcher_bfb.png
-		#sudo cp /usr/share/moo-tools/images/ubuntu_badge.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/ubuntu_badge.png
-		#sudo cp /usr/share/moo-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/cof.png
-		#sudo cp /usr/share/moo-wallpapers/wallpaper48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/backgrounds/warty-final-ubuntu.png
+		#mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/backgrounds
+		#mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/unity/icons
+		#mkdir -p  ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter
+		#cp /usr/share/moo-tools/images/launcher_bfb.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity/icons/launcher_bfb.png
+		#cp /usr/share/moo-tools/images/ubuntu_badge.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/ubuntu_badge.png
+		#cp /usr/share/moo-tools/images/mooOS-48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/cof.png
+		#cp /usr/share/moo-wallpapers/wallpaper48.png ${ARCHLIVE}archlive/releng/root-image/usr/share/backgrounds/warty-final-ubuntu.png
 
-		#sudo cp /usr/share/moo-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/logo.png
+		#cp /usr/share/moo-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/logo.png
 
 		## clean up files content
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.config/transmission-daemon/settings.json
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.moc/config
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.kde4/share/config/dolphinrc
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/psd.conf
-		sudo sed -i "s/$MOO_USER/moo/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
-		sudo sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
-		sudo sed -i "s/xOffset: 2123/xOffset: 123/g" ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.config/transmission-daemon/settings.json
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.moc/config
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/dolphinrc
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/psd.conf
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.gtkrc-2.0
+		sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
+		sed -i "s/xOffset: 2123/xOffset: 123/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
+		
 		sudo cp /usr/share/icons/Numix/index.theme ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
-		#sudo sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
+		#sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
 
 		## copy over hosts file (needed for LAN repos) TODO
-		#sudo cp /etc/hosts ${ARCHLIVE}archlive/releng/root-image/etc/hosts
+		#cp /etc/hosts ${MOO_HOME}github/moo-skel/hosts
 
 		## cleanup Github local repos
-		sudo rm -rf ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
+		rm -rf ${MOO_HOME}github/moo-skel/skel/Github
 		## mooOS stuffs
-	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop
-	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads
-	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos
-	 	#sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Dropbox
-	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github
-	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music
-	 	sudo mkdir -p ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Desktop
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Downloads
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Videos
+	 	#mkdir -p ${MOO_HOME}github/moo-skel/skel/Dropbox
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Github
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Music
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Pictures
 
 	 	## copy home files and create default directories
-	 	sudo cp ${MOO_TOOLS_PATH}misc/Desktop.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Desktop/
-	 	sudo cp ${MOO_TOOLS_PATH}misc/Downloads.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Downloads/
-	 	sudo cp ${MOO_HOME}Videos/Videos.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Videos/
-	 	sudo cp ${MOO_HOME}github/Github.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Github/
-	 	sudo cp ${MOO_TOOLS_PATH}misc/Music.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Music/
-	 	sudo cp ${MOO_TOOLS_PATH}misc/Pictures.* ${ARCHLIVE}archlive/releng/root-image/etc/skel/Pictures/
+	 	cp ${MOO_TOOLS_PATH}misc/Desktop.* ${MOO_HOME}github/moo-skel/skel/Desktop/
+	 	cp ${MOO_TOOLS_PATH}misc/Downloads.* ${MOO_HOME}github/moo-skel/skel/Downloads/
+	 	cp ${MOO_HOME}Videos/Videos.* ${MOO_HOME}github/moo-skel/skel/Videos/
+	 	cp ${MOO_HOME}github/Github.* ${MOO_HOME}github/moo-skel/skel/Github/
+	 	cp ${MOO_TOOLS_PATH}misc/Music.* ${MOO_HOME}github/moo-skel/skel/Music/
+	 	cp ${MOO_TOOLS_PATH}misc/Pictures.* ${MOO_HOME}github/moo-skel/skel/Pictures/
 
 
 		## deprecated method
