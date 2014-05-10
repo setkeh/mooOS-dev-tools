@@ -317,6 +317,21 @@ create_custom_packages() {
 			cd "$PWD"
 		fi
 
+		## xorg-xinit
+		$DIALOG --clear --backtitle "$upper_title" --title "xorg-xinit" --yesno "custom xorg-xinit" 10 30
+		if [ $? = 0 ] ; then
+			delete_custom_package_caches "xorg-xinit"
+			cp -r /var/abs/extra/xorg-xinit/ ${MOO_HOME}abs
+			cp ${MOO_HOME}github/mooOS-dev-tools/xorg-xinit/xinitrc ${MOO_HOME}abs/xorg-xinit/xinitrc
+			sed -i "s/X.Org initialisation program /X.Org initialisation program (patched for mooOS) /g" ${MOO_HOME}abs/xorg-xinit/PKGBUILD
+			sed -i "s/38a23848b49de8a5c635a128a8b32a6cd0a08a9ee153ad97cb25abd82cfda1bc/SKIP/g" ${MOO_HOME}abs/xorg-xinit/PKGBUILD
+			cd ${MOO_HOME}abs/xorg-xinit
+			makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating xorg-xinit" --progressbox 20 70
+			#TODO
+			schroot -p -- makepkg -sf 2>&1 | $DIALOG --clear --backtitle "$upper_title" --title "Updating xorg-xinit" --progressbox 20 70
+			cd "$PWD"
+		fi
+
 		notify-send "Rebranded packages" -i "$MOO_ICON"
 	fi
 }
@@ -596,7 +611,7 @@ create_build_env() {
 
 		## copy over ~/.* (dotfiles)
 		sudo cp ${MOO_HOME}.Xdefaults ${ARCHLIVE}archlive/releng/root-image/etc/skel/.Xdefaults
-		sudo cp ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
+		#sudo cp ${MOO_HOME}.xinitrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.xinitrc
 		sudo cp ${MOO_HOME}.zshrc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.zshrc
 		sudo cp ${MOO_HOME}.gtkrc-2.0 ${ARCHLIVE}archlive/releng/root-image/etc/skel/.gtkrc-2.0
 		sudo cp ${MOO_HOME}.nanorc ${ARCHLIVE}archlive/releng/root-image/etc/skel/.nanorc
