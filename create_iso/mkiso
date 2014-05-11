@@ -191,7 +191,7 @@ update_moohub() {
 		cp ${MOO_HOME}.pentadactylrc ${MOO_HOME}github/moo-skel/skel/.pentadactylrc
 		cp ${MOO_HOME}.dialogrc ${MOO_HOME}github/moo-skel/skel/.dialogrc
 		cp ${MOO_HOME}.wgetrc ${MOO_HOME}github/moo-skel/skel/.wgetrc
-		cp ${MOO_HOME}.curlrc ${MOO_HOME}github/moo-skel/skel/.curlrc
+		#cp ${MOO_HOME}.curlrc ${MOO_HOME}github/moo-skel/skel/.curlrc
 		
 		## copy over ~/.themes
 		#mkdir -p ${MOO_HOME}github/moo-skel/skel/.themes/Black
@@ -332,8 +332,6 @@ update_moohub() {
 		sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
 		sed -i "s/xOffset: 2123/xOffset: 123/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
 
-		## cleanup Github local repos
-		rm -rf ${MOO_HOME}github/moo-skel/skel/Github
 		## mooOS stuffs
 	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Desktop
 	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Downloads
@@ -342,14 +340,6 @@ update_moohub() {
 	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Github
 	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Music
 	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Pictures
-
-	 	## copy home files and create default directories
-	 	cp ${MOO_TOOLS_PATH}misc/Desktop.* ${MOO_HOME}github/moo-skel/skel/Desktop/
-	 	cp ${MOO_TOOLS_PATH}misc/Downloads.* ${MOO_HOME}github/moo-skel/skel/Downloads/
-	 	cp ${MOO_HOME}Videos/Videos.* ${MOO_HOME}github/moo-skel/skel/Videos/
-	 	cp ${MOO_HOME}github/Github.* ${MOO_HOME}github/moo-skel/skel/Github/
-	 	cp ${MOO_TOOLS_PATH}misc/Music.* ${MOO_HOME}github/moo-skel/skel/Music/
-	 	cp ${MOO_TOOLS_PATH}misc/Pictures.* ${MOO_HOME}github/moo-skel/skel/Pictures/
 
 		cd "$PWD"
 		## end skel
