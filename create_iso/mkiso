@@ -332,6 +332,25 @@ update_moohub() {
 		sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
 		sed -i "s/xOffset: 2123/xOffset: 123/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
 
+		## cleanup Github local repos
+		rm -rf ${MOO_HOME}github/moo-skel/skel/Github
+		## mooOS stuffs
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Desktop
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Downloads
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Videos
+	 	#mkdir -p ${MOO_HOME}github/moo-skel/skel/Dropbox
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Github
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Music
+	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Pictures
+
+	 	## copy home files and create default directories
+	 	cp ${MOO_TOOLS_PATH}misc/Desktop.* ${MOO_HOME}github/moo-skel/skel/Desktop/
+	 	cp ${MOO_TOOLS_PATH}misc/Downloads.* ${MOO_HOME}github/moo-skel/skel/Downloads/
+	 	cp ${MOO_HOME}Videos/Videos.* ${MOO_HOME}github/moo-skel/skel/Videos/
+	 	cp ${MOO_HOME}github/Github.* ${MOO_HOME}github/moo-skel/skel/Github/
+	 	cp ${MOO_TOOLS_PATH}misc/Music.* ${MOO_HOME}github/moo-skel/skel/Music/
+	 	cp ${MOO_TOOLS_PATH}misc/Pictures.* ${MOO_HOME}github/moo-skel/skel/Pictures/
+
 		cd "$PWD"
 		## end skel
 		sudo sh -c "pacman -Qqe  | grep -vx \"$(pacman -Qqg base)\" | grep -vx \"$(cat ${MOO_TOOLS_PATH}exclude_pkgs)\" > ${MOO_TOOLS_PATH}packages.both"
@@ -362,7 +381,7 @@ repackage_this() {
 }
 
 create_custom_packages() {
-	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngeeh" 20 30
+	$DIALOG --clear --backtitle "$upper_title" --title "Rebrand packages" --yesno "Rebrand packages?\n\nmoo-tools\nmoo-scripts\nmoo-zsh\nmoo-wallpapers\ngeeh\nmoo-skel" 20 30
 	if [ $? = 0 ] ; then
 		## moo-scripts
 		$DIALOG --clear --backtitle "$upper_title" --title "moo-scripts" --yesno "Rebrand moo-scripts" 10 30
@@ -408,6 +427,13 @@ create_custom_packages() {
 		if [ $? = 0 ] ; then
 			delete_custom_package_caches "moo-wallpapers"
 			repackage_this "moo-wallpapers" "https://raw.github.com/idk/mooOS-wallpapers/master/PKGBUILD https://raw.github.com/idk/mooOS-wallpapers/master/moo-wallpapers.install http://mooos.org/mooOS-utils/moo-wallpapers.tar.gz" "any"
+		fi
+
+		## moo-skel
+		$DIALOG --clear --backtitle "$upper_title" --title "moo-skel" --yesno "Rebrand moo-skel" 10 30
+		if [ $? = 0 ] ; then
+			delete_custom_package_caches "moo-skel"
+			repackage_this "moo-skel" "https://raw.github.com/idk/moo-skel/master/PKGBUILD" "any" i
 		fi
 
 		## vimb web browser and tabbed, patched!
@@ -859,26 +885,6 @@ create_build_env() {
 
 		## copy over hosts file (needed for LAN repos) TODO
 		#cp /etc/hosts ${MOO_HOME}github/moo-skel/hosts
-
-		## cleanup Github local repos
-		rm -rf ${MOO_HOME}github/moo-skel/skel/Github
-		## mooOS stuffs
-	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Desktop
-	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Downloads
-	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Videos
-	 	#mkdir -p ${MOO_HOME}github/moo-skel/skel/Dropbox
-	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Github
-	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Music
-	 	mkdir -p ${MOO_HOME}github/moo-skel/skel/Pictures
-
-	 	## copy home files and create default directories
-	 	cp ${MOO_TOOLS_PATH}misc/Desktop.* ${MOO_HOME}github/moo-skel/skel/Desktop/
-	 	cp ${MOO_TOOLS_PATH}misc/Downloads.* ${MOO_HOME}github/moo-skel/skel/Downloads/
-	 	cp ${MOO_HOME}Videos/Videos.* ${MOO_HOME}github/moo-skel/skel/Videos/
-	 	cp ${MOO_HOME}github/Github.* ${MOO_HOME}github/moo-skel/skel/Github/
-	 	cp ${MOO_TOOLS_PATH}misc/Music.* ${MOO_HOME}github/moo-skel/skel/Music/
-	 	cp ${MOO_TOOLS_PATH}misc/Pictures.* ${MOO_HOME}github/moo-skel/skel/Pictures/
-
 
 		## deprecated method
 		if [ -d "${ARCHLIVE}archlive/releng/work" ]; then

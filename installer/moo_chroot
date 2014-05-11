@@ -423,12 +423,12 @@ if [ $(id -u) -eq 0 ]; then
                     fi
 
                     ## clean up files content
-                    sed -i "s/moo/$puser/g" /etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
+                    #sed -i "s/moo/$puser/g" /etc/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
                     sed -i "s/moo/$puser/g" /etc/skel/.config/transmission-daemon/settings.json
                     sed -i "s/moo/$puser/g" /etc/skel/.moc/config
                     sed -i "s/moo/$puser/g" /etc/skel/.kde4/share/config/dolphinrc
                     sed -i "s/moo/$puser/g" /etc/psd.conf
-                    sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
+                    #sed -i "s/moo/$puser/g" /etc/skel/.gtkrc-2.0
 
                     ## add moo keys
                     #pacman-key -r E73F68F6 --keyserver hkp://subkeys.pgp.net
