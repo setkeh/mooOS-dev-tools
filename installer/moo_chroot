@@ -1155,8 +1155,9 @@ if [ $(id -u) -eq 0 ]; then
                     done
                     cd $PWD
 
-                    sed -i "s,Server = file:///var/cache/moo,#Server = file:///var/cache/moo,g" /etc/pacman.conf
-                    sed -i "s,#Server = http://mooos.org/repos/moo/,Server = http://mooos.org/repos/moo/,g" /etc/pacman.conf
+                    ## uncomment below to use local cached files rather then remote repo
+                    #sed -i "s,#Server = file:///var/cache/moo,Server = file:///var/cache/moo,g" /etc/pacman.conf
+                    #sed -i "s,Server = http://repos.mooos.org/moo/,Server = #http://repos.mooos.org/moo/,g" /etc/pacman.conf
 
                     ## clean up files content
                     su $puser -c "sed -i \"s/moo/$puser/g\" /home/$puser/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini"

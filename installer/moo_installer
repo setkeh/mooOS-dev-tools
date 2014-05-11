@@ -587,8 +587,8 @@ initial_install() {
                 $DIALOG --clear --backtitle "$upper_title" --title "Step C) initiated" --msgbox "This should not take long." 10 30
                 PWD=$(pwd)
 
-                rm -rf /mnt/etc/skel
-                cp -r /etc/skel /mnt/etc/
+                #rm -rf /mnt/etc/skel
+                #cp -r /etc/skel /mnt/etc/
 
                 cp /etc/$pacman_conf /mnt/etc/pacman.conf
                 #sed -i "s,Server = file:///var/cache/moo,#Server = file:///var/cache/moo,g" /mnt/etc/pacman.conf
@@ -715,9 +715,9 @@ initial_install() {
                 cp ${MOO_TOOLS_PATH}images/ubuntu_badge.png /mnt/usr/share/unity-greeter/ubuntu_badge.png
             
                 # create ~/Github and all repos
-                rm -rf /mnt/etc/skel/Github > /dev/null 2>&1
-                mkdir -p /mnt/etc/skel/Github
-                cp /etc/skel/Github/Github.* /mnt/etc/skel/Github/
+                #rm -rf /mnt/etc/skel/Github > /dev/null 2>&1
+                #mkdir -p /mnt/etc/skel/Github
+                #cp /etc/skel/Github/Github.* /mnt/etc/skel/Github/
 
                 if [ -f /mnt/usr/share/icons/oxygen/48x48/apps/mooOS.png ]; then
                     $DIALOG --clear --backtitle "$upper_title" --title "Step C) completed" --msgbox "Continue" 10 30
@@ -738,6 +738,19 @@ chroot_configuration() {
 
     is_mnt_is_device_is_freespace /mnt 0 ## 150 MiB
     if [ $? -eq 1 ]; then
+        ## pass along boot partition argument
+        pout=$(cat $TMP/pout)
+        if [ -f /mnt/usr/bin/moo_chroot ]; then
+            export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $pout"
+        else
+            $DIALOG --clear --backtitle "$upper_title" --title "mooOS warning" --msgbox "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!" 10 30
+            exit 0
+        fi
+
+        if [ -f /mnt/boot/grub/grub.cfg ]; then
+            sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
+        fi
+
         # fix missing icons in .desktop files
         if [ -f /mnt/etc/skel/.e/e/applications/menu/favorite.menu ]; then
             sed -i "/<Filename>moo_os_installer.desktop<\/Filename>/d" /mnt/etc/skel/.e/e/applications/menu/favorite.menu
@@ -804,19 +817,6 @@ chroot_configuration() {
         fi
         if [ -f /mnt/usr/share/applications/moo_os_installer.desktop ]; then
            rm /mnt/usr/share/applications/moo_os_installer.desktop
-        fi
-        
-        ## pass along boot partition argument
-        pout=$(cat $TMP/pout)
-        if [ -f /mnt/usr/bin/moo_chroot ]; then
-            export TERM=xterm-color && arch-chroot /mnt sh -c "moo_chroot $pout"
-        else
-            $DIALOG --clear --backtitle "$upper_title" --title "mooOS warning" --msgbox "Hmmm, moo_chroot is missing from /mnt/usr/bin/. What's up with that? Go yell at pdq!!!" 10 30
-            exit 0
-        fi
-
-        if [ -f /mnt/boot/grub/grub.cfg ]; then
-            sed -i "s/set timeout=5/insmod jpeg\nbackground_image -m stretch \/etc\/grub.d\/splash.jpg\nset timeout=7/g" /mnt/boot/grub/grub.cfg
         fi
     fi
     current_selection 8
