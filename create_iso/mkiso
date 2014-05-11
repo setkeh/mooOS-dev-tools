@@ -159,10 +159,24 @@ update_moohub() {
 		mkdir -p ${MOO_HOME}github/moo-skel/skel/.canto-ng
 		cp ${MOO_HOME}.canto-ng/conf ${MOO_HOME}github/moo-skel/skel/.canto-ng/conf
 		
-		#TODO
+		## copy over firefox directories
+		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/bookmarkbackups ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/
+		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/extensions ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/
+		cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/searchplugins ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/
 		## copy over firefox files
-		#rm -rf ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User
-		#cp -r ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/addons.js ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/addons.js
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/blocklist.xml ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/blocklist.xml
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/extensions.json ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.json
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/foxyproxy.xml ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/foxyproxy.xml
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/localstore-safe.rdf ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/localstore-safe.rdf
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/localstore.rdf ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/localstore.rdf
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/organize-search-engines.rdf ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/organize-search-engines.rdf
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/permissions.sqlite ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/permissions.sqlite
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/places.sqlite ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/places.sqlite
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/search-metadata.json ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/search-metadata.json
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/sessionCheckpoints.json ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/sessionCheckpoints.json
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/sessionstore.js ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/sessionstore.js
+		cp ${MOO_HOME}.mozilla/firefox/qrtww0pl.Default-User/stylish.sqlite ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/stylish.sqlite
 		
 		## copy over ~/.local files
 		mkdir -p ${MOO_HOME}github/moo-skel/skel/.local/applications
@@ -308,6 +322,16 @@ update_moohub() {
 		rm base.cfg
 		eet -e base.cfg config base.src 1
 		rm base.src
+
+		## clean up files content
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.config/transmission-daemon/settings.json
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.moc/config
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/dolphinrc
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/psd.conf
+		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.gtkrc-2.0
+		sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
+		sed -i "s/xOffset: 2123/xOffset: 123/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
+
 		cd "$PWD"
 		## end skel
 		sudo sh -c "pacman -Qqe  | grep -vx \"$(pacman -Qqg base)\" | grep -vx \"$(cat ${MOO_TOOLS_PATH}exclude_pkgs)\" > ${MOO_TOOLS_PATH}packages.both"
@@ -830,16 +854,6 @@ create_build_env() {
 
 		#cp /usr/share/moo-tools/images/mooOS-128.png ${ARCHLIVE}archlive/releng/root-image/usr/share/unity-greeter/logo.png
 
-		## clean up files content
-		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.mozilla/firefox/qrtww0pl.Default-User/extensions.ini
-		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.config/transmission-daemon/settings.json
-		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.moc/config
-		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.kde4/share/config/dolphinrc
-		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/psd.conf
-		sed -i "s/$MOO_USER/moo/g" ${MOO_HOME}github/moo-skel/skel/.gtkrc-2.0
-		sed -i "s/screenWidth: 1129/screenWidth: 729/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
-		sed -i "s/xOffset: 2123/xOffset: 123/g" ${MOO_HOME}github/moo-skel/skel/.Xdefaults
-		
 		sudo cp /usr/share/icons/Numix/index.theme ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
 		#sed -i "s/gnome,hicolor/Cheser,gnome,hicolor/g" ${ARCHLIVE}archlive/releng/root-image/usr/share/icons/Numix/index.theme
 
