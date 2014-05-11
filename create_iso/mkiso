@@ -186,6 +186,7 @@ update_moohub() {
 		cp ${MOO_HOME}.Xdefaults ${MOO_HOME}github/moo-skel/skel/.Xdefaults
 		#cp ${MOO_HOME}.xinitrc ${MOO_HOME}github/moo-skel/skel/.xinitrc
 		cp ${MOO_HOME}.zshrc ${MOO_HOME}github/moo-skel/skel/.zshrc
+		cp ${MOO_HOME}.zprofile ${MOO_HOME}github/moo-skel/skel/.zprofile
 		cp ${MOO_HOME}.gtkrc-2.0 ${MOO_HOME}github/moo-skel/skel/.gtkrc-2.0
 		cp ${MOO_HOME}.nanorc ${MOO_HOME}github/moo-skel/skel/.nanorc
 		cp ${MOO_HOME}.pentadactylrc ${MOO_HOME}github/moo-skel/skel/.pentadactylrc
