@@ -32,8 +32,8 @@ fi
 
 sed -i "s/#[moo]/[moo]/g" /etc/pacman.conf
 sed -i "s/[moo-testing]/#[moo-testing]/g" /etc/pacman.conf
-sed -i "s,Server = http://repos.mooos.org/moo-testing/$arch,#Server = http://repos.mooos.org/moo-testing/$arch,g" /etc/pacman.conf
-sed -i "s,#Server = http://repos.mooos.org/moo/$arch,Server = http://repos.mooos.org/moo/$arch,g" /etc/pacman.conf
+sed -i "s,Server = http://repos.mooos.org/moo-testing,#Server = http://repos.mooos.org/moo-testing,g" /etc/pacman.conf
+sed -i "s,#Server = http://repos.mooos.org/moo,Server = http://repos.mooos.org/moo,g" /etc/pacman.conf
 
 sed -i "s/CacheDir/#CacheDir/g" /etc/pacman.conf
 
