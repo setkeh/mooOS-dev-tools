@@ -296,7 +296,6 @@ python2-xynehttpserver
 python3-aur
 python3-threaded_servers
 python3-xynexdg
-qgifer
 qt4-ubuntu
 qtwebkit
 remindor-common
@@ -379,7 +378,6 @@ whois
 wpa_supplicant_gui
 x264
 xbindkeys
-xbmc
 xboxdrv
 xclip
 xcursor-shere-khan-x

@@ -424,7 +424,7 @@ create_custom_packages() {
 		$DIALOG --clear --backtitle "$upper_title" --title "moo-skel" --yesno "Rebrand moo-skel" 10 30
 		if [ $? = 0 ] ; then
 			delete_custom_package_caches "moo-skel"
-			repackage_this "moo-skel" "https://raw.github.com/idk/moo-skel/master/PKGBUILD" "any" i
+			repackage_this "moo-skel" "https://raw.github.com/idk/moo-skel/master/PKGBUILD" "any"
 		fi
 
 		## vimb web browser and tabbed, patched!
