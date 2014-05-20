@@ -322,6 +322,7 @@ strace
 sublime-text-dev
 sudo
 sxiv
+syncthing
 syslinux
 tcpdump
 tcplay
@@ -378,6 +379,7 @@ whois
 wpa_supplicant_gui
 x264
 xbindkeys
+xbmc
 xboxdrv
 xclip
 xcursor-shere-khan-x
