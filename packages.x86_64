@@ -10,9 +10,7 @@ lib32-expat
 lib32-flac
 lib32-fontconfig
 lib32-gdk-pixbuf2
-lib32-glib
 lib32-glib2
-lib32-gtk
 lib32-gtk2
 lib32-harfbuzz
 lib32-icu
