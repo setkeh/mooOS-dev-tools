@@ -145,7 +145,6 @@ indicator-sensors
 indicator-session
 indicator-sound
 iotop
-iptraf-ng
 jhead
 john
 johnny
@@ -364,6 +363,7 @@ upower
 upx
 urxvt-font-size-git
 urxvt-perls
+valgrind
 virtualbox-guest-modules
 virtualbox-guest-utils
 vlc
