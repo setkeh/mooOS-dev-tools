@@ -27,8 +27,8 @@ ISO_VERSION="$(date +%Y.%m.%d)-beta-0.$MOO_VERSION" ## change me!
 
 ## (you should change these paths)
 ABS_BASE_DIR="${MOO_HOME}abs/"
-ARCHLIVE=/media/truecrypt3/
-ISO_STORAGE="/mnt/linux-pdq/media/truecrypt1/Down" ## directroy where iso is cp to rsync from
+ARCHLIVE=/media/backup3/
+ISO_STORAGE="/mnt/linux-pdq/media/backup2/Down" ## directroy where iso is cp to rsync from
 
 ## change these
 REPO_BASE_DIR="/mnt/linux-pdq/media/truecrypt1/domains/mooOS"

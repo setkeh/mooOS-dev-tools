@@ -1,5 +1,5 @@
-MooOS installer
-=============
+mooOS installer
+===============
 
 Installer for mooOS using dialog.
 
@@ -11,7 +11,7 @@ Install with
     $ makepkg -sfi PKGBUILD
 
 example:
-    
+
      $ rm -r ~/abs/moo && mkdir -p ~/abs/moo && cd ~/abs/moo && wget https://raw.github.com/idk/mooOS-dev-tools/master/installer/moo-tools.install && wget https://raw.github.com/idk/mooOS-dev-tools/master/installer/PKGBUILD && makepkg -sfi
 
 Remove with
