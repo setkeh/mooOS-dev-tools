@@ -11,7 +11,7 @@ work_dir=work
 out_dir=out
 
 #script_path=$(readlink -f ${0%/*})
-script_path=/media/truecrypt3/archlive/releng
+script_path=/media/backup3/archlive/releng
 
 verbose=""
 pacman_conf=${script_path}/${work_dir}/pacman
