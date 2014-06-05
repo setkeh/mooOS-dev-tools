@@ -139,7 +139,6 @@ indicator-keyboard
 indicator-messages
 indicator-power
 indicator-printers
-indicator-sensors
 indicator-session
 indicator-sound
 iotop
