@@ -253,6 +253,10 @@ update_moohub() {
 		## copy htop file
 		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/htop
 		cp ${MOO_HOME}.config/htop/htoprc ${MOO_HOME}github/moo-skel/skel/.config/htop/htoprc
+
+		## copy psensor config
+		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/gconf/apps/psensor/interface
+		cp ${MOO_HOME}.config/gconf/apps/psensor/interface/%gconf.xml ${MOO_HOME}github/moo-skel/skel/.config/gconf/apps/psensor/interface/%gconf.xml
 		
 		## copy sublime text 3 files
 		mkdir -p ${MOO_HOME}github/moo-skel/skel/.config/sublime-text-3/Packages/User
