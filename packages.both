@@ -284,7 +284,6 @@ pyradio-git
 python
 python-feedparser
 python-gobject
-python-pyside
 python-shiboken
 python2-certifi
 python2-jsonschema
@@ -299,7 +298,6 @@ python3-xynexdg
 qt4-ubuntu
 qtwebkit
 remindor-common
-remindor-qt
 rkhunter
 roccat-dkms
 rp-pppoe-libre
