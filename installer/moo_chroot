@@ -709,6 +709,7 @@ if [ $(id -u) -eq 0 ]; then
                 systemctl enable multi-user.target > /dev/null 2>&1
                 # pacman-init.service
                 # choose-mirror.service
+                systemctl enable dnsmasq.service > /dev/null 2>&1
                 systemctl enable ntpd.service > /dev/null 2>&1
                 systemctl enable tor.service > /dev/null 2>&1
                 systemctl enable privoxy.service > /dev/null 2>&1
@@ -1154,6 +1155,10 @@ if [ $(id -u) -eq 0 ]; then
                         rm $EWW_FILE
                     done
                     cd $PWD
+
+                    ## BUGFIX: https://bugs.archlinux.org/task/40495
+                    depmod 
+                    ## END BUGFIX
 
                     ## uncomment below to use local cached files rather then remote repo
                     #sed -i "s,#Server = file:///var/cache/moo,Server = file:///var/cache/moo,g" /etc/pacman.conf

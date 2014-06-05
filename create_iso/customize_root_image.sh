@@ -132,10 +132,12 @@ sed -i 's/#\(Storage=\)auto/\1volatile/' /etc/systemd/journald.conf
 ## create the required squid cache directories
 #squid -z &
 
+depmod
+
 ## systemd stuffs
 systemctl disable iptables.service cpupower.service
 systemctl enable multi-user.target pacman-init.service choose-mirror.service
-systemctl enable ntpd.service
+systemctl enable dnsmasq.service ntpd.service
 systemctl enable tor.service
 systemctl enable privoxy.service
 systemctl enable preload.service
