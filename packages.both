@@ -139,7 +139,6 @@ indicator-keyboard
 indicator-messages
 indicator-power
 indicator-printers
-indicator-remindor
 indicator-sensors
 indicator-session
 indicator-sound
@@ -297,7 +296,6 @@ python3-threaded_servers
 python3-xynexdg
 qt4-ubuntu
 qtwebkit
-remindor-common
 rkhunter
 roccat-dkms
 rp-pppoe-libre
