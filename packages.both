@@ -272,6 +272,7 @@ preload
 privoxy
 profile-sync-daemon
 properties-cpp
+psensor
 pulseaudio
 pulseaudio-alsa
 pulseaudio-mixer-cli-git
