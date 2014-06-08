@@ -50,7 +50,6 @@ downgrade
 dtrx
 dvd+rw-tools
 efl-git
-efx-git
 eggdrop
 electrum
 elementary-git
@@ -58,6 +57,7 @@ elementary-icon-theme
 emotion_generic_players-git
 encfs
 enlightenment-git
+evas_generic_loaders-git
 evemu
 evolution-data-server-nonprism
 fakeroot
@@ -272,7 +272,6 @@ preload
 privoxy
 profile-sync-daemon
 properties-cpp
-psensor
 pulseaudio
 pulseaudio-alsa
 pulseaudio-mixer-cli-git
