@@ -207,6 +207,12 @@ make_iso() {
     mkarchiso ${verbose} -w "${work_dir}" -D "${arch}" -L "${iso_label}" -o "${out_dir}" iso "${iso_name}-${iso_version}-${arch}.iso"
 }
 
+remove_i686() {
+    if [ -d "${work_dir}/iso/i686" ]; then
+        rm -rf ${work_dir}/iso/i686
+    fi
+}
+
 if [[ ${EUID} -ne 0 ]]; then
     echo "This script must be run as root."
     _usage 1
@@ -255,3 +261,4 @@ run_once make_isolinux
 run_once make_aitab
 run_once make_prepare
 run_once make_iso
+run_once remove_i686
